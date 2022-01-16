@@ -1,9 +1,9 @@
 use druid::{AppLauncher, Color, PlatformError, Widget, WindowDesc};
 use druid::widget::{Flex, Label};
 
+//! https://animechan.vercel.app/
 mod animechan;
 mod gui;
-mod controller;
 
 
 fn build_ui() -> impl Widget<()> {
