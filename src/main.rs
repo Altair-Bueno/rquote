@@ -1,34 +1,33 @@
-use druid::{AppLauncher, Color, PlatformError, Widget, WindowDesc};
-use druid::widget::{Flex, Label};
+use yew::prelude::*;
 
-//! https://animechan.vercel.app/
+use crate::animechan::AnimechanQuote;
+use crate::component::loading::Loading;
+use crate::component::quote::{QuoteComponent, QuoteProp};
+
+// https://animechan.vercel.app/
 mod animechan;
-mod gui;
+mod component;
 
-
-fn build_ui() -> impl Widget<()> {
-    Flex::row()
-        .with_flex_child(
-            Flex::column()
-                .with_flex_child(Label::new("top left"), 1.0)
-                .with_flex_child(Label::new("bottom left"), 1.0),
-            1.0)
-        .with_flex_child(
-            Flex::column()
-                .with_flex_child(Label::new("top right"), 1.0)
-                .with_flex_child(Label::new("bottom right"), 1.0),
-            1.0)
+#[function_component(App)]
+fn app() -> Html {
+    let p = QuoteProp {
+        header: true,
+        quote: Box::new(AnimechanQuote::get_example()),
+    };
+    (0..3)
+        .into_iter()
+        .map(|_| p.clone())
+        .map(|x| {
+            html! {
+                <QuoteComponent ..x/>
+            }
+        })
+        .chain((0..2).map(|_| html! {
+            <Loading/>
+        }))
+        .collect()
 }
 
-#[tokio::main]
-async fn main() {
-    let window = WindowDesc::new(build_ui).title("External Event Demo");
-    let launcher = AppLauncher::with_window(window);
-    let event_sink = launcher.get_external_handle();
-    tokio::spawn(async move {
-        println!("hello world")
-    });
-    launcher
-        .launch(())
-        .expect("launch failed");
+fn main() {
+    yew::start_app::<App>();
 }

@@ -2,6 +2,7 @@ use reqwest::Client;
 use reqwest::Result;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
+use yew::prelude::Properties;
 
 const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/random";
 const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/quotes";
@@ -9,31 +10,27 @@ const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/ani
 const ANIMECHAN_CHARACTER_QUOTE: &str = "https://animechan.vercel.app/api/quotes/character";
 const ANIMECHAN_ANIME_LIST: &str = "https://animechan.vercel.app/api/available/anime";
 
-
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq)]
 pub struct AnimechanQuote {
-    pub anime: String,
-    pub character: String,
-    pub quote: String,
+    anime: String,
+    character: String,
+    quote: String,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Animechan;
-
-impl Animechan {
+impl AnimechanQuote {
     pub async fn get_random_quote(client: &Client) -> Result<AnimechanQuote> {
         client
             .get(ANIMECHAN_RANDOM_QUOTE)
             .send().await?
             .json().await
     }
-    pub async fn get_10_random_quotes(client: &Client) -> Result<Vec<Animechan>> {
+    pub async fn get_10_random_quotes(client: &Client) -> Result<Vec<AnimechanQuote>> {
         client
             .get(ANIMECHAN_10_RANDOM_QUOTE)
             .send().await?
             .json().await
     }
-    pub async fn get_quote_title(client: &Client, title: &str, page: Option<u32>) -> Result<Vec<Animechan>> {
+    pub async fn get_quote_title(client: &Client, title: &str, page: Option<u32>) -> Result<Vec<AnimechanQuote>> {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
@@ -44,7 +41,7 @@ impl Animechan {
             .send().await?
             .json().await
     }
-    pub async fn get_quote_character(client: &Client, character: &str, page: Option<u32>) -> Result<Vec<Animechan>> {
+    pub async fn get_quote_character(client: &Client, character: &str, page: Option<u32>) -> Result<Vec<AnimechanQuote>> {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
@@ -61,8 +58,26 @@ impl Animechan {
             .send().await?
             .json().await
     }
+
+    pub fn get_anime(&self) -> &str {
+        self.anime.as_str()
+    }
+    pub fn get_character(&self) -> &str {
+        self.character.as_str()
+    }
+    pub fn get_quote(&self) -> &str {
+        self.quote.as_str()
+    }
+    pub fn get_example() -> AnimechanQuote {
+        AnimechanQuote {
+            quote: "It's not a question of can or can't. There are some things in life you just do.".to_string(),
+            character: "Éclair Farron".to_string(),
+            anime: "Final Fantasy XIII".to_string(),
+        }
+    }
 }
 
+/*
 #[cfg(test)]
 mod test {
     use reqwest::Client;
@@ -104,3 +119,4 @@ mod test {
         matches!(response,Ok(_));
     }
 }
+ */
