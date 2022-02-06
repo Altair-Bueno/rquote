@@ -1,0 +1,42 @@
+name: Build and deploy Yew app
+on:
+  push:
+    branches:
+      - release
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build and deploy
+    env:
+      TARGET: wasm-unknown
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ env.working-directory }}/target/
+          key: ${{ matrix.target }}-${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Set up toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+      - name: Install Yew's toolkit
+        run: cargo install trunk wasm-bindgen-cli
+      - name: Build website
+        run: trunk build --release
+      - name: Move resources to destination
+        run: |
+          rm -fr docs/
+          mv dist docs
+      - name: Push back changes
+        continue-on-error: true
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add -f docs/
+          git commit -am "Generated website"
+          git push
