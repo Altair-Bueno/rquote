@@ -37,7 +37,7 @@ impl AnimechanQuote {
         let parameter = [("title", title), ("page", &page)];
         client
             .get(ANIMECHAN_TITLE_QUOTE)
-            .form(&parameter)
+            .query(&parameter)
             .send().await?
             .json().await
     }
@@ -48,7 +48,7 @@ impl AnimechanQuote {
         let parameter = [("name", character), ("page", &page)];
         client
             .get(ANIMECHAN_CHARACTER_QUOTE)
-            .form(&parameter)
+            .query(&parameter)
             .send().await?
             .json().await
     }
