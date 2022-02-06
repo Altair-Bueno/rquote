@@ -34,7 +34,7 @@ impl AnimechanQuote {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
-        let parameter = [("character", title), ("page", &page)];
+        let parameter = [("title", title), ("page", &page)];
         client
             .get(ANIMECHAN_TITLE_QUOTE)
             .form(&parameter)
@@ -45,9 +45,9 @@ impl AnimechanQuote {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
-        let parameter = [("character", character), ("page", &page)];
+        let parameter = [("name", character), ("page", &page)];
         client
-            .get(ANIMECHAN_TITLE_QUOTE)
+            .get(ANIMECHAN_CHARACTER_QUOTE)
             .form(&parameter)
             .send().await?
             .json().await
