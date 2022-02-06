@@ -1,8 +1,6 @@
 use reqwest::Client;
 use reqwest::Result;
 use serde::{Deserialize, Serialize};
-use serde::de::DeserializeOwned;
-use yew::prelude::Properties;
 
 // TODO remove when code is no longer dead
 #[allow(dead_code)]
