@@ -12,6 +12,3 @@ pub fn anime(anime_prop: &AnimeProp) -> Html {
         <p>{title}</p>
     }
 }
-
-
-

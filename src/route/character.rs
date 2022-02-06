@@ -21,26 +21,31 @@ pub fn home(character_prop: &CharacterProp) -> Html {
         let quotes = quotes.clone();
         let client = client.clone();
         let character = character.clone();
-        use_effect_with_deps(move |_| {
-            let client = client.clone();
-            let quotes = quotes.clone();
-            let character = character.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let response = AnimechanQuote::get_quote_character(&client, character.as_str(), None).await;
-                quotes.set(response);
-            });
-            || ()
-        }, ());
+        use_effect_with_deps(
+            move |_| {
+                let client = client.clone();
+                let quotes = quotes.clone();
+                let character = character.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+                    let response =
+                        AnimechanQuote::get_quote_character(&client, character.as_str(), None)
+                            .await;
+                    quotes.set(response);
+                });
+                || ()
+            },
+            (),
+        );
     };
     let html = match quotes.as_ref() {
-        Ok(quotes) => {
-            quotes
-                .iter()
-                .map(|x| html! {
+        Ok(quotes) => quotes
+            .iter()
+            .map(|x| {
+                html! {
                     <QuoteComponent quote = {Box::new(x.clone())} footer={false}/>
-                })
-                .collect::<Html>()
-        }
+                }
+            })
+            .collect::<Html>(),
         Err(err) => {
             html! {
                 <p>{format!("Something has happened: {err}")}</p>

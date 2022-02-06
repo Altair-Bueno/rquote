@@ -14,25 +14,28 @@ pub fn home() -> Html {
     {
         let quotes = quotes.clone();
         let client = client.clone();
-        use_effect_with_deps(move |_| {
-            let client = client.clone();
-            let quotes = quotes.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let response = AnimechanQuote::get_10_random_quotes(&client).await;
-                quotes.set(response);
-            });
-            || ()
-        }, ());
+        use_effect_with_deps(
+            move |_| {
+                let client = client.clone();
+                let quotes = quotes.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+                    let response = AnimechanQuote::get_10_random_quotes(&client).await;
+                    quotes.set(response);
+                });
+                || ()
+            },
+            (),
+        );
     };
     let html = match quotes.as_ref() {
-        Ok(quotes) => {
-            quotes
-                .iter()
-                .map(|x| html! {
+        Ok(quotes) => quotes
+            .iter()
+            .map(|x| {
+                html! {
                     <QuoteComponent quote = {Box::new(x.clone())}/>
-                })
-                .collect::<Html>()
-        }
+                }
+            })
+            .collect::<Html>(),
         Err(err) => {
             html! {
                 <p>{format!("Something has happened: {err}")}</p>

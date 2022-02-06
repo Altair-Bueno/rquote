@@ -13,7 +13,9 @@ impl PartialEq for Context {
 
 impl Context {
     pub fn new() -> Context {
-        Context { client: Client::new() }
+        Context {
+            client: Client::new(),
+        }
     }
 
     pub fn client(&self) -> &Client {

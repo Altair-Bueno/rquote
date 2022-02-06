@@ -25,13 +25,18 @@ impl Component for NavBarComponent {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let title = &ctx.props().title;
-        let nav_items = ctx.props().children
+        let nav_items = ctx
+            .props()
+            .children
             .iter()
-            .map(|x| html! {
-                <li class="nav-item">
-                    {x}
-                </li>
-            }).collect::<Html>();
+            .map(|x| {
+                html! {
+                    <li class="nav-item">
+                        {x}
+                    </li>
+                }
+            })
+            .collect::<Html>();
         let section = if let Some(x) = &ctx.props().page {
             html! {<span class="navbar-text">{x}</span>}
         } else {

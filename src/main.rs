@@ -9,8 +9,8 @@ use crate::route::switch;
 // https://animechan.vercel.app/
 mod animechan;
 mod component;
-mod route;
 mod context;
+mod route;
 
 #[function_component(Main)]
 fn app() -> Html {

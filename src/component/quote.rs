@@ -31,7 +31,7 @@ impl Component for QuoteComponent {
 
         let header = if ctx.props().header {
             let anime_route = Route::Anime {
-                title: ctx.props().header.to_string()
+                title: ctx.props().header.to_string(),
             };
             html! {
                 <div class="card-header">
@@ -43,7 +43,9 @@ impl Component for QuoteComponent {
         };
 
         let footer = if ctx.props().footer {
-            let character_route = Route::Character { character: ctx.props().quote.get_character().to_string() };
+            let character_route = Route::Character {
+                character: ctx.props().quote.get_character().to_string(),
+            };
             html! {
                 <footer class="blockquote-footer">
                     <Link<Route> to={character_route}>{ character }</Link<Route>>

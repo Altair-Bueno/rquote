@@ -11,10 +11,10 @@ use not_found::*;
 
 use crate::component::nav_bar::*;
 
-mod home;
 mod anime;
 mod anime_list;
 mod character;
+mod home;
 mod not_found;
 
 #[derive(Clone, Routable, PartialEq)]
@@ -75,7 +75,7 @@ pub fn switch(route: &Route) -> Html {
                     <Anime title={title.clone()}/>
                 </>
             }
-        },
+        }
         Route::Character { character } => {
             let character = urlencoding::decode(character).unwrap().into_owned();
             html! {

@@ -21,16 +21,24 @@ impl AnimechanQuote {
     pub async fn get_random_quote(client: &Client) -> Result<AnimechanQuote> {
         client
             .get(ANIMECHAN_RANDOM_QUOTE)
-            .send().await?
-            .json().await
+            .send()
+            .await?
+            .json()
+            .await
     }
     pub async fn get_10_random_quotes(client: &Client) -> Result<Vec<AnimechanQuote>> {
         client
             .get(ANIMECHAN_10_RANDOM_QUOTE)
-            .send().await?
-            .json().await
+            .send()
+            .await?
+            .json()
+            .await
     }
-    pub async fn get_quote_title(client: &Client, title: &str, page: Option<u32>) -> Result<Vec<AnimechanQuote>> {
+    pub async fn get_quote_title(
+        client: &Client,
+        title: &str,
+        page: Option<u32>,
+    ) -> Result<Vec<AnimechanQuote>> {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
@@ -38,10 +46,16 @@ impl AnimechanQuote {
         client
             .get(ANIMECHAN_TITLE_QUOTE)
             .query(&parameter)
-            .send().await?
-            .json().await
+            .send()
+            .await?
+            .json()
+            .await
     }
-    pub async fn get_quote_character(client: &Client, character: &str, page: Option<u32>) -> Result<Vec<AnimechanQuote>> {
+    pub async fn get_quote_character(
+        client: &Client,
+        character: &str,
+        page: Option<u32>,
+    ) -> Result<Vec<AnimechanQuote>> {
         let page = page
             .map(|x| x.to_string())
             .unwrap_or_else(|| String::from("0"));
@@ -49,14 +63,13 @@ impl AnimechanQuote {
         client
             .get(ANIMECHAN_CHARACTER_QUOTE)
             .query(&parameter)
-            .send().await?
-            .json().await
+            .send()
+            .await?
+            .json()
+            .await
     }
     pub async fn get_anime_list(client: &Client) -> Result<Vec<String>> {
-        client
-            .get(ANIMECHAN_ANIME_LIST)
-            .send().await?
-            .json().await
+        client.get(ANIMECHAN_ANIME_LIST).send().await?.json().await
     }
 
     pub fn get_anime(&self) -> &str {
@@ -70,7 +83,9 @@ impl AnimechanQuote {
     }
     pub fn get_example() -> AnimechanQuote {
         AnimechanQuote {
-            quote: "It's not a question of can or can't. There are some things in life you just do.".to_string(),
+            quote:
+            "It's not a question of can or can't. There are some things in life you just do."
+                .to_string(),
             character: "Éclair Farron".to_string(),
             anime: "Final Fantasy XIII".to_string(),
         }
