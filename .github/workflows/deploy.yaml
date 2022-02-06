@@ -32,7 +32,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ${{ env.working-directory }}/target/
-          key: ${{ matrix.target }}-${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Push back changes
         continue-on-error: true
         run: |
