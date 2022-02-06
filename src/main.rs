@@ -2,6 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
+use crate::context::Context as RQuoteContext;
 use crate::route::Route;
 use crate::route::switch;
 
@@ -9,13 +10,17 @@ use crate::route::switch;
 mod animechan;
 mod component;
 mod route;
+mod context;
 
 #[function_component(Main)]
 fn app() -> Html {
+    let context = RQuoteContext::new();
     html! {
-        <BrowserRouter>
-            <Switch<Route> render={Switch::render(switch)} />
-        </BrowserRouter>
+        <ContextProvider<RQuoteContext> context={context}>
+            <BrowserRouter>
+                <Switch<Route> render={Switch::render(switch)} />
+            </BrowserRouter>
+        </ContextProvider<RQuoteContext>>
     }
 }
 
