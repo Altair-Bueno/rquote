@@ -7,6 +7,8 @@ use character::*;
 use home::*;
 use not_found::*;
 
+use crate::component::nav_bar::*;
+
 mod home;
 mod anime;
 mod anime_list;
@@ -29,11 +31,20 @@ pub enum Route {
 }
 
 pub fn switch(route: &Route) -> Html {
-    match route {
+    let inner = match route {
         Route::Home => html! {<Home/>},
         Route::Anime { title } => html! {<Anime title={title.clone()}/>},
         Route::AnimeList => html! {<AnimeList/>},
         Route::Character { character } => html! {<Character character={character.clone()}/>},
         Route::NotFound => html! {<NotFound/>},
+    };
+    html! {
+        <>
+            <NavBarComponent title = "Rquote">
+                <Link<Route> to={Route::Home}><a class="nav-link">{ "Home" }</a></Link<Route>>
+                <Link<Route> to={Route::AnimeList}><a class="nav-link">{ "Anime" }</a></Link<Route>>
+            </NavBarComponent>
+            {inner}
+        </>
     }
 }
