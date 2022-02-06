@@ -1,6 +1,8 @@
 use yew::prelude::*;
+use yew_router::prelude::*;
 
 use crate::AnimechanQuote;
+use crate::route::Route;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct QuoteProp {
@@ -26,11 +28,19 @@ impl Component for QuoteComponent {
         let character = prop.get_character();
 
         let header = if ctx.props().header {
-            html! {<div class="card-header">{anime}</div>}
+            let anime_route = Route::Anime {
+                title: ctx.props().header.to_string()
+            };
+            html! {
+                <div class="card-header">
+                    <Link<Route> to={anime_route}>{ anime }</Link<Route>>
+                </div>
+            }
         } else {
             Html::default()
         };
 
+        let character_route = Route::Character { character: ctx.props().quote.get_character().to_string() };
         html! {
             <div class="card rounded-3 shadow-sm m-1">
                 {header}
@@ -39,7 +49,9 @@ impl Component for QuoteComponent {
                         <p class="card-text">
                             {quote}
                         </p>
-                        <footer class="blockquote-footer">{character}</footer>
+                        <footer class="blockquote-footer">
+                            <Link<Route> to={character_route}>{ character }</Link<Route>>
+                        </footer>
                     </blockquote>
                 </div>
             </div>
