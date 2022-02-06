@@ -33,10 +33,16 @@ pub enum Route {
 pub fn switch(route: &Route) -> Html {
     let inner = match route {
         Route::Home => html! {<Home/>},
-        Route::Anime { title } => html! {<Anime title={title.clone()}/>},
         Route::AnimeList => html! {<AnimeList/>},
-        Route::Character { character } => html! {<Character character={character.clone()}/>},
         Route::NotFound => html! {<NotFound/>},
+        Route::Anime { title } => {
+            let title = urlencoding::decode(title).unwrap().into_owned();
+            html! {<Anime title={title}/>}
+        }
+        Route::Character { character } => {
+            let character = urlencoding::decode(character).unwrap().into_owned();
+            html! {<Character character={character}/>}
+        }
     };
     html! {
         <>
