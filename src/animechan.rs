@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use yew::prelude::Properties;
 
+// TODO remove when code is no longer dead
+#[allow(dead_code)]
 const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/random";
 const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/quotes";
 const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/anime";
