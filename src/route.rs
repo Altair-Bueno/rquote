@@ -41,8 +41,8 @@ pub fn switch(route: &Route) -> Html {
     html! {
         <>
             <NavBarComponent title = "Rquote">
-                <Link<Route> to={Route::Home}><a class="nav-link">{ "Home" }</a></Link<Route>>
-                <Link<Route> to={Route::AnimeList}><a class="nav-link">{ "Anime" }</a></Link<Route>>
+                <Link<Route> classes ={classes!("nav-link")} to={Route::Home}>{ "Home" }</Link<Route>>
+                <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>{ "Anime" }</Link<Route>>
             </NavBarComponent>
             {inner}
         </>
