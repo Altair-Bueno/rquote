@@ -5,6 +5,7 @@ use crate::AnimechanQuote;
 #[derive(Properties, PartialEq, Clone)]
 pub struct QuoteProp {
     pub quote: Box<AnimechanQuote>,
+    #[prop_or(true)]
     pub header: bool,
 }
 
