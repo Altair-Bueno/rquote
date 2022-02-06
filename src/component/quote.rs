@@ -9,6 +9,8 @@ pub struct QuoteProp {
     pub quote: Box<AnimechanQuote>,
     #[prop_or(true)]
     pub header: bool,
+    #[prop_or(true)]
+    pub footer: bool,
 }
 
 pub struct QuoteComponent;
@@ -40,18 +42,24 @@ impl Component for QuoteComponent {
             Html::default()
         };
 
-        let character_route = Route::Character { character: ctx.props().quote.get_character().to_string() };
+        let footer = if ctx.props().footer {
+            let character_route = Route::Character { character: ctx.props().quote.get_character().to_string() };
+            html! {
+                <footer class="blockquote-footer">
+                    <Link<Route> to={character_route}>{ character }</Link<Route>>
+                </footer>
+            }
+        } else {
+            Html::default()
+        };
+
         html! {
             <div class="card rounded-3 shadow-sm m-1">
                 {header}
                 <div class="card-body">
                     <blockquote class = "blockquote mb-0">
-                        <p class="card-text">
-                            {quote}
-                        </p>
-                        <footer class="blockquote-footer">
-                            <Link<Route> to={character_route}>{ character }</Link<Route>>
-                        </footer>
+                        <p class="card-text">{quote}</p>
+                        {footer}
                     </blockquote>
                 </div>
             </div>
