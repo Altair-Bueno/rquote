@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -31,26 +33,59 @@ pub enum Route {
 }
 
 pub fn switch(route: &Route) -> Html {
-    let inner = match route {
-        Route::Home => html! {<Home/>},
-        Route::AnimeList => html! {<AnimeList/>},
-        Route::NotFound => html! {<NotFound/>},
+    let links = html! {
+        <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>
+            { "Anime" }
+        </Link<Route>>
+    };
+    let navbar_title = "Rquote";
+
+    match route {
+        Route::Home => html! {
+            <>
+                <NavBarComponent title = {navbar_title}>
+                    {links}
+                </NavBarComponent>
+                <Home/>
+            </>
+        },
+        Route::AnimeList => html! {
+            <>
+                <NavBarComponent title = {navbar_title}>
+                    {links}
+                </NavBarComponent>
+                <AnimeList/>
+            </>
+        },
+        Route::NotFound => html! {
+            <>
+                <NavBarComponent title = {navbar_title}>
+                    {links}
+                </NavBarComponent>
+                <NotFound/>
+            </>
+        },
         Route::Anime { title } => {
             let title = urlencoding::decode(title).unwrap().into_owned();
-            html! {<Anime title={title}/>}
-        }
+            html! {
+                <>
+                    <NavBarComponent title = {navbar_title} page = {title.clone()}>
+                        {links}
+                    </NavBarComponent>
+                    <Anime title={title.clone()}/>
+                </>
+            }
+        },
         Route::Character { character } => {
             let character = urlencoding::decode(character).unwrap().into_owned();
-            html! {<Character character={character}/>}
+            html! {
+                <>
+                    <NavBarComponent title = {navbar_title} page = {character.clone()}>
+                        {links}
+                    </NavBarComponent>
+                    <Character character={character.clone()}/>
+                </>
+            }
         }
-    };
-    html! {
-        <>
-            <NavBarComponent title = "Rquote">
-                <Link<Route> classes ={classes!("nav-link")} to={Route::Home}>{ "Home" }</Link<Route>>
-                <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>{ "Anime" }</Link<Route>>
-            </NavBarComponent>
-            {inner}
-        </>
     }
 }
