@@ -10,6 +10,7 @@ jobs:
     env:
       TARGET: wasm-unknown
     steps:
+      - uses: actions/checkout@v2
       - uses: actions/cache@v2
         with:
           path: |
