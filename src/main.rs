@@ -1,33 +1,24 @@
 use yew::prelude::*;
+use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::component::loading::Loading;
-use crate::component::quote::{QuoteComponent, QuoteProp};
+use crate::route::Route;
+use crate::route::switch;
 
 // https://animechan.vercel.app/
 mod animechan;
 mod component;
+mod route;
 
-#[function_component(App)]
+#[function_component(Main)]
 fn app() -> Html {
-    let p = QuoteProp {
-        header: true,
-        quote: Box::new(AnimechanQuote::get_example()),
-    };
-    (0..3)
-        .into_iter()
-        .map(|_| p.clone())
-        .map(|x| {
-            html! {
-                <QuoteComponent ..x/>
-            }
-        })
-        .chain((0..2).map(|_| html! {
-            <Loading/>
-        }))
-        .collect()
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={Switch::render(switch)} />
+        </BrowserRouter>
+    }
 }
 
 fn main() {
-    yew::start_app::<App>();
+    yew::start_app::<Main>();
 }
