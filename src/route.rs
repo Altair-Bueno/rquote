@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+use about::*;
 use anime::*;
 use anime_list::*;
 use character::*;
@@ -16,6 +17,7 @@ mod anime_list;
 mod character;
 mod home;
 mod not_found;
+mod about;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -27,17 +29,28 @@ pub enum Route {
     Anime { title: String },
     #[at("/character/:character")]
     Character { character: String },
+    #[at("/about")]
+    About,
     #[not_found]
     #[at("/404")]
     NotFound,
 }
 
 pub fn switch(route: &Route) -> Html {
-    let links = html! {
-        <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>
-            { "Anime" }
-        </Link<Route>>
-    };
+    let links = [
+        html! {
+            <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>
+                { "Anime" }
+            </Link<Route>>
+        },
+        html! {
+            <Link<Route> classes ={classes!("nav-link")} to={Route::About}>
+                { "About" }
+            </Link<Route>>
+        },
+    ]
+        .into_iter()
+        .collect::<Html>();
     let navbar_title = "Rquote";
 
     match route {
@@ -86,6 +99,14 @@ pub fn switch(route: &Route) -> Html {
                     <Character character={character.clone()}/>
                 </>
             }
+        }
+        Route::About => html! {
+            <>
+                <NavBarComponent title = {navbar_title} page = {"About"}>
+                    {links}
+                </NavBarComponent>
+                <About/>
+            </>
         }
     }
 }
