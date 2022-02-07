@@ -52,7 +52,7 @@ impl<'a, T> Component for NavBarComponent<T>
     type Message = ();
     type Properties = NavBarProp<T>;
 
-    fn create(ctx: &Context<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         NavBarComponent {
             phantom: Default::default()
         }

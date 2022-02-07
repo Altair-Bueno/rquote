@@ -15,10 +15,10 @@ pub struct QuoteProp {
 
 #[function_component(QuoteComponent)]
 pub fn quote(props: &QuoteProp) -> Html {
-    let prop = props.quote.as_ref();
-    let quote = prop.get_quote();
-    let anime = prop.get_anime();
-    let character = prop.get_character();
+    let animechan_quote = props.quote.as_ref();
+    let quote = animechan_quote.get_quote();
+    let anime = animechan_quote.get_anime();
+    let character = animechan_quote.get_character();
 
     let header = if props.header {
         let anime_route = Route::Anime {
