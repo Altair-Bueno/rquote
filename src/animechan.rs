@@ -81,6 +81,7 @@ impl AnimechanQuote {
     pub fn get_quote(&self) -> &str {
         self.quote.as_str()
     }
+    #[cfg(debug_assertions)]
     pub fn get_example() -> AnimechanQuote {
         AnimechanQuote {
             quote:

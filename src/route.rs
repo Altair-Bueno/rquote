@@ -7,6 +7,9 @@ use about::*;
 use anime::*;
 use anime_list::*;
 use character::*;
+// Debug page with all components
+#[cfg(debug_assertions)]
+use dev::*;
 use home::*;
 use not_found::*;
 
@@ -18,6 +21,9 @@ mod character;
 mod home;
 mod not_found;
 mod about;
+
+#[cfg(debug_assertions)]
+mod dev;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -31,6 +37,9 @@ pub enum Route {
     Character { character: String },
     #[at("/about")]
     About,
+    #[cfg(debug_assertions)]
+    #[cfg_attr(debug_assertions, at("/dev"))]
+    Development,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -88,6 +97,13 @@ pub fn switch(route: &Route) -> Html {
             <>
                 <NavBarComponent<Route> active = {Some(1)} ..navbar_props/>
                 <About/>
+            </>
+        },
+        #[cfg(debug_assertions)]
+        Route::Development => html! {
+            <>
+                <NavBarComponent<Route> ..navbar_props/>
+                <Dev/>
             </>
         }
     }
