@@ -8,10 +8,6 @@ use crate::component::quote::*;
 pub fn dev() -> Html {
     html! {
         <>
-        <QuoteComponent quote = {Box::new(AnimechanQuote::get_example())}/>
-        <QuoteComponent quote = {Box::new(AnimechanQuote::get_example())}/>
-        <QuoteComponent quote = {Box::new(AnimechanQuote::get_example())}/>
-        <QuoteComponent quote = {Box::new(AnimechanQuote::get_example())}/>
         <br/>
         <LoadingComponent/>
         </>

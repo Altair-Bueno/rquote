@@ -6,7 +6,7 @@ use crate::route::Route;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct QuoteProp {
-    pub quote: Box<AnimechanQuote>,
+    pub quote: AnimechanQuote,
     #[prop_or(true)]
     pub header: bool,
     #[prop_or(true)]
@@ -15,7 +15,7 @@ pub struct QuoteProp {
 
 #[function_component(QuoteComponent)]
 pub fn quote(props: &QuoteProp) -> Html {
-    let animechan_quote = props.quote.as_ref();
+    let animechan_quote = &props.quote;
     let quote = animechan_quote.get_quote();
     let anime = animechan_quote.get_anime();
     let character = animechan_quote.get_character();

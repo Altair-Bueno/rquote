@@ -42,7 +42,7 @@ pub fn home(character_prop: &CharacterProp) -> Html {
             .iter()
             .map(|x| {
                 html! {
-                    <QuoteComponent quote = {Box::new(x.clone())} footer={false}/>
+                    <QuoteComponent quote = {x.clone()} footer={false}/>
                 }
             })
             .collect::<Html>(),
