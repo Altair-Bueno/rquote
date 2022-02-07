@@ -72,7 +72,7 @@ impl<'a, T> Component for NavBarComponent<T>
                 };
                 let classes = classes!("nav-link","px-3",active);
                 html! {
-                    <li class = "nav-item" key = {format!("navbar-link-{position}")}>
+                    <li class = {classes!("nav-item")} key = {format!("navbar-link-{position}")}>
                         <Link<T> classes ={classes} to={link.link.clone()}>
                             { link.name.as_str() }
                         </Link<T>>
@@ -86,15 +86,15 @@ impl<'a, T> Component for NavBarComponent<T>
             .expect("Expected context");
         html! {
             <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",context.theme().get_navbar_class(),context.theme().get_background_class())}>
-                <div class="container-fluid">
+                <div class={classes!("container-fluid")}>
                     <Link<T> classes ={classes!("navbar-brand", "h1", "mb-0")} to={ctx.props().home.clone()}>
                         { &ctx.props().title }
                     </Link<T>>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+                    <button class={classes!("navbar-toggler")} type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class={classes!("navbar-toggler-icon")}></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarText">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <div class={classes!("collapse","navbar-collapse")} id="navbarText">
+                        <ul class={classes!("navbar-nav","me-auto","mb-2","mb-lg-0")}>
                             {link_list}
                         </ul>
                     </div>
