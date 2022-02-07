@@ -1,61 +1,103 @@
+use std::marker::PhantomData;
+
 use yew::prelude::*;
 use yew_router::prelude::*;
+use yew_router::router::Router;
 
-use crate::route::Route;
-
-#[derive(Properties, PartialEq, Clone, Default)]
-pub struct NavBarProp {
-    #[prop_or_default]
-    pub title: String,
-    #[prop_or_default]
-    pub children: Children,
-    #[prop_or_default]
-    pub page: Option<String>,
+#[derive(PartialEq, Clone)]
+pub struct NavBarLink<T>
+    where
+        T: Clone + Routable + PartialEq + 'static
+{
+    name: String,
+    link: T,
 }
 
-pub struct NavBarComponent;
+impl<T> NavBarLink<T>
+    where
+        T: Clone + Routable + PartialEq + 'static
+{
+    pub fn new(name: String, link: T) -> NavBarLink<T> {
+        NavBarLink {
+            name,
+            link,
+        }
+    }
+}
 
-impl Component for NavBarComponent {
+#[derive(Properties, PartialEq, Clone)]
+pub struct NavBarProp<T>
+    where
+        T: Clone + Routable + PartialEq + 'static
+{
+    pub home: T,
+    pub title: String,
+    #[prop_or_default]
+    pub link: Vec<NavBarLink<T>>,
+    #[prop_or_default]
+    pub active: Option<usize>,
+}
+
+pub struct NavBarComponent<T>
+    where
+        T: Clone + Routable + PartialEq + 'static
+{
+    phantom: PhantomData<&'static T>,
+}
+
+impl<'a, T> Component for NavBarComponent<T>
+    where
+        T: Clone + Routable + PartialEq + 'static
+{
     type Message = ();
-    type Properties = NavBarProp;
+    type Properties = NavBarProp<T>;
 
-    fn create(ctx: &Context<Self>) -> Self {
-        NavBarComponent
+    fn create(_ctx: &Context<Self>) -> Self {
+        NavBarComponent {
+            phantom: Default::default()
+        }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let title = &ctx.props().title;
-        let nav_items = ctx
+        let link_list = ctx
             .props()
-            .children
+            .link
             .iter()
-            .map(|x| {
+            .enumerate()
+            .map(|(position, link)| {
+                let active = if ctx.props().active.map(|x| x == position).unwrap_or(false) {
+                    Some("active")
+                } else {
+                    None
+                };
+                let classes = classes!("nav-link","px-3",active);
                 html! {
-                    <li class="nav-item">
-                        {x}
+                    <li class = {classes!("nav-item")} key = {format!("navbar-link-{position}")}>
+                        <Link<T> classes ={classes} to={link.link.clone()}>
+                            { link.name.as_str() }
+                        </Link<T>>
                     </li>
                 }
             })
             .collect::<Html>();
-        let section = if let Some(x) = &ctx.props().page {
-            html! {<span class="navbar-text">{x}</span>}
-        } else {
-            Html::default()
-        };
+        let context = ctx
+            .link()
+            .context::<crate::context::Context>(Default::default())
+            .map(|x| x.0)
+            .unwrap_or_default();
         html! {
-            <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <Link<Route> classes ={classes!("navbar-brand")} to={Route::Home}>
-                        { title }
-                    </Link<Route>>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+            <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",context.theme().get_navbar_class(),context.theme().get_background_class())}>
+                <div class={classes!("container-fluid")}>
+                    <Link<T> classes ={classes!("navbar-brand", "h1", "mb-0")} to={ctx.props().home.clone()}>
+                        { &ctx.props().title }
+                    </Link<T>>
+                    <button class={classes!("navbar-toggler")} type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class={classes!("navbar-toggler-icon")}></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarText">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            {nav_items}
+                    <div class={classes!("collapse","navbar-collapse")} id="navbarText">
+                        <ul class={classes!("navbar-nav","me-auto","mb-2","mb-lg-0")}>
+                            {link_list}
                         </ul>
-                        {section}
                     </div>
               </div>
             </nav>

@@ -12,7 +12,7 @@ pub struct CharacterProp {
 #[function_component(Character)]
 pub fn home(character_prop: &CharacterProp) -> Html {
     let client = use_context::<crate::context::Context>()
-        .expect("no ctx found")
+        .unwrap_or_default()
         .client()
         .clone();
     let quotes = use_state(|| Ok(vec![]));
@@ -42,7 +42,7 @@ pub fn home(character_prop: &CharacterProp) -> Html {
             .iter()
             .map(|x| {
                 html! {
-                    <QuoteComponent quote = {Box::new(x.clone())} footer={false}/>
+                    <QuoteComponent quote = {x.clone()} footer={false}/>
                 }
             })
             .collect::<Html>(),

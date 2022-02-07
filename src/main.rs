@@ -2,9 +2,9 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::context::Context as RQuoteContext;
-use crate::route::Route;
-use crate::route::switch;
+use crate::component::footer::*;
+use crate::context::{Context as RQuoteContext, Theme};
+use crate::route::*;
 
 // https://animechan.vercel.app/
 mod animechan;
@@ -14,13 +14,18 @@ mod route;
 
 #[function_component(Main)]
 fn app() -> Html {
-    let context = RQuoteContext::new();
+    let context = RQuoteContext::new(Theme::Light);
+    let page_background_class = context.theme().get_background_class();
     html! {
-        <ContextProvider<RQuoteContext> context={context}>
-            <BrowserRouter>
-                <Switch<Route> render={Switch::render(switch)} />
-            </BrowserRouter>
-        </ContextProvider<RQuoteContext>>
+        // TODO div does not fill the whole website, just it's elements
+        <div class={classes!(page_background_class, "bg-gradient","flex-fill")}>
+            <ContextProvider<RQuoteContext> context={context}>
+                <BrowserRouter>
+                    <Switch<Route> render={Switch::render(switch)} />
+                </BrowserRouter>
+            </ContextProvider<RQuoteContext>>
+            <FooterComponent/>
+        </div>
     }
 }
 
