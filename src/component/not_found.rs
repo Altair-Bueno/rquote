@@ -30,14 +30,17 @@ impl<T> Component for NotFoundComponent<T>
     type Message = ();
     type Properties = NotFoundProp<T>;
 
-    fn create(ctx: &Context<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         NotFoundComponent {
             phantom: Default::default()
         }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
+        let (context, _) = ctx.link().context::<crate::context::Context>(Default::default())
+            .expect("Expected context");
         let props = ctx.props();
+
         let head = "Page Not Found";
         let message = html! {
             <p>{
@@ -50,15 +53,17 @@ impl<T> Component for NotFoundComponent<T>
             </p>
         };
         let help = if let Some(home) = &props.home {
-            html! {<Link<T> to = {home.clone()}>{format!("Return to home")}</Link<T>>}
+            html! {
+                <Link<T> to = {home.clone()} classes={classes!(context.theme().get_link_class())}>
+                    {format!("Return to home")}
+                </Link<T>>
+            }
         } else {
             Html::default()
         };
-        let help = html! {
-
-        };
+        let text_class = context.theme().get_text_class();
         html! {
-            <div class={classes!("position-absolute","top-50","start-50","translate-middle")}>
+            <div class={classes!("justify-content-center"," align-items-center",text_class)}>
                 <h1>{head}</h1>
                 {message}
                 {help}
