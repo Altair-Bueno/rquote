@@ -7,10 +7,22 @@ pub enum Theme {
 }
 
 impl Theme {
-    pub fn get_navbar_class(&self) -> Vec<&'static str> {
+    pub fn get_navbar_class(&self) -> &'static str {
         match self {
-            Theme::Dark => vec!["navbar-dark", "bg-dark"],
-            Theme::Light => vec!["navbar-light", "bg-light"]
+            Theme::Dark => "navbar-dark",
+            Theme::Light => "navbar-light"
+        }
+    }
+    pub fn get_background_class(&self) -> &'static str {
+        match self {
+            Theme::Light => "bg-light",
+            Theme::Dark => "bg-dark"
+        }
+    }
+    pub fn get_text_class(&self) -> &'static str {
+        match self {
+            Theme::Dark => "text-light",
+            Theme::Light => "text-dark",
         }
     }
 }

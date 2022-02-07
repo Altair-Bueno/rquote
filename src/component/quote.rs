@@ -25,7 +25,7 @@ pub fn quote(props: &QuoteProp) -> Html {
             title: props.header.to_string(),
         };
         html! {
-            <div class="card-header">
+            <div class={classes!("card-header")}>
                 <Link<Route> to={anime_route}>{ anime }</Link<Route>>
             </div>
         }
@@ -38,7 +38,7 @@ pub fn quote(props: &QuoteProp) -> Html {
             character: props.quote.get_character().to_string(),
         };
         html! {
-            <footer class="blockquote-footer">
+            <footer class={classes!("blockquote-footer")}>
                 <Link<Route> to={character_route}>{ character }</Link<Route>>
             </footer>
         }
@@ -46,12 +46,14 @@ pub fn quote(props: &QuoteProp) -> Html {
         Html::default()
     };
 
+    let context = use_context::<crate::context::Context>()
+        .expect("Expected context");
     html! {
-        <div class="card rounded-3 shadow-sm m-1">
+        <div class={classes!("card", "rounded-3", "shadow-sm", "m-1",context.theme().get_background_class())}>
             {header}
-            <div class="card-body">
-                <blockquote class = "blockquote mb-0">
-                    <p class="card-text">{quote}</p>
+            <div class={classes!("card-body")}>
+                <blockquote class={classes!("blockquote", "mb-0")}>
+                    <p class={classes!("card-text",context.theme().get_text_class())}>{quote}</p>
                     {footer}
                 </blockquote>
             </div>
