@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::context::Context as RQuoteContext;
+use crate::context::{Context as RQuoteContext, Theme};
 use crate::route::Route;
 use crate::route::switch;
 
@@ -14,7 +14,7 @@ mod route;
 
 #[function_component(Main)]
 fn app() -> Html {
-    let context = RQuoteContext::new();
+    let context = RQuoteContext::new(Theme::Dark);
     html! {
         <ContextProvider<RQuoteContext> context={context}>
             <BrowserRouter>
