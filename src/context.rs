@@ -6,6 +6,12 @@ pub enum Theme {
     Dark,
 }
 
+impl Default for Theme {
+    fn default() -> Self {
+        Theme::Light
+    }
+}
+
 impl Theme {
     pub fn get_navbar_class(&self) -> &'static str {
         match self {
@@ -27,7 +33,7 @@ impl Theme {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Context {
     client: Client,
     theme: Theme,
