@@ -72,7 +72,7 @@ impl<'a, T> Component for NavBarComponent<T>
                 };
                 let classes = classes!("nav-link","px-3",active);
                 html! {
-                    <li class = "nav-item">
+                    <li class = "nav-item" key = {format!("navbar-link-{position}")}>
                         <Link<T> classes ={classes} to={link.link.clone()}>
                             { link.name.as_str() }
                         </Link<T>>

@@ -71,7 +71,7 @@ pub fn switch(route: &Route) -> Html {
             html! {
                 <>
                     <NavBarComponent<Route>  ..navbar_props/>
-                    <Anime title={title.clone()}/>
+                    <Anime title={title}/>
                 </>
             }
         }
@@ -80,7 +80,7 @@ pub fn switch(route: &Route) -> Html {
             html! {
                 <>
                     <NavBarComponent<Route> ..navbar_props/>
-                    <Character character={character.clone()}/>
+                    <Character character={character}/>
                 </>
             }
         }
