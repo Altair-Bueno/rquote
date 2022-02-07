@@ -10,7 +10,7 @@ const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/ani
 const ANIMECHAN_CHARACTER_QUOTE: &str = "https://animechan.vercel.app/api/quotes/character";
 const ANIMECHAN_ANIME_LIST: &str = "https://animechan.vercel.app/api/available/anime";
 
-#[derive(Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct AnimechanQuote {
     anime: String,
     character: String,
