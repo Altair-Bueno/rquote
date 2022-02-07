@@ -80,8 +80,12 @@ impl<'a, T> Component for NavBarComponent<T>
                 }
             })
             .collect::<Html>();
+        let (context, _) = ctx
+            .link()
+            .context::<crate::context::Context>(Default::default())
+            .expect("Expected context");
         html! {
-            <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+            <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",context.theme().get_navbar_class())}>
                 <div class="container-fluid">
                     <Link<T> classes ={classes!("navbar-brand", "h1", "mb-0")} to={ctx.props().home.clone()}>
                         { &ctx.props().title }
