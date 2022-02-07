@@ -14,7 +14,7 @@ mod route;
 
 #[function_component(Main)]
 fn app() -> Html {
-    let context = RQuoteContext::new(Theme::Dark);
+    let context = RQuoteContext::new(Theme::Light);
     let page_background_class = context.theme().get_background_class();
     html! {
         // TODO div does not fill the whole website, just it's elements
