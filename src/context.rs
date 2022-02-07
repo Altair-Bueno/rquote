@@ -31,6 +31,12 @@ impl Theme {
             Theme::Light => "text-dark",
         }
     }
+    pub fn get_link_class(&self) -> &'static str {
+        match self {
+            Theme::Dark => "link-light",
+            Theme::Light => "link-dark"
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default)]

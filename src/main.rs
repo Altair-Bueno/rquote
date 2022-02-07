@@ -15,12 +15,16 @@ mod route;
 #[function_component(Main)]
 fn app() -> Html {
     let context = RQuoteContext::new(Theme::Dark);
+    let page_background_class = context.theme().get_background_class();
     html! {
-        <ContextProvider<RQuoteContext> context={context}>
-            <BrowserRouter>
-                <Switch<Route> render={Switch::render(switch)} />
-            </BrowserRouter>
-        </ContextProvider<RQuoteContext>>
+        // TODO div does not fill the whole website, just it's elements
+        <div class={classes!(page_background_class, "vw-100","vh-auto", "bg-gradient" , "position-absolute")}>
+            <ContextProvider<RQuoteContext> context={context}>
+                <BrowserRouter>
+                    <Switch<Route> render={Switch::render(switch)} />
+                </BrowserRouter>
+            </ContextProvider<RQuoteContext>>
+        </div>
     }
 }
 

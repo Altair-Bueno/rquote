@@ -19,6 +19,8 @@ pub fn quote(props: &QuoteProp) -> Html {
     let quote = animechan_quote.get_quote();
     let anime = animechan_quote.get_anime();
     let character = animechan_quote.get_character();
+    let context = use_context::<crate::context::Context>()
+        .expect("Expected context");
 
     let header = if props.header {
         let anime_route = Route::Anime {
@@ -26,7 +28,9 @@ pub fn quote(props: &QuoteProp) -> Html {
         };
         html! {
             <div class={classes!("card-header")}>
-                <Link<Route> to={anime_route}>{ anime }</Link<Route>>
+                <Link<Route> to={anime_route} classes= {classes!(context.theme().get_link_class())}>
+                    { anime }
+                </Link<Route>>
             </div>
         }
     } else {
@@ -39,15 +43,14 @@ pub fn quote(props: &QuoteProp) -> Html {
         };
         html! {
             <footer class={classes!("blockquote-footer")}>
-                <Link<Route> to={character_route}>{ character }</Link<Route>>
+                <Link<Route> to={character_route} classes = {classes!(context.theme().get_link_class())}>
+                    { character }
+                </Link<Route>>
             </footer>
         }
     } else {
         Html::default()
     };
-
-    let context = use_context::<crate::context::Context>()
-        .expect("Expected context");
     html! {
         <div class={classes!("card", "rounded-3", "shadow-sm", "m-1",context.theme().get_background_class())}>
             {header}
