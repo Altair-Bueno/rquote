@@ -20,7 +20,7 @@ pub fn quote(props: &QuoteProp) -> Html {
     let anime = animechan_quote.get_anime();
     let character = animechan_quote.get_character();
     let context = use_context::<crate::context::Context>()
-        .expect("Expected context");
+        .unwrap_or_default();
 
     let header = if props.header {
         let anime_route = Route::Anime {

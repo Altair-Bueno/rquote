@@ -7,7 +7,7 @@ use crate::component::quote::*;
 #[function_component(Home)]
 pub fn home() -> Html {
     let client = use_context::<crate::context::Context>()
-        .expect("no ctx found")
+        .unwrap_or_default()
         .client()
         .clone();
     let quotes = use_state(|| Ok(vec![]));

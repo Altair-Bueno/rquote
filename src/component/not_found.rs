@@ -37,8 +37,9 @@ impl<T> Component for NotFoundComponent<T>
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let (context, _) = ctx.link().context::<crate::context::Context>(Default::default())
-            .expect("Expected context");
+        let context = ctx.link().context::<crate::context::Context>(Default::default())
+            .map(|x| x.0)
+            .unwrap_or_default();
         let props = ctx.props();
 
         let head = "Page Not Found";

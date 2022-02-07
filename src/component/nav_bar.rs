@@ -80,10 +80,11 @@ impl<'a, T> Component for NavBarComponent<T>
                 }
             })
             .collect::<Html>();
-        let (context, _) = ctx
+        let context = ctx
             .link()
             .context::<crate::context::Context>(Default::default())
-            .expect("Expected context");
+            .map(|x| x.0)
+            .unwrap_or_default();
         html! {
             <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",context.theme().get_navbar_class(),context.theme().get_background_class())}>
                 <div class={classes!("container-fluid")}>
