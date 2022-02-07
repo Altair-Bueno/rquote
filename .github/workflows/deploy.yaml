@@ -11,6 +11,15 @@ jobs:
       TARGET: wasm-unknown
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ env.working-directory }}/target/
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Set up toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -24,15 +33,6 @@ jobs:
         run: |
           rm -fr docs/
           mv dist docs
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ${{ env.working-directory }}/target/
-          key: cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Push back changes
         continue-on-error: true
         run: |
