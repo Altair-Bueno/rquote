@@ -37,44 +37,32 @@ pub enum Route {
 }
 
 pub fn switch(route: &Route) -> Html {
-    let links = [
-        html! {
-            <Link<Route> classes ={classes!("nav-link")} to={Route::AnimeList}>
-                { "Anime" }
-            </Link<Route>>
-        },
-        html! {
-            <Link<Route> classes ={classes!("nav-link")} to={Route::About}>
-                { "About" }
-            </Link<Route>>
-        },
-    ]
-        .into_iter()
-        .collect::<Html>();
-    let navbar_title = "Rquote";
-
+    let links = vec![
+        NavBarLink::new("Anime list".to_string(), Route::AnimeList),
+        NavBarLink::new("About".to_string(), Route::About),
+    ];
+    let navbar_props = NavBarProp {
+        home: Route::Home,
+        title: "Rquote".to_string(),
+        link: links,
+        active: None,
+    };
     match route {
         Route::Home => html! {
             <>
-                <NavBarComponent title = {navbar_title}>
-                    {links}
-                </NavBarComponent>
+                <NavBarComponent<Route> ..navbar_props/>
                 <Home/>
             </>
         },
         Route::AnimeList => html! {
             <>
-                <NavBarComponent title = {navbar_title}>
-                    {links}
-                </NavBarComponent>
+                <NavBarComponent<Route> active = {Some(0)} ..navbar_props/>
                 <AnimeList/>
             </>
         },
         Route::NotFound => html! {
             <>
-                <NavBarComponent title = {navbar_title}>
-                    {links}
-                </NavBarComponent>
+                <NavBarComponent<Route> ..navbar_props/>
                 <NotFound/>
             </>
         },
@@ -82,9 +70,7 @@ pub fn switch(route: &Route) -> Html {
             let title = urlencoding::decode(title).unwrap().into_owned();
             html! {
                 <>
-                    <NavBarComponent title = {navbar_title} page = {title.clone()}>
-                        {links}
-                    </NavBarComponent>
+                    <NavBarComponent<Route>  ..navbar_props/>
                     <Anime title={title.clone()}/>
                 </>
             }
@@ -93,18 +79,14 @@ pub fn switch(route: &Route) -> Html {
             let character = urlencoding::decode(character).unwrap().into_owned();
             html! {
                 <>
-                    <NavBarComponent title = {navbar_title} page = {character.clone()}>
-                        {links}
-                    </NavBarComponent>
+                    <NavBarComponent<Route> ..navbar_props/>
                     <Character character={character.clone()}/>
                 </>
             }
         }
         Route::About => html! {
             <>
-                <NavBarComponent title = {navbar_title} page = {"About"}>
-                    {links}
-                </NavBarComponent>
+                <NavBarComponent<Route> active = {Some(1)} ..navbar_props/>
                 <About/>
             </>
         }
