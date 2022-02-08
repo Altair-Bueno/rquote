@@ -17,13 +17,13 @@ impl Theme {
     pub fn get_navbar_class(&self) -> &'static str {
         match self {
             Theme::Dark => "navbar-dark",
-            Theme::Light => "navbar-light"
+            Theme::Light => "navbar-light",
         }
     }
     pub fn get_background_class(&self) -> &'static str {
         match self {
             Theme::Light => "bg-light",
-            Theme::Dark => "bg-dark"
+            Theme::Dark => "bg-dark",
         }
     }
     pub fn get_text_class(&self) -> &'static str {
@@ -35,7 +35,7 @@ impl Theme {
     pub fn get_link_class(&self) -> &'static str {
         match self {
             Theme::Dark => "link-light",
-            Theme::Light => "link-dark"
+            Theme::Light => "link-dark",
         }
     }
 }
