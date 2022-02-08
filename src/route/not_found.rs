@@ -1,11 +1,11 @@
 use yew::prelude::*;
 
 use crate::component::not_found::*;
-use crate::Route;
+use crate::route::Route;
 
 #[function_component(NotFound)]
 pub fn not_found() -> Html {
     html! {
-        <NotFoundComponent<Route> home={Some(Route::Home)}/>
+        <NotFoundComponent<Route> to={Route::Home}/>
     }
 }
