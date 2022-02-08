@@ -1,7 +1,6 @@
 use yew::prelude::*;
 
 use crate::AnimechanQuote;
-use crate::component::nav_bar::*;
 use crate::component::quote::*;
 use crate::wrapper::ClientContext;
 

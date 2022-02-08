@@ -2,7 +2,6 @@ use std::marker::PhantomData;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
-use yew_router::router::Router;
 
 #[derive(PartialEq, Clone)]
 pub struct NavBarLink<T>

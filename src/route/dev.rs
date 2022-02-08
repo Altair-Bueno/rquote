@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::AnimechanQuote;
+use crate::animechan::AnimechanQuote;
 use crate::component::loading::*;
 use crate::component::quote::*;
 
@@ -8,6 +8,7 @@ use crate::component::quote::*;
 pub fn dev() -> Html {
     html! {
         <>
+        <QuoteComponent quote = {AnimechanQuote::get_example()}/>
         <br/>
         <LoadingComponent/>
         </>

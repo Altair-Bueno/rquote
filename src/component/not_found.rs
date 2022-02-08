@@ -3,8 +3,6 @@ use std::marker::PhantomData;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::Route;
-
 #[derive(Properties, PartialEq, Clone)]
 pub struct NotFoundProp<T>
     where

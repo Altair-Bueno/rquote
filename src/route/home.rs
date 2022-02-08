@@ -1,4 +1,4 @@
-use reqwest::{Client, Error};
+use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
 
 use crate::AnimechanQuote;
@@ -9,7 +9,7 @@ use crate::component::quote::*;
 pub enum Message {
     Loading,
     Successful(Vec<AnimechanQuote>),
-    Failed(reqwest::Error),
+    Failed(ReqwestError),
 }
 
 impl Default for Message {
@@ -43,7 +43,7 @@ impl Home {
             })
             .collect()
     }
-    fn failed_view(error: &reqwest::Error) -> Html {
+    fn failed_view(_error: &ReqwestError) -> Html {
         html! {
             {"Something happened. Please refresh the page"}
         }
@@ -69,18 +69,12 @@ impl Component for Home {
             .emit(());
         Home::default()
     }
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         self.quotes = msg;
         true
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let client = ctx
-            .link()
-            .context::<crate::wrapper::ClientContext>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default()
-            .take();
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         match &self.quotes {
             Message::Loading => Home::loading_view(),
             Message::Successful(x) => Home::successful_view(x),

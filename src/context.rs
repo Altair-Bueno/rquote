@@ -1,8 +1,9 @@
-use reqwest::Client;
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum Theme {
     Light,
+
+    // FIXME
+    #[allow(dead_code)]
     Dark,
 }
 

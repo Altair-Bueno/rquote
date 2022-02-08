@@ -1,6 +1,5 @@
 use yew::prelude::*;
 
-use crate::component::nav_bar::*;
 use crate::component::not_found::*;
 use crate::Route;
 

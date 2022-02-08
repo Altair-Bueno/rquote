@@ -13,6 +13,8 @@ impl ClientContext {
     pub fn new(client: Client) -> Self {
         Self(client)
     }
+    // FIXME
+    #[allow(dead_code)]
     pub fn as_ref(&self) -> &Client {
         &self.0
     }
