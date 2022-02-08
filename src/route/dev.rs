@@ -1,24 +1,19 @@
+use std::error::Error;
+use std::rc::Rc;
+
 use yew::prelude::*;
 
-use crate::animechan::AnimechanQuote;
-use crate::component::loading::*;
-use crate::component::not_found::*;
-use crate::component::quote::*;
-use crate::route::Route;
+use crate::component::error::*;
 
 #[function_component(Dev)]
 pub fn dev() -> Html {
+    let error = "ddd".parse::<std::net::IpAddr>().unwrap_err();
+    let rc: Rc<dyn Error> = Rc::new(error);
     html! {
         <>
-        <QuoteComponent quote = {AnimechanQuote::get_example()}/>
-        <br/>
-        <LoadingComponent/>
-        </>
-    }
-    ;
-    html! {
-        <>
-        <NotFoundComponent<Route> to ={Route::Home} />
+        <ErrorComponent severity={Severity::Danger} error = {rc.clone()} />
+        <ErrorComponent severity={Severity::Minor} error = {rc.clone()} />
+        <ErrorComponent severity={Severity::Warning} error = {rc.clone()} />
         </>
     }
 }
