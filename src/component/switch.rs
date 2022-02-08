@@ -10,12 +10,12 @@ pub struct SwitchProps {
 
 #[function_component(SwitchComponent)]
 pub fn loading(props: &SwitchProps) -> Html {
-    let context = use_context::<crate::context::Context>()
+    let theme = use_context::<crate::context::Theme>()
         .unwrap_or_default();
     let onclick = props.onclick.clone();
     let text = if let Some(text) = &props.text {
         html! {
-            <label class={classes!("form-check-label",context.theme().get_text_class())} for="flexSwitchCheckDefault">
+            <label class={classes!("form-check-label",theme.get_text_class())} for="flexSwitchCheckDefault">
                 {text}
             </label>
         }

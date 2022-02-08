@@ -3,6 +3,7 @@ use yew::prelude::*;
 use crate::AnimechanQuote;
 use crate::component::nav_bar::*;
 use crate::component::quote::*;
+use crate::wrapper::ClientContext;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct CharacterProp {
@@ -11,9 +12,9 @@ pub struct CharacterProp {
 
 #[function_component(Character)]
 pub fn home(character_prop: &CharacterProp) -> Html {
-    let client = use_context::<crate::context::Context>()
+    let client = use_context::<ClientContext>()
+        .map(ClientContext::take)
         .unwrap_or_default()
-        .client()
         .clone();
     let quotes = use_state(|| Ok(vec![]));
     let character = character_prop.character.to_string();

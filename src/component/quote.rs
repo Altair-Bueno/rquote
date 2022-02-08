@@ -19,7 +19,7 @@ pub fn quote(props: &QuoteProp) -> Html {
     let quote = animechan_quote.get_quote();
     let anime = animechan_quote.get_anime();
     let character = animechan_quote.get_character();
-    let context = use_context::<crate::context::Context>()
+    let theme = use_context::<crate::context::Theme>()
         .unwrap_or_default();
 
     let header = if props.header {
@@ -28,7 +28,7 @@ pub fn quote(props: &QuoteProp) -> Html {
         };
         html! {
             <div class={classes!("card-header")}>
-                <Link<Route> to={anime_route} classes= {classes!(context.theme().get_link_class())}>
+                <Link<Route> to={anime_route} classes= {classes!(theme.get_link_class())}>
                     { anime }
                 </Link<Route>>
             </div>
@@ -43,7 +43,7 @@ pub fn quote(props: &QuoteProp) -> Html {
         };
         html! {
             <footer class={classes!("blockquote-footer")}>
-                <Link<Route> to={character_route} classes = {classes!(context.theme().get_link_class())}>
+                <Link<Route> to={character_route} classes = {classes!(theme.get_link_class())}>
                     { character }
                 </Link<Route>>
             </footer>
@@ -52,11 +52,11 @@ pub fn quote(props: &QuoteProp) -> Html {
         Html::default()
     };
     html! {
-        <div class={classes!("card", "rounded-3", "shadow-sm", "m-1",context.theme().get_background_class())}>
+        <div class={classes!("card", "rounded-3", "shadow-sm", "m-1",theme.get_background_class())}>
             {header}
             <div class={classes!("card-body")}>
                 <blockquote class={classes!("blockquote", "mb-0")}>
-                    <p class={classes!("card-text",context.theme().get_text_class())}>{quote}</p>
+                    <p class={classes!("card-text",theme.get_text_class())}>{quote}</p>
                     {footer}
                 </blockquote>
             </div>

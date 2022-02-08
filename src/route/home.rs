@@ -57,11 +57,10 @@ impl Component for Home {
     fn create(ctx: &Context<Self>) -> Self {
         let client = ctx
             .link()
-            .context::<crate::context::Context>(Default::default())
+            .context::<crate::wrapper::ClientContext>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default()
-            .client()
-            .clone();
+            .take();
         ctx
             .link()
             .callback_future_once(|_| async move {
@@ -78,11 +77,10 @@ impl Component for Home {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let client = ctx
             .link()
-            .context::<crate::context::Context>(Default::default())
+            .context::<crate::wrapper::ClientContext>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default()
-            .client()
-            .clone();
+            .take();
         match &self.quotes {
             Message::Loading => Home::loading_view(),
             Message::Successful(x) => Home::successful_view(x),

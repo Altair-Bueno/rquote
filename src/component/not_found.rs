@@ -37,7 +37,7 @@ impl<T> Component for NotFoundComponent<T>
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let context = ctx.link().context::<crate::context::Context>(Default::default())
+        let theme = ctx.link().context::<crate::context::Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         let props = ctx.props();
@@ -55,14 +55,14 @@ impl<T> Component for NotFoundComponent<T>
         };
         let help = if let Some(home) = &props.home {
             html! {
-                <Link<T> to = {home.clone()} classes={classes!(context.theme().get_link_class())}>
+                <Link<T> to = {home.clone()} classes={classes!(theme.get_link_class())}>
                     {format!("Return to home")}
                 </Link<T>>
             }
         } else {
             Html::default()
         };
-        let text_class = context.theme().get_text_class();
+        let text_class = theme.get_text_class();
         html! {
             <div class={classes!("justify-content-center"," align-items-center",text_class)}>
                 <h1>{head}</h1>

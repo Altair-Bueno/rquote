@@ -80,13 +80,13 @@ impl<'a, T> Component for NavBarComponent<T>
                 }
             })
             .collect::<Html>();
-        let context = ctx
+        let theme = ctx
             .link()
-            .context::<crate::context::Context>(Default::default())
+            .context::<crate::context::Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         html! {
-            <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",context.theme().get_navbar_class(),context.theme().get_background_class())}>
+            <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",theme.get_navbar_class(),theme.get_background_class())}>
                 <div class={classes!("container-fluid")}>
                     <Link<T> classes ={classes!("navbar-brand", "h1", "mb-0")} to={ctx.props().home.clone()}>
                         { &ctx.props().title }
