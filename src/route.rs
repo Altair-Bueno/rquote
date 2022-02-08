@@ -11,6 +11,7 @@ use dev::*;
 use home::*;
 use not_found::*;
 
+use crate::component::footer::*;
 use crate::component::nav_bar::*;
 
 mod anime;
@@ -54,7 +55,7 @@ pub fn switch(route: &Route) -> Html {
         link: links,
         active: None,
     };
-    match route {
+    let page = match route {
         Route::Home => html! {
             <>
                 <NavBarComponent<Route> ..navbar_props/>
@@ -104,5 +105,11 @@ pub fn switch(route: &Route) -> Html {
                 <Dev/>
             </>
         }
+    };
+    html! {
+        <>
+            {page}
+            <FooterComponent/>
+        </>
     }
 }

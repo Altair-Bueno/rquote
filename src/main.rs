@@ -3,7 +3,6 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::component::footer::*;
 use crate::context::Theme;
 use crate::route::*;
 use crate::wrapper::ClientContext;
@@ -30,7 +29,6 @@ fn app() -> Html {
                     </BrowserRouter>
                 </ContextProvider<Theme>>
             </ContextProvider<ClientContext>>
-            <FooterComponent/>
         </div>
     }
 }
