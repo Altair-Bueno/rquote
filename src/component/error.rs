@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::fmt::Formatter;
 use std::rc::Rc;
 
 use yew::prelude::*;
@@ -48,10 +48,21 @@ impl Severity {
     }
 }
 
+impl std::fmt::Display for Severity {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let w = match self {
+            Severity::Danger => "Danger",
+            Severity::Warning => "Warning",
+            Severity::Minor => "Info",
+        };
+        write!(f, "{w}")
+    }
+}
+
 #[derive(Properties, Clone)]
 pub struct ErrorProp {
-    #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<MouseEvent>,
+    #[prop_or_default]
+    pub children: Children,
     #[prop_or_default]
     pub severity: Severity,
     pub error: Rc<dyn std::error::Error>,
@@ -59,7 +70,7 @@ pub struct ErrorProp {
 
 impl PartialEq for ErrorProp {
     fn eq(&self, other: &Self) -> bool {
-        self.onclick == other.onclick &&
+        self.children == other.children &&
             self.severity == other.severity &&
             std::ptr::eq(self.error.as_ref(), other.error.as_ref())
     }
@@ -67,12 +78,16 @@ impl PartialEq for ErrorProp {
 
 #[function_component(ErrorComponent)]
 pub fn error(props: &ErrorProp) -> Html {
-    let (bg, txt) = props.severity.get_classes();
-    let icon = props.severity.get_icon();
+    let severity = &props.severity;
+    let (bg, txt) = severity.get_classes();
+    let icon = severity.get_icon();
+    let err = props.error.as_ref();
     html! {
-        <div class={classes!(bg,txt,"alert","alert-primary","d-flex","align-items-center")}>
+        <div class={classes!(bg,txt,"alert","alert-primary","d-flex","align-items-center","m-3")}>
             {icon}
-            <div>{props.error.as_ref().to_string()}</div>
+            <strong class={classes!("p-1")}>{format!("{severity}:")}</strong>
+            <div class={classes!("p-1")}>{err.to_string()}</div>
+            {for props.children.iter()}
         </div>
     }
 }
