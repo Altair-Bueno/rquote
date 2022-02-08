@@ -1,7 +1,11 @@
+use std::error::Error;
+use std::rc::Rc;
+
 use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
 
 use crate::AnimechanQuote;
+use crate::component::error::*;
 use crate::component::loading::*;
 use crate::component::quote::*;
 
@@ -9,7 +13,7 @@ use crate::component::quote::*;
 pub enum Message {
     Loading,
     Successful(Vec<AnimechanQuote>),
-    Failed(ReqwestError),
+    Failed(Rc<ReqwestError>),
 }
 
 impl Default for Message {
@@ -28,7 +32,7 @@ impl Home {
         let response = AnimechanQuote::get_10_random_quotes(&client).await;
         return match response {
             Ok(x) => Message::Successful(x),
-            Err(x) => Message::Failed(x)
+            Err(x) => Message::Failed(Rc::new(x)),
         };
     }
 
@@ -43,9 +47,17 @@ impl Home {
             })
             .collect()
     }
-    fn failed_view(_error: &ReqwestError) -> Html {
+    fn failed_view(error: Rc<dyn Error>, _ctx: &Context<Self>) -> Html {
+        let onclick = |_| todo!();
+        let _ = html! {
+            <button {onclick} class={classes!("btn","btn-light","text-dark")}>
+                {"Reload"}
+            </button>
+        };
         html! {
-            {"Something happened. Please refresh the page"}
+            <ErrorComponent severity={Severity::Danger} {error}>
+                //{reload_button}
+            </ErrorComponent>
         }
     }
 }
@@ -70,15 +82,19 @@ impl Component for Home {
         Home::default()
     }
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        self.quotes = msg;
-        true
+        return match msg {
+            x => {
+                self.quotes = x;
+                true
+            }
+        };
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         match &self.quotes {
             Message::Loading => Home::loading_view(),
             Message::Successful(x) => Home::successful_view(x),
-            Message::Failed(x) => Home::failed_view(x),
+            Message::Failed(x) => Home::failed_view(x.clone(), ctx),
         }
     }
 }
