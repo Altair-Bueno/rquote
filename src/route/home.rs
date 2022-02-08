@@ -1,45 +1,35 @@
 use std::error::Error;
 use std::rc::Rc;
 
-use reqwest::{Client, Error as ReqwestError};
+use async_trait::async_trait;
+use reqwest::Client;
 use yew::prelude::*;
 
-use crate::AnimechanQuote;
+use crate::animechan::AnimechanQuote;
+use crate::component::async_list::*;
+use crate::component::async_list::ViewAsyncListComponent;
 use crate::component::error::*;
 use crate::component::loading::*;
 use crate::component::quote::*;
 
-#[derive(Debug)]
-pub enum Message {
-    Loading,
-    Successful(Vec<AnimechanQuote>),
-    Failed(Rc<ReqwestError>),
-}
+#[derive(Debug, PartialEq, Clone)]
+pub struct Home;
 
-impl Default for Message {
-    fn default() -> Self {
-        Message::Loading
-    }
-}
-
-#[derive(Debug, Default)]
-pub struct Home {
-    quotes: Message,
-}
-
-impl Home {
-    async fn fetch_data(client: &Client) -> Message {
+#[async_trait]
+impl ViewAsyncListComponent<AnimechanQuote> for Home {
+    async fn fetch_data(&self, client: Client) -> Message<AnimechanQuote> {
         let response = AnimechanQuote::get_10_random_quotes(&client).await;
-        return match response {
+        match response {
             Ok(x) => Message::Successful(x),
-            Err(x) => Message::Failed(Rc::new(x)),
-        };
+            Err(err) => Message::Failed(Rc::new(err)),
+        }
     }
 
-    fn loading_view() -> Html {
-        html! {<LoadingComponent/>}
-    }
-    fn successful_view(quotes: &[AnimechanQuote]) -> Html {
+    fn successful_view(
+        &self,
+        ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>,
+        quotes: &[AnimechanQuote],
+    ) -> Html {
         quotes
             .iter()
             .map(|x| html! {
@@ -47,7 +37,7 @@ impl Home {
             })
             .collect()
     }
-    fn failed_view(error: Rc<dyn Error>, _ctx: &Context<Self>) -> Html {
+    fn failed_view(&self, ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, error: Rc<dyn Error>) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
             <button {onclick} class={classes!("btn","btn-light","text-dark")}>
@@ -60,41 +50,22 @@ impl Home {
             </ErrorComponent>
         }
     }
+    fn loading_view(&self, ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>) -> Html {
+        html! {<LoadingComponent/>}
+    }
 }
 
 impl Component for Home {
-    type Message = Message;
+    type Message = ();
     type Properties = ();
 
     fn create(ctx: &Context<Self>) -> Self {
-        let client = ctx
-            .link()
-            .context::<crate::wrapper::ClientContext>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default()
-            .take();
-        ctx
-            .link()
-            .callback_future_once(|_| async move {
-                Home::fetch_data(&client).await
-            })
-            .emit(());
-        Home::default()
-    }
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        return match msg {
-            x => {
-                self.quotes = x;
-                true
-            }
-        };
+        Home
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        match &self.quotes {
-            Message::Loading => Home::loading_view(),
-            Message::Successful(x) => Home::successful_view(x),
-            Message::Failed(x) => Home::failed_view(x.clone(), ctx),
+        html! {
+            <AsyncListComponent<AnimechanQuote,Self> provider={self.clone()}/>
         }
     }
 }
