@@ -106,10 +106,5 @@ pub fn switch(route: &Route) -> Html {
             </>
         }
     };
-    html! {
-        <>
-            {page}
-            <FooterComponent/>
-        </>
-    }
+    page
 }
