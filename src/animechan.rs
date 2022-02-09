@@ -105,41 +105,40 @@ mod test {
 
     use crate::animechan::AnimechanQuote;
 
-// uncomment for browser testing
-    // wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
     pub async fn random_quote() {
         let client = Client::new();
         let response = AnimechanQuote::get_random_quote(&client).await;
-        matches!(response,Ok(_));
+        assert!(matches!(response,Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn random_10_quotes() {
         let client = Client::new();
         let response = AnimechanQuote::get_10_random_quotes(&client).await;
-        matches!(response,Ok(_));
+        assert!(matches!(response,Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn anime_list() {
         let client = Client::new();
         let response = AnimechanQuote::get_anime_list(&client).await;
-        matches!(response,Ok(_));
+        assert!(matches!(response,Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn quote_title() {
         let client = Client::new();
         let response = AnimechanQuote::get_quote_title(&client, "Hyouka", None).await;
-        matches!(response,Ok(_));
+        assert!(matches!(response,Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn quote_character() {
         let client = Client::new();
         let response = AnimechanQuote::get_quote_character(&client, "Saitama", None).await;
-        matches!(response,Ok(_));
+        assert!(matches!(response,Ok(_)))
     }
 }
