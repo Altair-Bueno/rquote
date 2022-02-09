@@ -19,7 +19,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ${{ env.working-directory }}/target/
-          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: cargo-cache
       - name: Set up toolchain
         uses: actions-rs/toolchain@v1
         with:
