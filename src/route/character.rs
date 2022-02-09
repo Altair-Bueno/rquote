@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -8,8 +7,6 @@ use yew::prelude::*;
 use crate::animechan::AnimechanQuote;
 use crate::component::async_list::*;
 use crate::component::async_list::ViewAsyncListComponent;
-use crate::component::error::*;
-use crate::component::loading::*;
 use crate::component::quote::*;
 
 #[derive(Properties, PartialEq, Clone)]
@@ -32,34 +29,10 @@ impl ViewAsyncListComponent<AnimechanQuote> for Character {
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-
-    fn successful_view(
-        &self,
-        _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>,
-        quotes: &[AnimechanQuote],
-    ) -> Html {
-        quotes
-            .iter()
-            .map(|x| html! {
-                <QuoteComponent quote = {x.clone()} footer = {false}/>
-            })
-            .collect()
-    }
-    fn failed_view(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, error: Rc<dyn Error>) -> Html {
-        let onclick = |_| todo!();
-        let _ = html! {
-            <button {onclick} class={classes!("btn","btn-light","text-dark")}>
-                {"Reload"}
-            </button>
-        };
+    fn format_element(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, element: &AnimechanQuote) -> Html {
         html! {
-            <ErrorComponent severity={Severity::Danger} {error}>
-                //{reload_button}
-            </ErrorComponent>
+                <QuoteComponent quote = {element.clone()} footer = {false}/>
         }
-    }
-    fn loading_view(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>) -> Html {
-        html! {<LoadingComponent/>}
     }
 }
 

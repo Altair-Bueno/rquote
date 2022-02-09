@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -9,8 +8,6 @@ use yew_router::prelude::*;
 use crate::animechan::AnimechanQuote;
 use crate::component::async_list::*;
 use crate::component::async_list::ViewAsyncListComponent;
-use crate::component::error::*;
-use crate::component::loading::*;
 use crate::route::Route;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -30,38 +27,23 @@ impl ViewAsyncListComponent<String> for AnimeList {
         let elements = quotes
             .iter()
             .map(|x| {
-                let route = Route::Anime { title: x.clone() };
-                html! {
-                <li class = {classes!("list-group-item",)}>
-                    <Link<Route> to={route} classes={classes!("link-dark")}>
-                        {x}
-                    </Link<Route>>
-                </li>
-            }
+                self.format_element(_ctx, x)
             });
         html! {
             <ul class = {classes!("list-group","m-3")}>
-                {for elements}
+                <h5>{for elements}</h5>
             </ul>
         }
     }
-
-    fn failed_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>, error: Rc<dyn Error>) -> Html {
-        let onclick = |_| todo!();
-        let _ = html! {
-            <button {onclick} class={classes!("btn","btn-light","text-dark")}>
-                {"Reload"}
-            </button>
-        };
+    fn format_element(&self, _ctx: &Context<AsyncListComponent<String, Self>>, element: &String) -> Html {
+        let route = Route::Anime { title: element.clone() };
         html! {
-            <ErrorComponent severity={Severity::Danger} {error}>
-                //{reload_button}
-            </ErrorComponent>
+            <li class = {classes!("list-group-item",)}>
+                <Link<Route> to={route} classes={classes!("link-dark")}>
+                    {element.clone()}
+                </Link<Route>>
+            </li>
         }
-    }
-
-    fn loading_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>) -> Html {
-        html! {<LoadingComponent/>}
     }
 }
 

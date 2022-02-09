@@ -7,20 +7,43 @@ use async_trait::async_trait;
 use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
 
+use crate::component::error::*;
+use crate::component::loading::*;
+
 #[async_trait(? Send)]
 pub trait ViewAsyncListComponent<ELEMENT>
-where
-    ELEMENT: Debug + PartialEq,
-    Self: PartialEq + Clone,
+    where
+        ELEMENT: Debug + PartialEq,
+        Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
+    fn format_element(&self, ctx: &Context<AsyncListComponent<ELEMENT, Self>>, element: &ELEMENT) -> Html;
     fn successful_view(
         &self,
-        ctx: &Context<AsyncListComponent<ELEMENT, Self>>,
-        quotes: &[ELEMENT],
-    ) -> Html;
-    fn failed_view(&self, ctx: &Context<AsyncListComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html;
-    fn loading_view(&self, ctx: &Context<AsyncListComponent<ELEMENT, Self>>) -> Html;
+        _ctx: &Context<AsyncListComponent<ELEMENT, Self>>,
+        element: &[ELEMENT],
+    ) -> Html {
+        element
+            .iter()
+            .map(|x| self.format_element(_ctx, x))
+            .collect()
+    }
+    fn failed_view(&self, _ctx: &Context<AsyncListComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html {
+        let onclick = |_| todo!();
+        let _ = html! {
+            <button {onclick} class={classes!("btn","btn-light","text-dark")}>
+                {"Reload"}
+            </button>
+        };
+        html! {
+            <ErrorComponent severity={Severity::Danger} {error}>
+                //{reload_button}
+            </ErrorComponent>
+        }
+    }
+    fn loading_view(&self, _ctx: &Context<AsyncListComponent<ELEMENT, Self>>) -> Html {
+        html! {<LoadingComponent/>}
+    }
 }
 
 #[derive(Debug)]
