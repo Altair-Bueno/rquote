@@ -64,7 +64,7 @@ pub fn switch(route: &Route) -> Html {
         },
         Route::AnimeList => html! {
             <>
-                <NavBarComponent<Route> active = {Some(0)} ..navbar_props/>
+                <NavBarComponent<Route> active = {0} ..navbar_props/>
                 <AnimeList/>
             </>
         },
@@ -94,7 +94,7 @@ pub fn switch(route: &Route) -> Html {
         }
         Route::About => html! {
             <>
-                <NavBarComponent<Route> active = {Some(1)} ..navbar_props/>
+                <NavBarComponent<Route> active = {1} ..navbar_props/>
                 <About/>
             </>
         },
