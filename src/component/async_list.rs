@@ -10,7 +10,7 @@ use yew::prelude::*;
 #[async_trait(? Send)]
 pub trait ViewAsyncListComponent<ELEMENT>
 where
-    ELEMENT: Debug + PartialEq + 'static,
+    ELEMENT: Debug + PartialEq,
     Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
@@ -26,7 +26,7 @@ where
 #[derive(Debug)]
 pub enum Message<ELEMENT>
     where
-        ELEMENT: Debug + PartialEq + 'static,
+        ELEMENT: Debug + PartialEq,
 {
     Loading,
     Successful(Vec<ELEMENT>),
@@ -35,7 +35,7 @@ pub enum Message<ELEMENT>
 
 impl<ELEMENT> Default for Message<ELEMENT>
     where
-        ELEMENT: Debug + PartialEq + 'static,
+        ELEMENT: Debug + PartialEq,
 {
     fn default() -> Self {
         Message::Loading
@@ -45,8 +45,8 @@ impl<ELEMENT> Default for Message<ELEMENT>
 #[derive(Properties, PartialEq, Clone)]
 pub struct AsyncListProp<ELEMENT, PROVIDER>
     where
-        ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsyncListComponent<ELEMENT> + 'static,
+        ELEMENT: Debug + PartialEq,
+        PROVIDER: PartialEq + Clone + ViewAsyncListComponent<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]

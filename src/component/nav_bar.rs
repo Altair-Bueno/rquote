@@ -6,7 +6,7 @@ use yew_router::prelude::*;
 #[derive(PartialEq, Clone)]
 pub struct NavBarLink<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq
 {
     name: String,
     link: T,
@@ -14,7 +14,7 @@ pub struct NavBarLink<T>
 
 impl<T> NavBarLink<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq
 {
     pub fn new(name: String, link: T) -> NavBarLink<T> {
         NavBarLink {
@@ -27,7 +27,7 @@ impl<T> NavBarLink<T>
 #[derive(Properties, PartialEq, Clone)]
 pub struct NavBarProp<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq
 {
     pub home: T,
     pub title: String,
@@ -39,9 +39,9 @@ pub struct NavBarProp<T>
 
 pub struct NavBarComponent<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq
 {
-    phantom: PhantomData<&'static T>,
+    phantom: PhantomData<T>,
 }
 
 impl<'a, T> Component for NavBarComponent<T>
