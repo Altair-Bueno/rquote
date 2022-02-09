@@ -15,6 +15,8 @@ Rquote is a SPA using Rust and WebAssembly. It fetches Anime quotes from the
 ### Build website
 
 ```bash
+# Set the CPATH
+CPATH=/usr/include
 # To open a local development server
 trunk serve --open
 
@@ -27,4 +29,8 @@ trunk build --release
 - [Yew](https://yew.rs)
 - [Rust](https://www.rust-lang.org)
 - [Boostrap v5](https://www.rust-lang.org)
+
+## More info
+
+- [Source](https://github.com/Altair-Bueno/rquote)
 
