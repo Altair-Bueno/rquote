@@ -2,8 +2,6 @@ use reqwest::Client;
 use reqwest::Result;
 use serde::{Deserialize, Serialize};
 
-// TODO remove when code is no longer dead
-#[allow(dead_code)]
 const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/random";
 const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/quotes";
 const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/anime";
@@ -29,8 +27,6 @@ impl AnimechanQuote {
             .await
     }
 
-    // FIXME
-    #[allow(dead_code)]
     pub async fn get_10_random_quotes(client: &Client) -> Result<Vec<AnimechanQuote>> {
         client
             .get(ANIMECHAN_10_RANDOM_QUOTE)
@@ -40,8 +36,6 @@ impl AnimechanQuote {
             .await
     }
 
-    // FIXME
-    #[allow(dead_code)]
     pub async fn get_quote_title(
         client: &Client,
         title: &str,
@@ -59,9 +53,6 @@ impl AnimechanQuote {
             .json()
             .await
     }
-
-    // FIXME
-    #[allow(dead_code)]
     pub async fn get_quote_character(
         client: &Client,
         character: &str,
@@ -80,8 +71,6 @@ impl AnimechanQuote {
             .await
     }
 
-    // FIXME
-    #[allow(dead_code)]
     pub async fn get_anime_list(client: &Client) -> Result<Vec<String>> {
         client.get(ANIMECHAN_ANIME_LIST).send().await?.json().await
     }
