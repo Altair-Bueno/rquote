@@ -85,7 +85,7 @@ pub fn error(props: &ErrorProp) -> Html {
     html! {
         <div class={classes!(bg,txt,"alert","alert-primary","d-flex","align-items-center","m-3")}>
             {icon}
-            <strong class={classes!("p-1")}>{format!("{severity}:")}</strong>
+            //<strong class={classes!("p-1")}>{format!("{severity}:")}</strong>
             <div class={classes!("p-1")}>{err.to_string()}</div>
             {for props.children.iter()}
         </div>
