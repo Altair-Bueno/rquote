@@ -17,7 +17,9 @@ pub trait ViewAsync<ELEMENT>
         Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
-    fn successful_view(&self, ctx: &Context<AsyncComponent<ELEMENT, Self>>, element: Rc<ELEMENT>) -> Html;
+    fn successful_view(&self, ctx: &Context<AsyncComponent<ELEMENT, Self>>, element: Rc<ELEMENT>) -> Html {
+        Html::default()
+    }
     fn failed_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
