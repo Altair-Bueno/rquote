@@ -23,7 +23,7 @@ impl ViewAsync<Vec<String>> for AnimeList {
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn successful_view(&self, ctx: &Context<AsyncComponent<Vec<String>, Self>>, element: Rc<Vec<String>>) -> Html {
+    fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<String>, Self>>, element: Rc<Vec<String>>) -> Html {
         let formatted = element
             .iter()
             .map(|x| {

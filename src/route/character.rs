@@ -29,7 +29,7 @@ impl ViewAsync<Vec<AnimechanQuote>> for Character {
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn successful_view(&self, ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
+    fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
         element
             .iter()
             .map(|x| html! {
