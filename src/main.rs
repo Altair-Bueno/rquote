@@ -45,6 +45,16 @@ impl Main {
             Theme::Light
         }
     }
+    fn change_body_theme(theme: &Theme) {
+        if let Some(window) = web_sys::window() {
+            if let Some(document) = window.document() {
+                if let Some(body) = document.body() {
+                    body.remove_attribute("class");
+                    body.class_list().add_2(theme.get_background_class(), "bg-opacity-75");
+                }
+            }
+        }
+    }
 }
 
 impl Component for Main {
@@ -53,8 +63,10 @@ impl Component for Main {
 
     fn create(_ctx: &Context<Self>) -> Self {
         // TODO watch for theme changes
+        let theme = Main::get_current_theme();
+        Main::change_body_theme(&theme);
         Main {
-            theme: Main::get_current_theme(),
+            theme,
             client: Client::new(),
         }
     }
@@ -72,10 +84,8 @@ impl Component for Main {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         let client = ClientContext::new(self.client.clone());
         let theme = self.theme.clone();
-        let _page_background_class = theme.get_background_class();
+        Main::change_body_theme(&theme);
         html! {
-        // TODO div does not fill the whole website, just it's elements
-        //<div class={classes!(page_background_class, "bg-gradient","flex-fill")}>
             <ContextProvider<ClientContext> context={client}>
                 <ContextProvider<Theme> context={theme}>
                     <BrowserRouter>
@@ -83,8 +93,7 @@ impl Component for Main {
                     </BrowserRouter>
                 </ContextProvider<Theme>>
             </ContextProvider<ClientContext>>
-        //</div>
-    }
+        }
     }
 }
 

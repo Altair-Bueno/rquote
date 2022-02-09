@@ -16,7 +16,11 @@ async-trait = "0.1.52"
 version = "0.3.56"
 features = [
     "Window",
-    "MediaQueryList"
+    "MediaQueryList",
+    "Document",
+    "HtmlElement",
+    "DomTokenList",
+    "Element"
 ]
 
 [dependencies.reqwest]
