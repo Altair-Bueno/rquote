@@ -7,7 +7,7 @@ use async_trait::async_trait;
 use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
 
-#[async_trait]
+#[async_trait(? Send)]
 pub trait ViewAsyncListComponent<ELEMENT>
 where
     ELEMENT: Debug + PartialEq + 'static,

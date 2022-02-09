@@ -15,7 +15,7 @@ use crate::component::quote::*;
 #[derive(Debug, PartialEq, Clone)]
 pub struct Home;
 
-#[async_trait]
+#[async_trait(? Send)]
 impl ViewAsyncListComponent<AnimechanQuote> for Home {
     async fn fetch_data(&self, client: Client) -> Message<AnimechanQuote> {
         let response = AnimechanQuote::get_10_random_quotes(&client).await;
@@ -59,7 +59,7 @@ impl Component for Home {
     type Message = ();
     type Properties = ();
 
-    fn create(ctx: &Context<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Home
     }
 
