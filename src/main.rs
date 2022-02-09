@@ -49,8 +49,8 @@ impl Main {
         if let Some(window) = web_sys::window() {
             if let Some(document) = window.document() {
                 if let Some(body) = document.body() {
-                    body.remove_attribute("class");
-                    body.class_list().add_2(theme.get_background_class(), "bg-opacity-75");
+                    let _ = body.remove_attribute("class");
+                    let _ = body.class_list().add_2(theme.get_background_class(), "bg-opacity-75");
                 }
             }
         }
