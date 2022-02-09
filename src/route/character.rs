@@ -35,7 +35,7 @@ impl ViewAsyncListComponent<AnimechanQuote> for Character {
 
     fn successful_view(
         &self,
-        ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>,
+        _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>,
         quotes: &[AnimechanQuote],
     ) -> Html {
         quotes
@@ -45,7 +45,7 @@ impl ViewAsyncListComponent<AnimechanQuote> for Character {
             })
             .collect()
     }
-    fn failed_view(&self, ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, error: Rc<dyn Error>) -> Html {
+    fn failed_view(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, error: Rc<dyn Error>) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
             <button {onclick} class={classes!("btn","btn-light","text-dark")}>
@@ -58,7 +58,7 @@ impl ViewAsyncListComponent<AnimechanQuote> for Character {
             </ErrorComponent>
         }
     }
-    fn loading_view(&self, ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>) -> Html {
+    fn loading_view(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>) -> Html {
         html! {<LoadingComponent/>}
     }
 }

@@ -1,5 +1,4 @@
 use reqwest::Client;
-use web_sys::{MediaQueryList, window, Window};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -16,7 +15,11 @@ mod route;
 mod wrapper;
 
 enum Message {
+    // FIXME
+    #[allow(unused)]
     ThemeChanged(Theme),
+    // FIXME
+    #[allow(unused)]
     Nop,
 }
 
@@ -56,7 +59,7 @@ impl Component for Main {
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Message::ThemeChanged(new_theme) => {
                 self.theme = new_theme;
@@ -66,10 +69,10 @@ impl Component for Main {
         }
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         let client = ClientContext::new(self.client.clone());
         let theme = self.theme.clone();
-        let page_background_class = theme.get_background_class();
+        let _page_background_class = theme.get_background_class();
         html! {
         // TODO div does not fill the whole website, just it's elements
         //<div class={classes!(page_background_class, "bg-gradient","flex-fill")}>

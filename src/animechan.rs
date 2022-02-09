@@ -95,16 +95,6 @@ impl AnimechanQuote {
     pub fn get_quote(&self) -> &str {
         self.quote.as_str()
     }
-    #[cfg(debug_assertions)]
-    pub fn get_example() -> AnimechanQuote {
-        AnimechanQuote {
-            quote:
-            "It's not a question of can or can't. There are some things in life you just do."
-                .to_string(),
-            character: "Éclair Farron".to_string(),
-            anime: "Final Fantasy XIII".to_string(),
-        }
-    }
 }
 
 

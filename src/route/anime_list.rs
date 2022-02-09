@@ -11,7 +11,6 @@ use crate::component::async_list::*;
 use crate::component::async_list::ViewAsyncListComponent;
 use crate::component::error::*;
 use crate::component::loading::*;
-use crate::component::quote::*;
 use crate::route::Route;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -27,7 +26,7 @@ impl ViewAsyncListComponent<String> for AnimeList {
         }
     }
 
-    fn successful_view(&self, ctx: &Context<AsyncListComponent<String, Self>>, quotes: &[String]) -> Html {
+    fn successful_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>, quotes: &[String]) -> Html {
         let elements = quotes
             .iter()
             .map(|x| {
@@ -47,7 +46,7 @@ impl ViewAsyncListComponent<String> for AnimeList {
         }
     }
 
-    fn failed_view(&self, ctx: &Context<AsyncListComponent<String, Self>>, error: Rc<dyn Error>) -> Html {
+    fn failed_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>, error: Rc<dyn Error>) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
             <button {onclick} class={classes!("btn","btn-light","text-dark")}>
@@ -61,7 +60,7 @@ impl ViewAsyncListComponent<String> for AnimeList {
         }
     }
 
-    fn loading_view(&self, ctx: &Context<AsyncListComponent<String, Self>>) -> Html {
+    fn loading_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>) -> Html {
         html! {<LoadingComponent/>}
     }
 }
@@ -74,7 +73,7 @@ impl Component for AnimeList {
         AnimeList
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <>
                 <AsyncListComponent<String,Self> provider={self.clone()}/>
