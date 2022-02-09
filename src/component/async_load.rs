@@ -11,24 +11,14 @@ use crate::component::error::*;
 use crate::component::loading::*;
 
 #[async_trait(? Send)]
-pub trait ViewAsyncListComponent<ELEMENT>
+pub trait ViewAsync<ELEMENT>
     where
         ELEMENT: Debug + PartialEq,
         Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
-    fn format_element(&self, ctx: &Context<AsyncListComponent<ELEMENT, Self>>, element: &ELEMENT) -> Html;
-    fn successful_view(
-        &self,
-        _ctx: &Context<AsyncListComponent<ELEMENT, Self>>,
-        element: &[ELEMENT],
-    ) -> Html {
-        element
-            .iter()
-            .map(|x| self.format_element(_ctx, x))
-            .collect()
-    }
-    fn failed_view(&self, _ctx: &Context<AsyncListComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html {
+    fn successful_view(&self, ctx: &Context<AsyncComponent<ELEMENT, Self>>, element: Rc<ELEMENT>) -> Html;
+    fn failed_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
             <button {onclick} class={classes!("btn","btn-light","text-dark")}>
@@ -41,7 +31,7 @@ pub trait ViewAsyncListComponent<ELEMENT>
             </ErrorComponent>
         }
     }
-    fn loading_view(&self, _ctx: &Context<AsyncListComponent<ELEMENT, Self>>) -> Html {
+    fn loading_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>) -> Html {
         html! {<LoadingComponent/>}
     }
 }
@@ -52,7 +42,7 @@ pub enum Message<ELEMENT>
         ELEMENT: Debug + PartialEq,
 {
     Loading,
-    Successful(Vec<ELEMENT>),
+    Successful(Rc<ELEMENT>),
     Failed(Rc<ReqwestError>),
 }
 
@@ -66,10 +56,10 @@ impl<ELEMENT> Default for Message<ELEMENT>
 }
 
 #[derive(Properties, PartialEq, Clone)]
-pub struct AsyncListProp<ELEMENT, PROVIDER>
+pub struct AsyncFetchProp<ELEMENT, PROVIDER>
     where
         ELEMENT: Debug + PartialEq,
-        PROVIDER: PartialEq + Clone + ViewAsyncListComponent<ELEMENT>,
+        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]
@@ -77,22 +67,22 @@ pub struct AsyncListProp<ELEMENT, PROVIDER>
 }
 
 #[derive(Debug)]
-pub struct AsyncListComponent<ELEMENT, PROVIDER>
+pub struct AsyncComponent<ELEMENT, PROVIDER>
     where
         ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsyncListComponent<ELEMENT> + 'static,
+        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
-    quotes: Message<ELEMENT>,
+    message: Message<ELEMENT>,
     phantom: PhantomData<PROVIDER>,
 }
 
-impl<ELEMENT, PROVIDER> Component for AsyncListComponent<ELEMENT, PROVIDER>
+impl<ELEMENT, PROVIDER> Component for AsyncComponent<ELEMENT, PROVIDER>
     where
         ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsyncListComponent<ELEMENT> + 'static,
+        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
     type Message = Message<ELEMENT>;
-    type Properties = AsyncListProp<ELEMENT, PROVIDER>;
+    type Properties = AsyncFetchProp<ELEMENT, PROVIDER>;
 
     fn create(ctx: &Context<Self>) -> Self {
         let client = ctx
@@ -107,15 +97,15 @@ impl<ELEMENT, PROVIDER> Component for AsyncListComponent<ELEMENT, PROVIDER>
                 provider.fetch_data(client).await
             })
             .emit(());
-        AsyncListComponent {
-            quotes: Message::default(),
+        AsyncComponent {
+            message: Message::default(),
             phantom: Default::default(),
         }
     }
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         return match msg {
             x => {
-                self.quotes = x;
+                self.message = x;
                 true
             }
         };
@@ -123,9 +113,9 @@ impl<ELEMENT, PROVIDER> Component for AsyncListComponent<ELEMENT, PROVIDER>
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let provider = &ctx.props().provider;
-        match &self.quotes {
+        match &self.message {
             Message::Loading => provider.loading_view(ctx),
-            Message::Successful(x) => provider.successful_view(ctx, x.as_slice()),
+            Message::Successful(x) => provider.successful_view(ctx, x.clone()),
             Message::Failed(x) => provider.failed_view(ctx, x.clone()),
         }
     }

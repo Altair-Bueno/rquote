@@ -5,8 +5,8 @@ use reqwest::Client;
 use yew::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::component::async_list::*;
-use crate::component::async_list::ViewAsyncListComponent;
+use crate::component::async_load::*;
+use crate::component::async_load::ViewAsync;
 use crate::component::quote::*;
 
 #[derive(Properties, PartialEq, Clone)]
@@ -21,18 +21,21 @@ pub struct Character {
 }
 
 #[async_trait(? Send)]
-impl ViewAsyncListComponent<AnimechanQuote> for Character {
-    async fn fetch_data(&self, client: Client) -> Message<AnimechanQuote> {
+impl ViewAsync<Vec<AnimechanQuote>> for Character {
+    async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
         let response = AnimechanQuote::get_quote_character(&client, &self.character, self.page).await;
         match response {
-            Ok(x) => Message::Successful(x),
+            Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn format_element(&self, _ctx: &Context<AsyncListComponent<AnimechanQuote, Self>>, element: &AnimechanQuote) -> Html {
-        html! {
-                <QuoteComponent quote = {element.clone()} footer = {false}/>
-        }
+    fn successful_view(&self, ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
+        element
+            .iter()
+            .map(|x| html! {
+                <QuoteComponent quote = {x.clone()} footer = {false}/>
+            })
+            .collect()
     }
 }
 
@@ -57,7 +60,7 @@ impl Component for Character {
                     {title}
                     <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
                 </h1>
-                <AsyncListComponent<AnimechanQuote,Self> provider={self.clone()}/>
+                <AsyncComponent<Vec<AnimechanQuote>,Self> provider={self.clone()}/>
             </>
         }
     }

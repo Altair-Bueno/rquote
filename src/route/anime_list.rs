@@ -6,43 +6,38 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::animechan::AnimechanQuote;
-use crate::component::async_list::*;
-use crate::component::async_list::ViewAsyncListComponent;
+use crate::component::async_load::*;
+use crate::component::async_load::ViewAsync;
+use crate::component::list::*;
 use crate::route::Route;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct AnimeList;
 
 #[async_trait(? Send)]
-impl ViewAsyncListComponent<String> for AnimeList {
-    async fn fetch_data(&self, client: Client) -> Message<String> {
+impl ViewAsync<Vec<String>> for AnimeList {
+    async fn fetch_data(&self, client: Client) -> Message<Vec<String>> {
         let response = AnimechanQuote::get_anime_list(&client).await;
         match response {
-            Ok(x) => Message::Successful(x),
+            Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-
-    fn successful_view(&self, _ctx: &Context<AsyncListComponent<String, Self>>, quotes: &[String]) -> Html {
-        let elements = quotes
+    fn successful_view(&self, ctx: &Context<AsyncComponent<Vec<String>, Self>>, element: Rc<Vec<String>>) -> Html {
+        let formatted = element
             .iter()
             .map(|x| {
-                self.format_element(_ctx, x)
+                let route = Route::Anime { title: x.clone() };
+                html! {
+                    <Link<Route> to={route} classes={classes!("link-dark")}>
+                        {x.clone()}
+                    </Link<Route>>
+            }
             });
         html! {
-            <ul class = {classes!("list-group","m-3")}>
-                <h5>{for elements}</h5>
-            </ul>
-        }
-    }
-    fn format_element(&self, _ctx: &Context<AsyncListComponent<String, Self>>, element: &String) -> Html {
-        let route = Route::Anime { title: element.clone() };
-        html! {
-            <li class = {classes!("list-group-item",)}>
-                <Link<Route> to={route} classes={classes!("link-dark")}>
-                    {element.clone()}
-                </Link<Route>>
-            </li>
+            <ListComponent>
+                {for formatted}
+            </ListComponent>
         }
     }
 }
@@ -57,9 +52,7 @@ impl Component for AnimeList {
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <>
-                <AsyncListComponent<String,Self> provider={self.clone()}/>
-            </>
+            <AsyncComponent<Vec<String>,Self> provider={self.clone()}/>
         }
     }
 }
