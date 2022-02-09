@@ -11,6 +11,7 @@ yew-router = "0.16.0"
 wasm-bindgen-futures = "0.4.29"
 urlencoding = "2.1.0"
 async-trait = "0.1.52"
+pulldown-cmark = "0.9.1"
 
 [dependencies.web-sys]
 version = "0.3.56"
@@ -20,7 +21,8 @@ features = [
     "Document",
     "HtmlElement",
     "DomTokenList",
-    "Element"
+    "Element",
+    "HtmlCollection"
 ]
 
 [dependencies.reqwest]
