@@ -75,7 +75,10 @@ impl Component for Anime {
         let title = self.title.as_str();
         html! {
             <>
-                <h1 class = {classes!("ms-5","my-3")}>{title}</h1>
+                <h1 class = {classes!("ms-3","my-3")}>
+                    {title}
+                    <small class = {classes!("text-muted","ms-3")}>{"Anime"}</small>
+                </h1>
                 <AsyncListComponent<AnimechanQuote,Self> provider={self.clone()}/>
             </>
         }
