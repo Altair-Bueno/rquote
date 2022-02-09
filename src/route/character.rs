@@ -72,10 +72,15 @@ impl Component for Character {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
+        let theme = ctx
+            .link()
+            .context::<crate::context::Theme>(Default::default())
+            .map(|x| x.0)
+            .unwrap_or_default();
         let title = self.character.as_str();
         html! {
             <>
-                <h1 class = {classes!("ms-3","my-3")}>
+                <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
                     {title}
                     <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
                 </h1>

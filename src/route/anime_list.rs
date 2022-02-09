@@ -28,18 +28,13 @@ impl ViewAsyncListComponent<String> for AnimeList {
     }
 
     fn successful_view(&self, ctx: &Context<AsyncListComponent<String, Self>>, quotes: &[String]) -> Html {
-        let theme = ctx
-            .link()
-            .context::<crate::context::Theme>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default();
         let elements = quotes
             .iter()
             .map(|x| {
                 let route = Route::Anime { title: x.clone() };
                 html! {
-                <li class = {classes!("list-group-item")}>
-                    <Link<Route> to={route} classes={classes!(theme.get_link_class())}>
+                <li class = {classes!("list-group-item",)}>
+                    <Link<Route> to={route} classes={classes!("link-dark")}>
                         {x}
                     </Link<Route>>
                 </li>
