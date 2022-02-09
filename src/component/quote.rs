@@ -24,7 +24,7 @@ pub fn quote(props: &QuoteProp) -> Html {
 
     let header = if props.header {
         let anime_route = Route::Anime {
-            title: props.header.to_string(),
+            title: props.quote.get_anime().to_string(),
         };
         html! {
             <div class={classes!("card-header")}>
