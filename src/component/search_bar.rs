@@ -29,7 +29,7 @@ pub fn search(props: &SearchBarProps) -> Html {
     html! {
         <form class="d-flex">
             <input
-                class={classes!("form-control","m-2")}
+                class={classes!("form-control","m-3")}
                 type="search"
                 aria-label="Search"
                 placeholder={placeholder}
