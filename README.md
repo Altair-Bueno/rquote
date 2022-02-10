@@ -22,6 +22,8 @@ trunk serve --open
 trunk build --release
 ```
 
+> Debug builds are faster to compile, but they are significantly slower.
+
 ## Technologies
 
 - [Yew](https://yew.rs)
