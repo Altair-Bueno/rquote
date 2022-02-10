@@ -8,3 +8,4 @@ pub mod not_found;
 pub mod quote;
 pub mod search_bar;
 pub mod switch;
+pub mod pager;
