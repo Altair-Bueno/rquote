@@ -7,3 +7,4 @@ pub mod footer;
 pub mod error;
 pub mod async_load;
 pub mod list;
+pub mod search_bar;
