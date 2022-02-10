@@ -26,6 +26,7 @@ jobs:
           toolchain: stable
           target: wasm32-unknown-unknown
       - name: Install Yew's toolkit
+        continue-on-error: true
         run: cargo install trunk wasm-bindgen-cli
       - name: Build website
         run: trunk build --release
