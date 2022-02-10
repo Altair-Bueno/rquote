@@ -5,8 +5,8 @@ use yew_router::prelude::*;
 
 #[derive(PartialEq, Clone)]
 pub struct NavBarLink<T>
-    where
-        T: Clone + Routable + PartialEq
+where
+    T: Clone + Routable + PartialEq,
 {
     name: String,
     link: T,
@@ -14,20 +14,17 @@ pub struct NavBarLink<T>
 
 impl<T> NavBarLink<T>
     where
-        T: Clone + Routable + PartialEq
+        T: Clone + Routable + PartialEq,
 {
     pub fn new(name: String, link: T) -> NavBarLink<T> {
-        NavBarLink {
-            name,
-            link,
-        }
+        NavBarLink { name, link }
     }
 }
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct NavBarProp<T>
     where
-        T: Clone + Routable + PartialEq
+        T: Clone + Routable + PartialEq,
 {
     pub home: T,
     pub title: String,
@@ -39,21 +36,21 @@ pub struct NavBarProp<T>
 
 pub struct NavBarComponent<T>
     where
-        T: Clone + Routable + PartialEq
+        T: Clone + Routable + PartialEq,
 {
     phantom: PhantomData<T>,
 }
 
 impl<'a, T> Component for NavBarComponent<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq + 'static,
 {
     type Message = ();
     type Properties = NavBarProp<T>;
 
     fn create(_ctx: &Context<Self>) -> Self {
         NavBarComponent {
-            phantom: Default::default()
+            phantom: Default::default(),
         }
     }
 
@@ -69,7 +66,7 @@ impl<'a, T> Component for NavBarComponent<T>
                 } else {
                     None
                 };
-                let classes = classes!("nav-link","px-3",active);
+                let classes = classes!("nav-link", "px-3", active);
                 html! {
                     <li class = {classes!("nav-item")} key = {format!("navbar-link-{position}")}>
                         <Link<T> classes ={classes} to={link.link.clone()}>

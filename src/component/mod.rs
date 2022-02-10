@@ -1,9 +1,10 @@
+pub mod async_load;
+pub mod error;
+pub mod footer;
+pub mod list;
 pub mod loading;
 pub mod nav_bar;
 pub mod not_found;
 pub mod quote;
+pub mod search_bar;
 pub mod switch;
-pub mod footer;
-pub mod error;
-pub mod async_load;
-pub mod list;

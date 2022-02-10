@@ -33,6 +33,7 @@ jobs:
         run: |
           rm -fr docs/
           mv dist docs
+          cp docs/index.html docs/404.html
       - name: Push back changes
         continue-on-error: true
         run: |

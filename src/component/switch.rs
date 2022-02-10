@@ -10,8 +10,7 @@ pub struct SwitchProps {
 
 #[function_component(SwitchComponent)]
 pub fn loading(props: &SwitchProps) -> Html {
-    let theme = use_context::<crate::context::Theme>()
-        .unwrap_or_default();
+    let theme = use_context::<crate::context::Theme>().unwrap_or_default();
     let onclick = props.onclick.clone();
     let text = if let Some(text) = &props.text {
         html! {

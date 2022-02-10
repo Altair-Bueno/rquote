@@ -12,15 +12,23 @@ use crate::component::loading::*;
 
 #[async_trait(? Send)]
 pub trait ViewAsync<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
-        Self: PartialEq + Clone,
+where
+    ELEMENT: Debug + PartialEq,
+    Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
-    fn successful_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>, _element: Rc<ELEMENT>) -> Html {
+    fn successful_view(
+        &self,
+        _ctx: &Context<AsyncComponent<ELEMENT, Self>>,
+        _element: Rc<ELEMENT>,
+    ) -> Html {
         Html::default()
     }
-    fn failed_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>, error: Rc<dyn Error>) -> Html {
+    fn failed_view(
+        &self,
+        _ctx: &Context<AsyncComponent<ELEMENT, Self>>,
+        error: Rc<dyn Error>,
+    ) -> Html {
         let onclick = |_| todo!();
         let _ = html! {
             <button {onclick} class={classes!("btn","btn-light","text-dark")}>
@@ -95,9 +103,7 @@ impl<ELEMENT, PROVIDER> Component for AsyncComponent<ELEMENT, PROVIDER>
             .take();
         let provider = ctx.props().provider.clone();
         ctx.link()
-            .callback_future_once(|_| async move {
-                provider.fetch_data(client).await
-            })
+            .callback_future_once(|_| async move { provider.fetch_data(client).await })
             .emit(());
         AsyncComponent {
             message: Message::default(),

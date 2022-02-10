@@ -30,11 +30,17 @@ impl ViewAsync<Vec<AnimechanQuote>> for Anime {
         }
     }
 
-    fn successful_view(&self, __ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
+    fn successful_view(
+        &self,
+        __ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
+        element: Rc<Vec<AnimechanQuote>>,
+    ) -> Html {
         element
             .iter()
-            .map(|x| html! {
-                <QuoteComponent quote = {x.clone()} header = {false}/>
+            .map(|x| {
+                html! {
+                    <QuoteComponent quote = {x.clone()} header = {false}/>
+                }
             })
             .collect()
     }
@@ -45,7 +51,10 @@ impl Component for Anime {
     type Properties = AnimeProp;
 
     fn create(ctx: &Context<Self>) -> Self {
-        Anime { title: ctx.props().title.clone(), page: None }
+        Anime {
+            title: ctx.props().title.clone(),
+            page: None,
+        }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {

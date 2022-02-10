@@ -1,8 +1,8 @@
 # Rquote
 
-Rquote is a SPA using Rust and WebAssembly. It fetches Anime quotes from the
-[Animechan API](https://animechan.vercel.app/). You can check it out at
-<https://rquote.vercel.app/>
+Rquote is a web application built using Rust and WebAssembly. It fetches Anime
+quotes from the [Animechan API](https://animechan.vercel.app/). You can check it
+out at <https://rquote.vercel.app/>
 
 ## How to build
 
@@ -15,8 +15,6 @@ Rquote is a SPA using Rust and WebAssembly. It fetches Anime quotes from the
 ### Build website
 
 ```bash
-# Set the CPATH
-CPATH=/usr/include
 # To open a local development server
 trunk serve --open
 
@@ -32,5 +30,5 @@ trunk build --release
 
 ## More info
 
-- [Source](https://github.com/Altair-Bueno/rquote)
+- [Source repository](https://github.com/Altair-Bueno/rquote)
 
