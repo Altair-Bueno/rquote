@@ -14,10 +14,13 @@ const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 impl ViewAsync<String> for About {
     async fn fetch_data(&self, client: Client) -> Message<String> {
         async fn closure(client: Client) -> Result<String, reqwest::Error> {
-            let text = client.get(README)
-                .send().await?
+            let text = client
+                .get(README)
+                .send()
+                .await?
                 .error_for_status()?
-                .text().await?;
+                .text()
+                .await?;
             let parser = pulldown_cmark::Parser::new(text.as_str());
             let mut out = String::new();
             pulldown_cmark::html::push_html(&mut out, parser);
@@ -25,10 +28,14 @@ impl ViewAsync<String> for About {
         }
         match closure(client).await {
             Ok(x) => Message::Successful(Rc::new(x)),
-            Err(x) => Message::Failed(Rc::new(x))
+            Err(x) => Message::Failed(Rc::new(x)),
         }
     }
-    fn successful_view(&self, ctx: &Context<AsyncComponent<String, Self>>, element: Rc<String>) -> Html {
+    fn successful_view(
+        &self,
+        ctx: &Context<AsyncComponent<String, Self>>,
+        element: Rc<String>,
+    ) -> Html {
         let theme = ctx
             .link()
             .context::<crate::context::Theme>(Default::default())
@@ -38,7 +45,10 @@ impl ViewAsync<String> for About {
         el.set_inner_html(element.as_str());
         let elements = el.get_elements_by_tag_name("a");
         for i in 0..elements.length() {
-            elements.get_with_index(i).unwrap().set_class_name(theme.get_link_class())
+            elements
+                .get_with_index(i)
+                .unwrap()
+                .set_class_name(theme.get_link_class())
         }
         Html::default()
     }
@@ -55,7 +65,7 @@ impl Component for About {
 
     fn create(_ctx: &Context<Self>) -> Self {
         About {
-            node_ref: Default::default()
+            node_ref: Default::default(),
         }
     }
 

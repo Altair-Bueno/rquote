@@ -24,7 +24,7 @@ impl Severity {
         match self {
             Severity::Danger => ("bg-danger", "text-light"),
             Severity::Warning => ("bg-warning", "text-dark"),
-            Severity::Minor => ("bg-secondary", "text-light")
+            Severity::Minor => ("bg-secondary", "text-light"),
         }
     }
     fn get_icon(&self) -> Html {
@@ -70,9 +70,9 @@ pub struct ErrorProp {
 
 impl PartialEq for ErrorProp {
     fn eq(&self, other: &Self) -> bool {
-        self.children == other.children &&
-            self.severity == other.severity &&
-            std::ptr::eq(self.error.as_ref(), other.error.as_ref())
+        self.children == other.children
+            && self.severity == other.severity
+            && std::ptr::eq(self.error.as_ref(), other.error.as_ref())
     }
 }
 

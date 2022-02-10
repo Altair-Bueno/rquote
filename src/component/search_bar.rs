@@ -25,7 +25,11 @@ pub fn search(props: &SearchBarProps) -> Html {
     let placeholder = props.placeholder.clone();
     let callback = props.input.clone();
     let oninput = move |x: InputEvent| callback.emit(get_value_from_input_event(x));
-    let onkeydown = |x: KeyboardEvent| if x.key_code() == 13 { x.prevent_default() };
+    let onkeydown = |x: KeyboardEvent| {
+        if x.key_code() == 13 {
+            x.prevent_default()
+        }
+    };
     html! {
         <form class="d-flex">
             <input

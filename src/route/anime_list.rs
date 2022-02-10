@@ -26,7 +26,11 @@ impl ViewAsync<Vec<String>> for AnimeList {
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<String>, Self>>, element: Rc<Vec<String>>) -> Html {
+    fn successful_view(
+        &self,
+        _ctx: &Context<AsyncComponent<Vec<String>, Self>>,
+        element: Rc<Vec<String>>,
+    ) -> Html {
         html! {
             <SuccessfulComponent list = {element.clone()}/>
         }
@@ -59,29 +63,28 @@ fn successful(props: &SuccessfulProp) -> Html {
     let input: Callback<String> = {
         let search_string = search_string.clone();
         move |x: String| search_string.set(x)
-    }.into();
+    }
+        .into();
 
     let mut vector = props.list.as_ref().clone();
 
     if search_string.is_empty() {
         vector.sort();
     } else {
-        vector
-            .sort_by_cached_key(|x| fuzzy_matcher::skim::SkimMatcherV2::default().fuzzy_match(x, search_string.as_str()));
+        vector.sort_by_cached_key(|x| {
+            fuzzy_matcher::skim::SkimMatcherV2::default().fuzzy_match(x, search_string.as_str())
+        });
         vector.reverse();
     }
 
-    let list = vector
-        .iter()
-        .filter(|x| !x.is_empty())
-        .map(|x| {
-            let route = Route::Anime { title: x.clone() };
-            html! {
-                    <Link<Route> to={route} classes={classes!("link-dark")}>
-                        {x.clone()}
-                    </Link<Route>>
-            }
-        });
+    let list = vector.iter().filter(|x| !x.is_empty()).map(|x| {
+        let route = Route::Anime { title: x.clone() };
+        html! {
+                <Link<Route> to={route} classes={classes!("link-dark")}>
+                    {x.clone()}
+                </Link<Route>>
+        }
+    });
     html! {
         <>
             <SearchBarComponent {input}/>

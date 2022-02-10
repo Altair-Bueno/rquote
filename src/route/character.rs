@@ -23,17 +23,24 @@ pub struct Character {
 #[async_trait(? Send)]
 impl ViewAsync<Vec<AnimechanQuote>> for Character {
     async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
-        let response = AnimechanQuote::get_quote_character(&client, &self.character, self.page).await;
+        let response =
+            AnimechanQuote::get_quote_character(&client, &self.character, self.page).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
+    fn successful_view(
+        &self,
+        _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
+        element: Rc<Vec<AnimechanQuote>>,
+    ) -> Html {
         element
             .iter()
-            .map(|x| html! {
-                <QuoteComponent quote = {x.clone()} footer = {false}/>
+            .map(|x| {
+                html! {
+                    <QuoteComponent quote = {x.clone()} footer = {false}/>
+                }
             })
             .collect()
     }
@@ -44,7 +51,10 @@ impl Component for Character {
     type Properties = CharacterProp;
 
     fn create(ctx: &Context<Self>) -> Self {
-        Character { character: ctx.props().character.clone(), page: None }
+        Character {
+            character: ctx.props().character.clone(),
+            page: None,
+        }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {

@@ -32,13 +32,12 @@ impl Main {
     fn get_current_theme() -> Theme {
         let prefers_dark = web_sys::window()
             .map(|window| {
-                window.match_media("(prefers-color-scheme: dark)")
-                    .map(|optional| {
-                        optional.map(|x| x.matches())
-                            .unwrap_or_default()
-                    })
+                window
+                    .match_media("(prefers-color-scheme: dark)")
+                    .map(|optional| optional.map(|x| x.matches()).unwrap_or_default())
                     .unwrap_or_default()
-            }).unwrap_or_default();
+            })
+            .unwrap_or_default();
         if prefers_dark {
             Theme::Dark
         } else {
@@ -50,7 +49,9 @@ impl Main {
             if let Some(document) = window.document() {
                 if let Some(body) = document.body() {
                     let _ = body.remove_attribute("class");
-                    let _ = body.class_list().add_2(theme.get_background_class(), "bg-opacity-75");
+                    let _ = body
+                        .class_list()
+                        .add_2(theme.get_background_class(), "bg-opacity-75");
                 }
             }
         }
@@ -76,7 +77,7 @@ impl Component for Main {
             Message::ThemeChanged(new_theme) => {
                 self.theme = new_theme;
                 true
-            },
+            }
             Message::Nop => false,
         }
     }

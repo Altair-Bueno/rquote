@@ -5,8 +5,8 @@ use yew_router::prelude::*;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct NotFoundProp<T>
-    where
-        T: Clone + Routable + PartialEq + 'static
+where
+    T: Clone + Routable + PartialEq + 'static,
 {
     pub to: T,
     #[prop_or_else(|| "Page Not Found".to_string())]
@@ -19,21 +19,21 @@ pub struct NotFoundProp<T>
 
 pub struct NotFoundComponent<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq + 'static,
 {
     phantom: PhantomData<&'static T>,
 }
 
 impl<T> Component for NotFoundComponent<T>
     where
-        T: Clone + Routable + PartialEq + 'static
+        T: Clone + Routable + PartialEq + 'static,
 {
     type Message = ();
     type Properties = NotFoundProp<T>;
 
     fn create(_ctx: &Context<Self>) -> Self {
         NotFoundComponent {
-            phantom: Default::default()
+            phantom: Default::default(),
         }
     }
 
@@ -49,9 +49,15 @@ impl<T> Component for NotFoundComponent<T>
             text_class,
             theme.get_background_class(),
             // Center
-            "position-absolute","top-50","start-50","translate-middle",
+            "position-absolute",
+            "top-50",
+            "start-50",
+            "translate-middle",
             // Shadow
-            "shadow-lg","p-3","mb-3","rounded"
+            "shadow-lg",
+            "p-3",
+            "mb-3",
+            "rounded"
         );
         html! {
             <div class={div_class}>

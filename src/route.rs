@@ -13,12 +13,12 @@ use not_found::*;
 
 use crate::component::nav_bar::*;
 
+mod about;
 mod anime;
 mod anime_list;
 mod character;
 mod home;
 mod not_found;
-mod about;
 
 #[cfg(debug_assertions)]
 mod dev;
@@ -103,7 +103,7 @@ pub fn switch(route: &Route) -> Html {
                 <NavBarComponent<Route> ..navbar_props/>
                 <Dev/>
             </>
-        }
+        },
     };
     page
 }

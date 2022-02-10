@@ -86,7 +86,6 @@ impl AnimechanQuote {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use reqwest::Client;
@@ -100,34 +99,34 @@ mod test {
     pub async fn random_quote() {
         let client = Client::new();
         let response = AnimechanQuote::get_random_quote(&client).await;
-        assert!(matches!(response,Ok(_)))
+        assert!(matches!(response, Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn random_10_quotes() {
         let client = Client::new();
         let response = AnimechanQuote::get_10_random_quotes(&client).await;
-        assert!(matches!(response,Ok(_)))
+        assert!(matches!(response, Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn anime_list() {
         let client = Client::new();
         let response = AnimechanQuote::get_anime_list(&client).await;
-        assert!(matches!(response,Ok(_)))
+        assert!(matches!(response, Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn quote_title() {
         let client = Client::new();
         let response = AnimechanQuote::get_quote_title(&client, "Hyouka", None).await;
-        assert!(matches!(response,Ok(_)))
+        assert!(matches!(response, Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn quote_character() {
         let client = Client::new();
         let response = AnimechanQuote::get_quote_character(&client, "Saitama", None).await;
-        assert!(matches!(response,Ok(_)))
+        assert!(matches!(response, Ok(_)))
     }
 }

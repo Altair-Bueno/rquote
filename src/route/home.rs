@@ -21,11 +21,17 @@ impl ViewAsync<Vec<AnimechanQuote>> for Home {
             Err(err) => Message::Failed(Rc::new(err)),
         }
     }
-    fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>, element: Rc<Vec<AnimechanQuote>>) -> Html {
+    fn successful_view(
+        &self,
+        _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
+        element: Rc<Vec<AnimechanQuote>>,
+    ) -> Html {
         element
             .iter()
-            .map(|x| html! {
-                <QuoteComponent quote = {x.clone()}/>
+            .map(|x| {
+                html! {
+                    <QuoteComponent quote = {x.clone()}/>
+                }
             })
             .collect()
     }
