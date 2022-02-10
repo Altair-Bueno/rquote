@@ -4,10 +4,12 @@ use async_trait::async_trait;
 use reqwest::Client;
 use yew::prelude::*;
 
-use crate::animechan::AnimechanQuote;
-use crate::component::async_load::*;
-use crate::component::async_load::ViewAsync;
-use crate::component::quote::*;
+use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
+use rquote_component::Theme;
+use rquote_core::AnimechanQuote;
+
+use crate::custom::quote::*;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct AnimeProp {
@@ -60,7 +62,7 @@ impl Component for Anime {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let theme = ctx
             .link()
-            .context::<crate::context::Theme>(Default::default())
+            .context::<Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         let title = self.title.as_str();

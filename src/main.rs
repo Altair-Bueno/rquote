@@ -2,17 +2,13 @@ use reqwest::Client;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::animechan::AnimechanQuote;
-use crate::context::Theme;
-use crate::route::*;
-use crate::wrapper::ClientContext;
+use rquote_component::Theme;
+use rquote_core::wrapper::ClientWrapper;
 
-// https://animechan.vercel.app/
-mod animechan;
-mod component;
-mod context;
+use crate::route::*;
+
+mod custom;
 mod route;
-mod wrapper;
 
 enum Message {
     // FIXME
@@ -83,17 +79,17 @@ impl Component for Main {
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
-        let client = ClientContext::new(self.client.clone());
+        let client = ClientWrapper::new(self.client.clone());
         let theme = self.theme.clone();
         Main::change_body_theme(&theme);
         html! {
-            <ContextProvider<ClientContext> context={client}>
+            <ContextProvider<ClientWrapper> context={client}>
                 <ContextProvider<Theme> context={theme}>
                     <BrowserRouter>
                         <Switch<Route> render={Switch::render(switch)} />
                     </BrowserRouter>
                 </ContextProvider<Theme>>
-            </ContextProvider<ClientContext>>
+            </ContextProvider<ClientWrapper>>
         }
     }
 }

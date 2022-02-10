@@ -3,10 +3,12 @@ use std::marker::PhantomData;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+use crate::Theme;
+
 #[derive(PartialEq, Clone)]
 pub struct NavBarLink<T>
-where
-    T: Clone + Routable + PartialEq,
+    where
+        T: Clone + Routable + PartialEq,
 {
     name: String,
     link: T,
@@ -78,7 +80,7 @@ impl<'a, T> Component for NavBarComponent<T>
             .collect::<Html>();
         let theme = ctx
             .link()
-            .context::<crate::context::Theme>(Default::default())
+            .context::<Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         html! {

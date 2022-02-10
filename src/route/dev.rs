@@ -1,12 +1,13 @@
 use yew::prelude::*;
 
-use crate::component::search_bar::*;
+use rquote_component::pager::*;
 
 #[function_component(Dev)]
 pub fn dev() -> Html {
-    let closure = |x: String| web_sys::console::log_1(&x.into());
-    let closure: Callback<String> = closure.into();
+    let page = 10;
+    let prev: Callback<MouseEvent> = { |_| () }.into();
+    let next = prev.clone();
     html! {
-        <SearchBarComponent input = {closure}/>
+        <PagerComponent {page} {prev} {next}/>
     }
 }

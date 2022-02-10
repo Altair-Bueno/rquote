@@ -1,7 +1,9 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::AnimechanQuote;
+use rquote_component::Theme;
+use rquote_core::AnimechanQuote;
+
 use crate::route::Route;
 
 #[derive(Properties, PartialEq, Clone)]
@@ -19,7 +21,7 @@ pub fn quote(props: &QuoteProp) -> Html {
     let quote = animechan_quote.get_quote();
     let anime = animechan_quote.get_anime();
     let character = animechan_quote.get_character();
-    let theme = use_context::<crate::context::Theme>().unwrap_or_default();
+    let theme = use_context::<Theme>().unwrap_or_default();
 
     let header = if props.header {
         let anime_route = Route::Anime {
