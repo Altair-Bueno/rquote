@@ -34,6 +34,9 @@ jobs:
       - name: Install Yew's toolkit
         continue-on-error: true
         run: cargo install trunk wasm-bindgen-cli
+      - name: Install chevron
+        continue-on-error: true
+        run: pip3 install chevron
       - name: Build template
         run: python3 template.py
       - name: Build website
