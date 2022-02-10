@@ -6,8 +6,8 @@ use reqwest::Client;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
+use rquote_component::async_load::*;
 use rquote_component::list::*;
 use rquote_component::search_bar::*;
 use rquote_core::AnimechanQuote;
@@ -64,7 +64,7 @@ fn successful(props: &SuccessfulProp) -> Html {
         let search_string = search_string.clone();
         move |x: String| search_string.set(x)
     }
-        .into();
+    .into();
 
     let mut vector;
 

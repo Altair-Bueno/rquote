@@ -7,16 +7,16 @@ use crate::Theme;
 
 #[derive(PartialEq, Clone)]
 pub struct NavBarLink<T>
-    where
-        T: Clone + Routable + PartialEq,
+where
+    T: Clone + Routable + PartialEq,
 {
     name: String,
     link: T,
 }
 
 impl<T> NavBarLink<T>
-    where
-        T: Clone + Routable + PartialEq,
+where
+    T: Clone + Routable + PartialEq,
 {
     pub fn new(name: String, link: T) -> NavBarLink<T> {
         NavBarLink { name, link }
@@ -25,8 +25,8 @@ impl<T> NavBarLink<T>
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct NavBarProp<T>
-    where
-        T: Clone + Routable + PartialEq,
+where
+    T: Clone + Routable + PartialEq,
 {
     pub home: T,
     pub title: String,
@@ -37,15 +37,15 @@ pub struct NavBarProp<T>
 }
 
 pub struct NavBarComponent<T>
-    where
-        T: Clone + Routable + PartialEq,
+where
+    T: Clone + Routable + PartialEq,
 {
     phantom: PhantomData<T>,
 }
 
 impl<'a, T> Component for NavBarComponent<T>
-    where
-        T: Clone + Routable + PartialEq + 'static,
+where
+    T: Clone + Routable + PartialEq + 'static,
 {
     type Message = ();
     type Properties = NavBarProp<T>;

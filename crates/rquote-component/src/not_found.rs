@@ -7,8 +7,8 @@ use crate::Theme;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct NotFoundProp<T>
-    where
-        T: Clone + Routable + PartialEq + 'static,
+where
+    T: Clone + Routable + PartialEq + 'static,
 {
     pub to: T,
     #[prop_or_else(|| "Page Not Found".to_string())]
@@ -20,15 +20,15 @@ pub struct NotFoundProp<T>
 }
 
 pub struct NotFoundComponent<T>
-    where
-        T: Clone + Routable + PartialEq + 'static,
+where
+    T: Clone + Routable + PartialEq + 'static,
 {
     phantom: PhantomData<&'static T>,
 }
 
 impl<T> Component for NotFoundComponent<T>
-    where
-        T: Clone + Routable + PartialEq + 'static,
+where
+    T: Clone + Routable + PartialEq + 'static,
 {
     type Message = ();
     type Properties = NotFoundProp<T>;

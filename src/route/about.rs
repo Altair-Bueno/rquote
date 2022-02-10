@@ -5,7 +5,7 @@ use reqwest::Client;
 use web_sys::Element;
 use yew::prelude::*;
 
-use rquote_component::async_load::{*, ViewAsync};
+use rquote_component::async_load::{ViewAsync, *};
 use rquote_component::Theme;
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";

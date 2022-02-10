@@ -14,9 +14,9 @@ use crate::loading::*;
 
 #[async_trait(? Send)]
 pub trait ViewAsync<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
-        Self: PartialEq + Clone,
+where
+    ELEMENT: Debug + PartialEq,
+    Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
     fn successful_view(
@@ -50,8 +50,8 @@ pub trait ViewAsync<ELEMENT>
 
 #[derive(Debug)]
 pub enum Message<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
+where
+    ELEMENT: Debug + PartialEq,
 {
     Loading,
     Successful(Rc<ELEMENT>),
@@ -59,8 +59,8 @@ pub enum Message<ELEMENT>
 }
 
 impl<ELEMENT> Default for Message<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
+where
+    ELEMENT: Debug + PartialEq,
 {
     fn default() -> Self {
         Message::Loading
@@ -69,9 +69,9 @@ impl<ELEMENT> Default for Message<ELEMENT>
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct AsyncFetchProp<ELEMENT, PROVIDER>
-    where
-        ELEMENT: Debug + PartialEq,
-        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
+where
+    ELEMENT: Debug + PartialEq,
+    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]
@@ -80,18 +80,18 @@ pub struct AsyncFetchProp<ELEMENT, PROVIDER>
 
 #[derive(Debug)]
 pub struct AsyncComponent<ELEMENT, PROVIDER>
-    where
-        ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
+where
+    ELEMENT: Debug + PartialEq + 'static,
+    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
     message: Message<ELEMENT>,
     phantom: PhantomData<PROVIDER>,
 }
 
 impl<ELEMENT, PROVIDER> Component for AsyncComponent<ELEMENT, PROVIDER>
-    where
-        ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
+where
+    ELEMENT: Debug + PartialEq + 'static,
+    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
     type Message = Message<ELEMENT>;
     type Properties = AsyncFetchProp<ELEMENT, PROVIDER>;
