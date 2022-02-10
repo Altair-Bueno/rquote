@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::component::pager::*;
+use rquote_component::pager::*;
 
 #[function_component(Dev)]
 pub fn dev() -> Html {

@@ -5,7 +5,8 @@ use reqwest::Client;
 use web_sys::Element;
 use yew::prelude::*;
 
-use crate::component::async_load::{*, ViewAsync};
+use rquote_component::async_load::{*, ViewAsync};
+use rquote_component::Theme;
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
 const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
@@ -38,7 +39,7 @@ impl ViewAsync<String> for About {
     ) -> Html {
         let theme = ctx
             .link()
-            .context::<crate::context::Theme>(Default::default())
+            .context::<Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         let el = self.node_ref.cast::<Element>().unwrap();
@@ -72,7 +73,7 @@ impl Component for About {
     fn view(&self, ctx: &Context<Self>) -> Html {
         let theme = ctx
             .link()
-            .context::<crate::context::Theme>(Default::default())
+            .context::<Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         html! {

@@ -4,10 +4,11 @@ use async_trait::async_trait;
 use reqwest::Client;
 use yew::prelude::*;
 
-use crate::animechan::AnimechanQuote;
-use crate::component::async_load::*;
-use crate::component::async_load::ViewAsync;
-use crate::component::quote::*;
+use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
+use rquote_core::AnimechanQuote;
+
+use crate::custom::quote::*;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Home;

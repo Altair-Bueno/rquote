@@ -6,11 +6,12 @@ use reqwest::Client;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::animechan::AnimechanQuote;
-use crate::component::async_load::*;
-use crate::component::async_load::ViewAsync;
-use crate::component::list::*;
-use crate::component::search_bar::*;
+use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
+use rquote_component::list::*;
+use rquote_component::search_bar::*;
+use rquote_core::AnimechanQuote;
+
 use crate::route::Route;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -71,10 +72,14 @@ fn successful(props: &SuccessfulProp) -> Html {
         vector = props.list.as_ref().clone();
         vector.sort();
     } else {
-        vector = props.list.iter().filter(|x| {
-            let score = fuzzy_matcher::skim::SkimMatcherV2::default().fuzzy_match(x, search_string.as_str());
-            score.map(|x| x > 0).unwrap_or_default()
-        })
+        vector = props
+            .list
+            .iter()
+            .filter(|x| {
+                let score = fuzzy_matcher::skim::SkimMatcherV2::default()
+                    .fuzzy_match(x, search_string.as_str());
+                score.map(|x| x > 0).unwrap_or_default()
+            })
             .map(|x| x.clone())
             .collect();
         vector.sort_by_cached_key(|x| {

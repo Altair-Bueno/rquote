@@ -1,3 +1,14 @@
+pub mod async_load;
+pub mod error;
+pub mod footer;
+pub mod list;
+pub mod loading;
+pub mod nav_bar;
+pub mod not_found;
+pub mod pager;
+pub mod search_bar;
+pub mod switch;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Theme {
     Light,

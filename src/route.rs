@@ -10,8 +10,7 @@ use character::*;
 use dev::*;
 use home::*;
 use not_found::*;
-
-use crate::component::nav_bar::*;
+use rquote_component::nav_bar::*;
 
 mod about;
 mod anime;

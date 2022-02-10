@@ -1,15 +1,15 @@
 use reqwest::Client;
 
 #[derive(Clone, Debug, Default)]
-pub struct ClientContext(Client);
+pub struct ClientWrapper(Client);
 
-impl PartialEq for ClientContext {
+impl PartialEq for ClientWrapper {
     fn eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ClientContext {
+impl ClientWrapper {
     pub fn new(client: Client) -> Self {
         Self(client)
     }

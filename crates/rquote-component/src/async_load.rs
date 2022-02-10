@@ -7,14 +7,16 @@ use async_trait::async_trait;
 use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
 
-use crate::component::error::*;
-use crate::component::loading::*;
+use rquote_core::wrapper::ClientWrapper;
+
+use crate::error::*;
+use crate::loading::*;
 
 #[async_trait(? Send)]
 pub trait ViewAsync<ELEMENT>
-where
-    ELEMENT: Debug + PartialEq,
-    Self: PartialEq + Clone,
+    where
+        ELEMENT: Debug + PartialEq,
+        Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
     fn successful_view(
@@ -97,7 +99,7 @@ impl<ELEMENT, PROVIDER> Component for AsyncComponent<ELEMENT, PROVIDER>
     fn create(ctx: &Context<Self>) -> Self {
         let client = ctx
             .link()
-            .context::<crate::wrapper::ClientContext>(Default::default())
+            .context::<ClientWrapper>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default()
             .take();

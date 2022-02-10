@@ -18,7 +18,9 @@ pub fn pager(props: &PagerProps) -> Html {
             <button class = {classes!("page-link")} {onclick}>{"«"}</button>
             </li>
         }
-    } else { Html::default() };
+    } else {
+        Html::default()
+    };
 
     let next = if let Some(onclick) = props.prev.clone() {
         html! {
@@ -26,7 +28,9 @@ pub fn pager(props: &PagerProps) -> Html {
                 <button class = {classes!("page-link")} {onclick}>{"»"}</button>
             </li>
         }
-    } else { Html::default() };
+    } else {
+        Html::default()
+    };
     let page = html! {
         <li key = {"current"} class = {classes!("page-item")}>
             <span class = {classes!("page-link")}>{props.page}</span>

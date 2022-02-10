@@ -3,10 +3,12 @@ use std::marker::PhantomData;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+use crate::Theme;
+
 #[derive(Properties, PartialEq, Clone)]
 pub struct NotFoundProp<T>
-where
-    T: Clone + Routable + PartialEq + 'static,
+    where
+        T: Clone + Routable + PartialEq + 'static,
 {
     pub to: T,
     #[prop_or_else(|| "Page Not Found".to_string())]
@@ -40,7 +42,7 @@ impl<T> Component for NotFoundComponent<T>
     fn view(&self, ctx: &Context<Self>) -> Html {
         let theme = ctx
             .link()
-            .context::<crate::context::Theme>(Default::default())
+            .context::<Theme>(Default::default())
             .map(|x| x.0)
             .unwrap_or_default();
         let props = ctx.props();
