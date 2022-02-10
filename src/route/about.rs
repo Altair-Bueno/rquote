@@ -1,5 +1,3 @@
-use std::error::Error;
-use std::fmt::format;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -7,7 +5,6 @@ use reqwest::Client;
 use web_sys::Element;
 use yew::prelude::*;
 
-use crate::ClientContext;
 use crate::component::async_load::{*, ViewAsync};
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
@@ -26,7 +23,6 @@ impl ViewAsync<String> for About {
             pulldown_cmark::html::push_html(&mut out, parser);
             Ok(out)
         }
-        ;
         match closure(client).await {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(x) => Message::Failed(Rc::new(x))
