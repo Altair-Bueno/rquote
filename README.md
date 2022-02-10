@@ -14,6 +14,13 @@ out at <https://rquote.vercel.app/>
 
 ### Build website
 
+1. Install [python3](https://www.python.org/downloads/) or later
+2. Install [chevron](https://github.com/noahmorrison/chevron)
+3. Run `python build.py` on the root directory to compile the `index.html`
+   template
+
+Now you can use `Trunk` to build `Rquote`
+
 ```bash
 # To open a local development server
 trunk serve --open
