@@ -28,7 +28,7 @@ trunk build --release
 
 - [Yew](https://yew.rs)
 - [Rust](https://www.rust-lang.org)
-- [Boostrap v5](https://www.rust-lang.org)
+- [Boostrap v5](https://getbootstrap.com)
 
 ## More info
 
