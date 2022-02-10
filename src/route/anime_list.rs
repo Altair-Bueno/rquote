@@ -24,6 +24,8 @@ impl ViewAsync<Vec<String>> for AnimeList {
         }
     }
     fn successful_view(&self, _ctx: &Context<AsyncComponent<Vec<String>, Self>>, element: Rc<Vec<String>>) -> Html {
+        let mut element = element.as_ref().clone();
+        element.sort();
         let formatted = element
             .iter()
             .map(|x| {
