@@ -11,6 +11,7 @@ use crate::ClientContext;
 use crate::component::async_load::{*, ViewAsync};
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
+const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 
 #[async_trait(? Send)]
 impl ViewAsync<String> for About {
@@ -69,10 +70,10 @@ impl Component for About {
             .map(|x| x.0)
             .unwrap_or_default();
         html! {
-            <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-5","rounded")}>
+            <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
                 <div ref={self.node_ref.clone()}/>
                 <AsyncComponent<String,Self> provider = {self.clone()}/>
-                <small>{"Readme rendered by Rust + WASM ❤️"}</small>
+                <small>{SMALL_NOTE}</small>
             </div>
         }
     }

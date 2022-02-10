@@ -51,7 +51,7 @@ impl<T> Component for NotFoundComponent<T>
             // Center
             "position-absolute","top-50","start-50","translate-middle",
             // Shadow
-            "shadow","p-5","mb-5","rounded"
+            "shadow-lg","p-3","mb-3","rounded"
         );
         html! {
             <div class={div_class}>
