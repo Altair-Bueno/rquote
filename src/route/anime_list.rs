@@ -80,7 +80,7 @@ fn successful(props: &SuccessfulProp) -> Html {
             .filter(|(x, score)| { score.map(|x| x > 0).unwrap_or_default() })
             .map(|(x, y)| (x, y.unwrap()))
             .collect::<Vec<_>>(); // Sorting requires memory allocation
-        temp.sort_by_key(|(key, value)| -value);
+        temp.sort_unstable_by_key(|(key, value)| -value);
         vector = temp.into_iter().map(|(key, value)| key.clone()).collect();
     }
 
