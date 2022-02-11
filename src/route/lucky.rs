@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -37,7 +36,7 @@ impl Component for Lucky {
         Lucky
     }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+    fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <AsyncComponent<AnimechanQuote,Self> provider = {self.clone()}/>
         }
