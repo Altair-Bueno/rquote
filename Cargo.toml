@@ -25,6 +25,7 @@ async-trait = "0.1.52"
 pulldown-cmark = "0.9.1"
 fuzzy-matcher = "*"
 reqwest = "0.11.9"
+wasm-bindgen = "0.2.79"
 
 [dependencies.rquote-component]
 version = "*"
@@ -44,4 +45,5 @@ features = [
     "Document",
     "HtmlElement",
     "DomTokenList",
+    "EventListener",
 ]

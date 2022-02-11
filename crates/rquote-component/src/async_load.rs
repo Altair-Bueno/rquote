@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fmt::Debug;
 use std::marker::PhantomData;
+use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -14,21 +15,19 @@ use crate::loading::*;
 
 #[async_trait(? Send)]
 pub trait ViewAsync<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
-        Self: PartialEq + Clone,
+where
+    ELEMENT: Debug + PartialEq,
+    Self: PartialEq + Clone,
 {
     async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<ELEMENT, Self>>,
         _element: Rc<ELEMENT>,
     ) -> Html {
         Html::default()
     }
     fn failed_view(
         &self,
-        _ctx: &Context<AsyncComponent<ELEMENT, Self>>,
         error: Rc<dyn Error>,
     ) -> Html {
         let onclick = |_| todo!();
@@ -43,15 +42,15 @@ pub trait ViewAsync<ELEMENT>
             </ErrorComponent>
         }
     }
-    fn loading_view(&self, _ctx: &Context<AsyncComponent<ELEMENT, Self>>) -> Html {
+    fn loading_view(&self) -> Html {
         html! {<LoadingComponent/>}
     }
 }
 
 #[derive(Debug)]
 pub enum Message<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
+where
+    ELEMENT: Debug + PartialEq,
 {
     Loading,
     Successful(Rc<ELEMENT>),
@@ -59,8 +58,8 @@ pub enum Message<ELEMENT>
 }
 
 impl<ELEMENT> Default for Message<ELEMENT>
-    where
-        ELEMENT: Debug + PartialEq,
+where
+    ELEMENT: Debug + PartialEq,
 {
     fn default() -> Self {
         Message::Loading
@@ -69,64 +68,39 @@ impl<ELEMENT> Default for Message<ELEMENT>
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct AsyncFetchProp<ELEMENT, PROVIDER>
-    where
-        ELEMENT: Debug + PartialEq,
-        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
+where
+    ELEMENT: Debug + PartialEq,
+    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]
     phantom: PhantomData<ELEMENT>,
 }
 
-#[derive(Debug)]
-pub struct AsyncComponent<ELEMENT, PROVIDER>
+#[function_component(AsyncComponent)]
+pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncFetchProp<ELEMENT, PROVIDER>) -> Html
     where
         ELEMENT: Debug + PartialEq + 'static,
         PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
-    message: Message<ELEMENT>,
-    phantom: PhantomData<PROVIDER>,
-}
-
-impl<ELEMENT, PROVIDER> Component for AsyncComponent<ELEMENT, PROVIDER>
-    where
-        ELEMENT: Debug + PartialEq + 'static,
-        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
-{
-    type Message = Message<ELEMENT>;
-    type Properties = AsyncFetchProp<ELEMENT, PROVIDER>;
-
-    fn create(ctx: &Context<Self>) -> Self {
-        let client = ctx
-            .link()
-            .context::<ClientWrapper>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default()
-            .take();
-        let provider = ctx.props().provider.clone();
-        ctx.link()
-            .callback_future_once(|_| async move { provider.fetch_data(client).await })
-            .emit(());
-        AsyncComponent {
-            message: Message::default(),
-            phantom: Default::default(),
-        }
-    }
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        return match msg {
-            x => {
-                self.message = x;
-                true
-            }
-        };
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let provider = &ctx.props().provider;
-        match &self.message {
-            Message::Loading => provider.loading_view(ctx),
-            Message::Successful(x) => provider.successful_view(ctx, x.clone()),
-            Message::Failed(x) => provider.failed_view(ctx, x.clone()),
-        }
+    let client = use_context::<ClientWrapper>().unwrap_or_default().take();
+    let state: UseStateHandle<Message<ELEMENT>> = use_state(|| Message::Loading);
+    let provider = &props.provider;
+    {
+        let client = client.clone();
+        let state = state.clone();
+        let provider = provider.clone();
+        use_effect_with_deps(move |_| {
+            let client = client.clone();
+            let state = state.clone();
+            let provider = provider.clone();
+            wasm_bindgen_futures::spawn_local(async move { state.set(provider.fetch_data(client).await); });
+            || ()
+        }, ());
+    };
+    match state.deref() {
+        Message::Loading => provider.loading_view(),
+        Message::Successful(x) => provider.successful_view(x.clone()),
+        Message::Failed(x) => provider.failed_view(x.clone()),
     }
 }

@@ -9,6 +9,7 @@ use character::*;
 #[cfg(debug_assertions)]
 use dev::*;
 use home::*;
+use lucky::*;
 use not_found::*;
 use rquote_component::nav_bar::*;
 
@@ -21,6 +22,7 @@ mod not_found;
 
 #[cfg(debug_assertions)]
 mod dev;
+mod lucky;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -34,6 +36,8 @@ pub enum Route {
     Character { character: String },
     #[at("/about")]
     About,
+    #[at("/lucky")]
+    Lucky,
     #[cfg(debug_assertions)]
     #[cfg_attr(debug_assertions, at("/dev"))]
     Development,
@@ -45,6 +49,7 @@ pub enum Route {
 pub fn switch(route: &Route) -> Html {
     let links = vec![
         NavBarLink::new("Anime list".to_string(), Route::AnimeList),
+        NavBarLink::new("I'm feeling lucky".to_string(), Route::Lucky),
         NavBarLink::new("About".to_string(), Route::About),
     ];
     let navbar_props = NavBarProp {
@@ -80,7 +85,7 @@ pub fn switch(route: &Route) -> Html {
                     <Anime title={title}/>
                 </>
             }
-        }
+        },
         Route::Character { character } => {
             let character = urlencoding::decode(character).unwrap().into_owned();
             html! {
@@ -89,10 +94,16 @@ pub fn switch(route: &Route) -> Html {
                     <Character character={character}/>
                 </>
             }
-        }
+        },
+        Route::Lucky => html! {
+            <>
+                <NavBarComponent<Route> active = {1}..navbar_props/>
+                <Lucky/>
+            </>
+        },
         Route::About => html! {
             <>
-                <NavBarComponent<Route> active = {1} ..navbar_props/>
+                <NavBarComponent<Route> active = {2} ..navbar_props/>
                 <About/>
             </>
         },

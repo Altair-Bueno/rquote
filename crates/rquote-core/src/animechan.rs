@@ -16,8 +16,6 @@ pub struct AnimechanQuote {
 }
 
 impl AnimechanQuote {
-    // FIXME
-    #[allow(dead_code)]
     pub async fn get_random_quote(client: &Client) -> Result<AnimechanQuote> {
         client
             .get(ANIMECHAN_RANDOM_QUOTE)

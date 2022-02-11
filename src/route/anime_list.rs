@@ -28,7 +28,6 @@ impl ViewAsync<Vec<String>> for AnimeList {
     }
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<Vec<String>, Self>>,
         element: Rc<Vec<String>>,
     ) -> Html {
         html! {
@@ -64,7 +63,7 @@ fn successful(props: &SuccessfulProp) -> Html {
         let search_string = search_string.clone();
         move |x: String| search_string.set(x)
     }
-        .into();
+    .into();
 
     let mut vector;
 
@@ -72,27 +71,23 @@ fn successful(props: &SuccessfulProp) -> Html {
         vector = props.list.as_ref().clone();
         vector.sort();
     } else {
-        vector = props
+        let matcher = fuzzy_matcher::skim::SkimMatcherV2::default();
+        let mut temp = props
             .list
             .iter()
-            .filter(|x| {
-                let score = fuzzy_matcher::skim::SkimMatcherV2::default()
-                    .fuzzy_match(x, search_string.as_str());
-                score.map(|x| x > 0).unwrap_or_default()
-            })
-            .map(|x| x.clone())
-            .collect();
-        vector.sort_by_cached_key(|x| {
-            fuzzy_matcher::skim::SkimMatcherV2::default().fuzzy_match(x, search_string.as_str())
-        });
-        vector.reverse();
+            .map(|x| (x, matcher.fuzzy_match(x, search_string.as_str())))
+            .filter(|(_, score)| { score.map(|x| x > 0).unwrap_or_default() })
+            .map(|(string, score)| (string, score.unwrap()))
+            .collect::<Vec<_>>(); // Sorting requires memory allocation
+        temp.sort_unstable_by_key(|(_, score)| -score);
+        vector = temp.into_iter().map(|(string, _)| string.clone()).collect();
     }
 
-    let list = vector.iter().filter(|x| !x.is_empty()).map(|x| {
+    let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
         let route = Route::Anime { title: x.clone() };
         html! {
                 <Link<Route> to={route} classes={classes!("link-dark")}>
-                    {x.clone()}
+                    {x}
                 </Link<Route>>
         }
     });

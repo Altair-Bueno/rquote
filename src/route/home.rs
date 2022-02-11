@@ -24,7 +24,6 @@ impl ViewAsync<Vec<AnimechanQuote>> for Home {
     }
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
         element: Rc<Vec<AnimechanQuote>>,
     ) -> Html {
         element
