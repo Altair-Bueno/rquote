@@ -731,6 +731,7 @@ dependencies = [
  "rquote-component",
  "rquote-core",
  "urlencoding",
+ "wasm-bindgen",
  "web-sys",
  "yew",
  "yew-router",

@@ -1,4 +1,6 @@
 use reqwest::Client;
+use wasm_bindgen::JsCast;
+use web_sys::{EventListener, MediaQueryList};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -26,14 +28,13 @@ struct Main {
 
 impl Main {
     fn get_current_theme() -> Theme {
-        let prefers_dark = web_sys::window()
-            .map(|window| {
-                window
-                    .match_media("(prefers-color-scheme: dark)")
-                    .map(|optional| optional.map(|x| x.matches()).unwrap_or_default())
-                    .unwrap_or_default()
-            })
-            .unwrap_or_default();
+        let prefers_dark = if let Some(window) = web_sys::window() {
+            if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
+                if let Some(media_query) = option {
+                    media_query.matches()
+                } else { Default::default() }
+            } else { Default::default() }
+        } else { Default::default() };
         if prefers_dark {
             Theme::Dark
         } else {
@@ -52,16 +53,33 @@ impl Main {
             }
         }
     }
+    fn set_theme_listener(callback: Callback<Theme>) {
+        if let Some(window) = web_sys::window() {
+            if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
+                if let Some(media_query) = option {
+                    let closure = wasm_bindgen::prelude::Closure::wrap(Box::new(move |media_query: MediaQueryList| {
+                        let theme = if media_query.matches() { Theme::Dark } else { Theme::Light };
+                        callback.emit(theme);
+                    }) as Box<dyn Fn(_)>);
+                    media_query.add_listener_with_opt_callback(Some(closure.as_ref().unchecked_ref()));
+                    closure.forget();
+                }
+            }
+        };
+    }
 }
 
 impl Component for Main {
     type Message = Message;
     type Properties = ();
 
-    fn create(_ctx: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         // TODO watch for theme changes
         let theme = Main::get_current_theme();
-        Main::change_body_theme(&theme);
+        let callback: Callback<Theme> = ctx
+            .link()
+            .callback(|theme: Theme| Message::ThemeChanged(theme));
+        Main::set_theme_listener(callback);
         Main {
             theme,
             client: Client::new(),
