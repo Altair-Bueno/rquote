@@ -6,8 +6,8 @@ use reqwest::Client;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use rquote_component::async_load::ViewAsync;
 use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
 use rquote_component::list::*;
 use rquote_component::search_bar::*;
 use rquote_core::AnimechanQuote;
@@ -72,27 +72,23 @@ fn successful(props: &SuccessfulProp) -> Html {
         vector = props.list.as_ref().clone();
         vector.sort();
     } else {
-        vector = props
+        let matcher = fuzzy_matcher::skim::SkimMatcherV2::default();
+        let mut temp = props
             .list
             .iter()
-            .filter(|x| {
-                let score = fuzzy_matcher::skim::SkimMatcherV2::default()
-                    .fuzzy_match(x, search_string.as_str());
-                score.map(|x| x > 0).unwrap_or_default()
-            })
-            .map(|x| x.clone())
-            .collect();
-        vector.sort_by_cached_key(|x| {
-            fuzzy_matcher::skim::SkimMatcherV2::default().fuzzy_match(x, search_string.as_str())
-        });
-        vector.reverse();
+            .map(|x| (x, matcher.fuzzy_match(x, search_string.as_str())))
+            .filter(|(x, score)| { score.map(|x| x > 0).unwrap_or_default() })
+            .map(|(x, y)| (x, y.unwrap()))
+            .collect::<Vec<_>>(); // Sorting requires memory allocation
+        temp.sort_by_key(|(key, value)| -value);
+        vector = temp.into_iter().map(|(key, value)| key.clone()).collect();
     }
 
-    let list = vector.iter().filter(|x| !x.is_empty()).map(|x| {
+    let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
         let route = Route::Anime { title: x.clone() };
         html! {
                 <Link<Route> to={route} classes={classes!("link-dark")}>
-                    {x.clone()}
+                    {x}
                 </Link<Route>>
         }
     });
