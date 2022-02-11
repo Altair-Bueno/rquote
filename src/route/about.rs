@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -5,14 +6,19 @@ use reqwest::Client;
 use web_sys::Element;
 use yew::prelude::*;
 
-use rquote_component::async_load::{ViewAsync, *};
+use rquote_component::async_load::{*, ViewAsync};
 use rquote_component::Theme;
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
 const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 
+#[derive(Debug, Clone, PartialEq)]
+struct AboutProvider {
+    node_ref: NodeRef,
+}
+
 #[async_trait(? Send)]
-impl ViewAsync<String> for About {
+impl ViewAsync<String> for AboutProvider {
     async fn fetch_data(&self, client: Client) -> Message<String> {
         async fn closure(client: Client) -> Result<String, reqwest::Error> {
             let text = client
@@ -55,33 +61,26 @@ impl ViewAsync<String> for About {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct About {
-    node_ref: NodeRef,
-}
+#[function_component(About)]
+pub fn about() -> Html {
+    let node_ref = Default::default();
+    let provider = use_state(move || AboutProvider { node_ref });
+    let theme = use_context::<Theme>().unwrap_or_default();
 
-impl Component for About {
-    type Message = ();
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        About {
-            node_ref: Default::default(),
+    if let Some(element) = provider.node_ref.cast::<Element>() {
+        let element_list = element.get_elements_by_tag_name("a");
+        for i in 0..element_list.length() {
+            element_list
+                .get_with_index(i)
+                .unwrap()
+                .set_class_name(theme.get_link_class());
         }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let theme = ctx
-            .link()
-            .context::<Theme>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default();
-        html! {
-            <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
-                <div ref={self.node_ref.clone()}/>
-                <AsyncComponent<String,Self> provider = {self.clone()}/>
-                <small>{SMALL_NOTE}</small>
-            </div>
-        }
+    };
+    html! {
+        <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
+            <div ref={provider.node_ref.clone()}/>
+            <AsyncComponent<String,AboutProvider> provider = {provider.deref().clone()}/>
+            <small>{SMALL_NOTE}</small>
+        </div>
     }
 }
