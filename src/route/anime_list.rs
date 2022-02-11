@@ -28,7 +28,6 @@ impl ViewAsync<Vec<String>> for AnimeList {
     }
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<Vec<String>, Self>>,
         element: Rc<Vec<String>>,
     ) -> Html {
         html! {

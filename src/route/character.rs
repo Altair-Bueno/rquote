@@ -7,6 +7,7 @@ use yew::prelude::*;
 
 use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
+use rquote_component::pager::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
 
@@ -20,14 +21,14 @@ pub struct CharacterProp {
 #[derive(Debug, PartialEq, Clone)]
 pub struct CharacterProvider {
     character: String,
-    page: Option<u32>,
+    page: u32,
 }
 
 #[async_trait(? Send)]
 impl ViewAsync<Vec<AnimechanQuote>> for CharacterProvider {
     async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
         let response =
-            AnimechanQuote::get_quote_character(&client, &self.character, self.page).await;
+            AnimechanQuote::get_quote_character(&client, &self.character, Some(self.page)).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
@@ -35,7 +36,6 @@ impl ViewAsync<Vec<AnimechanQuote>> for CharacterProvider {
     }
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
         element: Rc<Vec<AnimechanQuote>>,
     ) -> Html {
         element
@@ -55,9 +55,27 @@ pub fn character(props: &CharacterProp) -> Html {
         .unwrap_or_default();
     let title = props.character.as_str();
     let provider = {
-        let page = None;
+        let page = 0;
         let character = title.to_string();
         use_state(|| CharacterProvider { page, character })
+    };
+    let prev = {
+        if provider.deref().page == 0 {
+            None
+        } else {
+            let provider = provider.clone();
+            Some(Callback::from(move |_| provider.set(CharacterProvider {
+                page: provider.page - 1,
+                ..provider.deref().clone()
+            })))
+        }
+    };
+    let next = {
+        let provider = provider.clone();
+        Some(Callback::from(move |_| provider.set(CharacterProvider {
+            page: provider.page + 1,
+            ..provider.deref().clone()
+        })))
     };
     html! {
         <>
@@ -66,6 +84,7 @@ pub fn character(props: &CharacterProp) -> Html {
                 <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
             </h1>
             <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider> provider={provider.deref().clone()}/>
+            <PagerComponent page = {provider.page} {prev} {next}/>
         </>
     }
 }

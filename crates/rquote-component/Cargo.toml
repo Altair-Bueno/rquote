@@ -11,6 +11,8 @@ yew-router = "0.16.0"
 async-trait = "0.1.52"
 reqwest = "0.11.9"
 wasm-bindgen = "0.2.79"
+wasm-bindgen-futures = "0.4.29"
+
 
 [dependencies.rquote-core]
 path = "../rquote-core"

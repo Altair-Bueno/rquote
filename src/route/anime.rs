@@ -35,7 +35,6 @@ impl ViewAsync<Vec<AnimechanQuote>> for AnimeProvider {
 
     fn successful_view(
         &self,
-        __ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
         element: Rc<Vec<AnimechanQuote>>,
     ) -> Html {
         element

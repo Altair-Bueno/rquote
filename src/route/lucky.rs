@@ -20,7 +20,7 @@ impl ViewAsync<AnimechanQuote> for Lucky {
             Err(x) => Message::Failed(Rc::new(x)),
         }
     }
-    fn successful_view(&self, _ctx: &Context<AsyncComponent<AnimechanQuote, Self>>, element: Rc<AnimechanQuote>) -> Html {
+    fn successful_view(&self, element: Rc<AnimechanQuote>) -> Html {
         let quote = element.as_ref().clone();
         html! {
             <QuoteComponent {quote}/>

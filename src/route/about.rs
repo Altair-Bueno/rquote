@@ -40,14 +40,9 @@ impl ViewAsync<String> for AboutProvider {
     }
     fn successful_view(
         &self,
-        ctx: &Context<AsyncComponent<String, Self>>,
         element: Rc<String>,
     ) -> Html {
-        let theme = ctx
-            .link()
-            .context::<Theme>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default();
+        let theme = use_context::<Theme>().unwrap_or_default();
         let el = self.node_ref.cast::<Element>().unwrap();
         el.set_inner_html(element.as_str());
         let elements = el.get_elements_by_tag_name("a");

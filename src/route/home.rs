@@ -4,8 +4,8 @@ use async_trait::async_trait;
 use reqwest::Client;
 use yew::prelude::*;
 
-use rquote_component::async_load::ViewAsync;
 use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
 use rquote_core::AnimechanQuote;
 
 use crate::custom::quote::*;
@@ -24,7 +24,6 @@ impl ViewAsync<Vec<AnimechanQuote>> for Home {
     }
     fn successful_view(
         &self,
-        _ctx: &Context<AsyncComponent<Vec<AnimechanQuote>, Self>>,
         element: Rc<Vec<AnimechanQuote>>,
     ) -> Html {
         element
