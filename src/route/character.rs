@@ -64,7 +64,7 @@ pub fn character(props: &CharacterProp) -> Html {
             None
         } else {
             let provider = provider.clone();
-            Some(Callback::from(move |_| provider.set(CharacterProvider {
+            Some(Callback::from(move |_: MouseEvent| provider.set(CharacterProvider {
                 page: provider.page - 1,
                 ..provider.deref().clone()
             })))
@@ -72,7 +72,7 @@ pub fn character(props: &CharacterProp) -> Html {
     };
     let next = {
         let provider = provider.clone();
-        Some(Callback::from(move |_| provider.set(CharacterProvider {
+        Some(Callback::from(move |_: MouseEvent| provider.set(CharacterProvider {
             page: provider.page + 1,
             ..provider.deref().clone()
         })))
@@ -84,7 +84,7 @@ pub fn character(props: &CharacterProp) -> Html {
                 <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
             </h1>
             <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider> provider={provider.deref().clone()}/>
-            <PagerComponent page = {provider.page} {prev} {next}/>
+            //<PagerComponent page = {provider.page} {prev} {next}/>
         </>
     }
 }
