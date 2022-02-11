@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::Theme;
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct PagerProps {
     #[prop_or_default]
@@ -12,6 +14,7 @@ pub struct PagerProps {
 
 #[function_component(PagerComponent)]
 pub fn pager(props: &PagerProps) -> Html {
+    let _theme = use_context::<Theme>().unwrap_or_default();
     let prev = if let Some(onclick) = props.prev.clone() {
         html! {
             <li key = {"prev"} class = {classes!("page-item")}>
@@ -22,7 +25,7 @@ pub fn pager(props: &PagerProps) -> Html {
         Html::default()
     };
 
-    let next = if let Some(onclick) = props.prev.clone() {
+    let next = if let Some(onclick) = props.next.clone() {
         html! {
             <li key = {"next"} class = {classes!("page-item")}>
                 <button class = {classes!("page-link")} {onclick}>{"»"}</button>
@@ -37,8 +40,8 @@ pub fn pager(props: &PagerProps) -> Html {
         </li>
     };
     html! {
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
+        <nav aria-label="Page navigation" class={classes!("align-middle")}>
+            <ul class={classes!("pagination","justify-content-center")}>
                 {prev}{page}{next}
             </ul>
         </nav>
