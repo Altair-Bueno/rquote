@@ -69,7 +69,6 @@ impl Component for Main {
     type Properties = ();
 
     fn create(ctx: &Context<Self>) -> Self {
-        // TODO watch for theme changes
         let theme = Main::get_current_theme();
         let callback: Callback<Theme> = ctx
             .link()
