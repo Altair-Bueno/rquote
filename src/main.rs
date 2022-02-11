@@ -1,6 +1,6 @@
 use reqwest::Client;
 use wasm_bindgen::JsCast;
-use web_sys::{EventListener, MediaQueryList};
+use web_sys::MediaQueryList;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -13,12 +13,7 @@ mod custom;
 mod route;
 
 enum Message {
-    // FIXME
-    #[allow(unused)]
     ThemeChanged(Theme),
-    // FIXME
-    #[allow(unused)]
-    Nop,
 }
 
 struct Main {
@@ -61,7 +56,7 @@ impl Main {
                         let theme = if media_query.matches() { Theme::Dark } else { Theme::Light };
                         callback.emit(theme);
                     }) as Box<dyn Fn(_)>);
-                    media_query.add_listener_with_opt_callback(Some(closure.as_ref().unchecked_ref()));
+                    let _ = media_query.add_listener_with_opt_callback(Some(closure.as_ref().unchecked_ref()));
                     closure.forget();
                 }
             }
@@ -91,8 +86,7 @@ impl Component for Main {
             Message::ThemeChanged(new_theme) => {
                 self.theme = new_theme;
                 true
-            }
-            Message::Nop => false,
+            },
         }
     }
 

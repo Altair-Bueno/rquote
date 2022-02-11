@@ -77,11 +77,11 @@ fn successful(props: &SuccessfulProp) -> Html {
             .list
             .iter()
             .map(|x| (x, matcher.fuzzy_match(x, search_string.as_str())))
-            .filter(|(x, score)| { score.map(|x| x > 0).unwrap_or_default() })
-            .map(|(x, y)| (x, y.unwrap()))
+            .filter(|(_, score)| { score.map(|x| x > 0).unwrap_or_default() })
+            .map(|(string, score)| (string, score.unwrap()))
             .collect::<Vec<_>>(); // Sorting requires memory allocation
-        temp.sort_unstable_by_key(|(key, value)| -value);
-        vector = temp.into_iter().map(|(key, value)| key.clone()).collect();
+        temp.sort_unstable_by_key(|(_, score)| -score);
+        vector = temp.into_iter().map(|(string, _)| string.clone()).collect();
     }
 
     let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
