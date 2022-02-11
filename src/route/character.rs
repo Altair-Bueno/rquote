@@ -1,11 +1,12 @@
+use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
 use reqwest::Client;
 use yew::prelude::*;
 
-use rquote_component::async_load::ViewAsync;
 use rquote_component::async_load::*;
+use rquote_component::async_load::ViewAsync;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
 
@@ -17,13 +18,13 @@ pub struct CharacterProp {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Character {
+pub struct CharacterProvider {
     character: String,
     page: Option<u32>,
 }
 
 #[async_trait(? Send)]
-impl ViewAsync<Vec<AnimechanQuote>> for Character {
+impl ViewAsync<Vec<AnimechanQuote>> for CharacterProvider {
     async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
         let response =
             AnimechanQuote::get_quote_character(&client, &self.character, self.page).await;
@@ -48,32 +49,23 @@ impl ViewAsync<Vec<AnimechanQuote>> for Character {
     }
 }
 
-impl Component for Character {
-    type Message = ();
-    type Properties = CharacterProp;
-
-    fn create(ctx: &Context<Self>) -> Self {
-        Character {
-            character: ctx.props().character.clone(),
-            page: None,
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let theme = ctx
-            .link()
-            .context::<Theme>(Default::default())
-            .map(|x| x.0)
-            .unwrap_or_default();
-        let title = self.character.as_str();
-        html! {
-            <>
-                <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
-                    {title}
-                    <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
-                </h1>
-                <AsyncComponent<Vec<AnimechanQuote>,Self> provider={self.clone()}/>
-            </>
-        }
+#[function_component(Character)]
+pub fn character(props: &CharacterProp) -> Html {
+    let theme = use_context::<Theme>()
+        .unwrap_or_default();
+    let title = props.character.as_str();
+    let provider = {
+        let page = None;
+        let character = title.to_string();
+        use_state(|| CharacterProvider { page, character })
+    };
+    html! {
+        <>
+            <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
+                {title}
+                <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
+            </h1>
+            <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider> provider={provider.deref().clone()}/>
+        </>
     }
 }
