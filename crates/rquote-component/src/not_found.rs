@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use yew::prelude::*;
 use yew_router::prelude::*;
 
