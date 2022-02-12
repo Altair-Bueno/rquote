@@ -5,10 +5,7 @@ use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
-use reqwest::{Client, Error as ReqwestError};
 use yew::prelude::*;
-
-use rquote_core::wrapper::ClientWrapper;
 
 use crate::error::*;
 use crate::loading::*;
@@ -19,7 +16,7 @@ where
     ELEMENT: Debug + PartialEq,
     Self: PartialEq + Clone,
 {
-    async fn fetch_data(&self, client: Client) -> Message<ELEMENT>;
+    async fn fetch_data(&self) -> Message<ELEMENT>;
     fn successful_view(
         &self,
         _element: Rc<ELEMENT>,
@@ -54,7 +51,7 @@ where
 {
     Loading,
     Successful(Rc<ELEMENT>),
-    Failed(Rc<ReqwestError>),
+    Failed(Rc<dyn Error>),
 }
 
 impl<ELEMENT> Default for Message<ELEMENT>
@@ -67,10 +64,10 @@ where
 }
 
 #[derive(Properties, PartialEq, Clone)]
-pub struct AsyncFetchProp<ELEMENT, PROVIDER>
-where
-    ELEMENT: Debug + PartialEq,
-    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
+pub struct AsyncProp<ELEMENT, PROVIDER>
+    where
+        ELEMENT: Debug + PartialEq,
+        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]
@@ -78,23 +75,20 @@ where
 }
 
 #[function_component(AsyncComponent)]
-pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncFetchProp<ELEMENT, PROVIDER>) -> Html
+pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncProp<ELEMENT, PROVIDER>) -> Html
     where
         ELEMENT: Debug + PartialEq + 'static,
         PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
 {
-    let client = use_context::<ClientWrapper>().unwrap_or_default().take();
     let state: UseStateHandle<Message<ELEMENT>> = use_state(|| Message::Loading);
     let provider = &props.provider;
     {
-        let client = client.clone();
         let state = state.clone();
         let provider = provider.clone();
         use_effect_with_deps(move |_| {
-            let client = client.clone();
             let state = state.clone();
             let provider = provider.clone();
-            wasm_bindgen_futures::spawn_local(async move { state.set(provider.fetch_data(client).await); });
+            wasm_bindgen_futures::spawn_local(async move { state.set(provider.fetch_data().await); });
             || ()
         }, ());
     };

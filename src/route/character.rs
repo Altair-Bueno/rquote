@@ -1,8 +1,6 @@
-use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
-use reqwest::Client;
 use yew::prelude::*;
 
 use rquote_component::async_load::*;
@@ -10,6 +8,7 @@ use rquote_component::async_load::ViewAsync;
 use rquote_component::pager::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
+use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
@@ -22,13 +21,14 @@ pub struct CharacterProp {
 pub struct CharacterProvider {
     character: String,
     page: u32,
+    client: ClientWrapper,
 }
 
 #[async_trait(? Send)]
 impl ViewAsync<Vec<AnimechanQuote>> for CharacterProvider {
-    async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
+    async fn fetch_data(&self) -> Message<Vec<AnimechanQuote>> {
         let response =
-            AnimechanQuote::get_quote_character(&client, &self.character, Some(self.page)).await;
+            AnimechanQuote::get_quote_character(self.client.as_ref(), &self.character, Some(self.page)).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
@@ -54,28 +54,23 @@ pub fn character(props: &CharacterProp) -> Html {
     let theme = use_context::<Theme>()
         .unwrap_or_default();
     let title = props.character.as_str();
-    let provider = {
-        let page = 0;
-        let character = title.to_string();
-        use_state(|| CharacterProvider { page, character })
-    };
+    let page = use_state(|| 0u32);
     let prev = {
-        if provider.deref().page == 0 {
+        if *page == 0 {
             None
         } else {
-            let provider = provider.clone();
-            Some(Callback::from(move |_: MouseEvent| provider.set(CharacterProvider {
-                page: provider.page - 1,
-                ..provider.deref().clone()
-            })))
+            let page = page.clone();
+            Some(Callback::from(move |_: MouseEvent| page.set(*page - 1)))
         }
     };
     let next = {
-        let provider = provider.clone();
-        Some(Callback::from(move |_: MouseEvent| provider.set(CharacterProvider {
-            page: provider.page + 1,
-            ..provider.deref().clone()
-        })))
+        let page = page.clone();
+        Some(Callback::from(move |_: MouseEvent| page.set(*page + 1)))
+    };
+    let provider = CharacterProvider {
+        page: *page,
+        character: props.character.to_string(),
+        client: use_context().unwrap_or_default(),
     };
     html! {
         <>
@@ -83,8 +78,9 @@ pub fn character(props: &CharacterProp) -> Html {
                 {title}
                 <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
             </h1>
-            <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider> provider={provider.deref().clone()}/>
-            //<PagerComponent page = {provider.page} {prev} {next}/>
+            <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider>
+                {provider}/>
+            //<PagerComponent page = {*page} {prev} {next}/>
         </>
     }
 }

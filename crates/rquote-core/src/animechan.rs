@@ -8,6 +8,9 @@ const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/ani
 const ANIMECHAN_CHARACTER_QUOTE: &str = "https://animechan.vercel.app/api/quotes/character";
 const ANIMECHAN_ANIME_LIST: &str = "https://animechan.vercel.app/api/available/anime";
 
+/// Type that can be Serialized and Deserialized as a valid Animechan quote. You
+/// can find more information about Animechan's API
+/// [here](https://animechan.vercel.app/)
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct AnimechanQuote {
     anime: String,
@@ -73,13 +76,13 @@ impl AnimechanQuote {
         client.get(ANIMECHAN_ANIME_LIST).send().await?.json().await
     }
 
-    pub fn get_anime(&self) -> &str {
+    pub fn anime(&self) -> &str {
         self.anime.as_str()
     }
-    pub fn get_character(&self) -> &str {
+    pub fn character(&self) -> &str {
         self.character.as_str()
     }
-    pub fn get_quote(&self) -> &str {
+    pub fn quote(&self) -> &str {
         self.quote.as_str()
     }
 }
