@@ -1,5 +1,5 @@
 pub use animechan::AnimechanQuote;
 
-// https://animechan.vercel.app/
 mod animechan;
+/// Wrapper types used on Rquote
 pub mod wrapper;
