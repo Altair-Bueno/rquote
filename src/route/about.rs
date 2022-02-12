@@ -8,6 +8,7 @@ use yew::prelude::*;
 
 use rquote_component::async_load::{*, ViewAsync};
 use rquote_component::Theme;
+use rquote_core::wrapper::ClientWrapper;
 
 const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
 const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
@@ -15,11 +16,12 @@ const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 #[derive(Debug, Clone, PartialEq)]
 struct AboutProvider {
     node_ref: NodeRef,
+    client: ClientWrapper,
 }
 
 #[async_trait(? Send)]
 impl ViewAsync<String> for AboutProvider {
-    async fn fetch_data(&self, client: Client) -> Message<String> {
+    async fn fetch_data(&self) -> Message<String> {
         async fn closure(client: Client) -> Result<String, reqwest::Error> {
             let text = client
                 .get(README)
@@ -33,7 +35,7 @@ impl ViewAsync<String> for AboutProvider {
             pulldown_cmark::html::push_html(&mut out, parser);
             Ok(out)
         }
-        match closure(client).await {
+        match closure(self.client.as_ref().clone()).await {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(x) => Message::Failed(Rc::new(x)),
         }
@@ -59,7 +61,8 @@ impl ViewAsync<String> for AboutProvider {
 #[function_component(About)]
 pub fn about() -> Html {
     let node_ref = Default::default();
-    let provider = use_state(move || AboutProvider { node_ref });
+    let client = use_context().unwrap_or_default();
+    let provider = use_state(move || AboutProvider { node_ref, client });
     let theme = use_context::<Theme>().unwrap_or_default();
 
     if let Some(element) = provider.node_ref.cast::<Element>() {

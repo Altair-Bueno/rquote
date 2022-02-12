@@ -2,7 +2,6 @@ use std::rc::Rc;
 
 use async_trait::async_trait;
 use fuzzy_matcher::FuzzyMatcher;
-use reqwest::Client;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -11,16 +10,19 @@ use rquote_component::async_load::ViewAsync;
 use rquote_component::list::*;
 use rquote_component::search_bar::*;
 use rquote_core::AnimechanQuote;
+use rquote_core::wrapper::ClientWrapper;
 
 use crate::route::Route;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct AnimeList;
+pub struct AnimeListProvider {
+    client: ClientWrapper,
+}
 
 #[async_trait(? Send)]
-impl ViewAsync<Vec<String>> for AnimeList {
-    async fn fetch_data(&self, client: Client) -> Message<Vec<String>> {
-        let response = AnimechanQuote::get_anime_list(&client).await;
+impl ViewAsync<Vec<String>> for AnimeListProvider {
+    async fn fetch_data(&self) -> Message<Vec<String>> {
+        let response = AnimechanQuote::get_anime_list(self.client.as_ref()).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
@@ -36,18 +38,13 @@ impl ViewAsync<Vec<String>> for AnimeList {
     }
 }
 
-impl Component for AnimeList {
-    type Message = ();
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        AnimeList
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <AsyncComponent<Vec<String>,Self> provider={self.clone()}/>
-        }
+#[function_component(AnimeList)]
+pub fn anime_list() -> Html {
+    let provider = AnimeListProvider {
+        client: use_context().unwrap_or_default(),
+    };
+    html! {
+        <AsyncComponent<Vec<String>,AnimeListProvider> {provider}/>
     }
 }
 

@@ -742,8 +742,6 @@ name = "rquote-component"
 version = "0.1.0"
 dependencies = [
  "async-trait",
- "reqwest",
- "rquote-core",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",

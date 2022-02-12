@@ -1,22 +1,24 @@
 use std::rc::Rc;
 
 use async_trait::async_trait;
-use reqwest::Client;
 use yew::prelude::*;
 
 use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
 use rquote_core::AnimechanQuote;
+use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Home;
+struct HomeProvider {
+    client: ClientWrapper,
+}
 
 #[async_trait(? Send)]
-impl ViewAsync<Vec<AnimechanQuote>> for Home {
-    async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
-        let response = AnimechanQuote::get_10_random_quotes(&client).await;
+impl ViewAsync<Vec<AnimechanQuote>> for HomeProvider {
+    async fn fetch_data(&self) -> Message<Vec<AnimechanQuote>> {
+        let response = AnimechanQuote::get_10_random_quotes(self.client.as_ref()).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
@@ -37,17 +39,12 @@ impl ViewAsync<Vec<AnimechanQuote>> for Home {
     }
 }
 
-impl Component for Home {
-    type Message = ();
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Home
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <AsyncComponent<Vec<AnimechanQuote>,Self> provider={self.clone()}/>
-        }
+#[function_component(Home)]
+pub fn home() -> Html {
+    let provider = HomeProvider {
+        client: use_context().unwrap_or_default()
+    };
+    html! {
+        <AsyncComponent<Vec<AnimechanQuote>,HomeProvider> {provider}/>
     }
 }

@@ -2,13 +2,13 @@ use std::ops::Deref;
 use std::rc::Rc;
 
 use async_trait::async_trait;
-use reqwest::Client;
 use yew::prelude::*;
 
 use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
+use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
@@ -21,12 +21,13 @@ pub struct AnimeProp {
 struct AnimeProvider {
     title: String,
     page: Option<u32>,
+    client: ClientWrapper,
 }
 
 #[async_trait(? Send)]
 impl ViewAsync<Vec<AnimechanQuote>> for AnimeProvider {
-    async fn fetch_data(&self, client: Client) -> Message<Vec<AnimechanQuote>> {
-        let response = AnimechanQuote::get_quote_title(&client, &self.title, self.page).await;
+    async fn fetch_data(&self) -> Message<Vec<AnimechanQuote>> {
+        let response = AnimechanQuote::get_quote_title(self.client.as_ref(), &self.title, self.page).await;
         match response {
             Ok(x) => Message::Successful(Rc::new(x)),
             Err(err) => Message::Failed(Rc::new(err)),
@@ -55,7 +56,8 @@ pub fn view(props: &AnimeProp) -> Html {
     let provider = {
         let title = title.to_string();
         let page = None;
-        use_state(|| AnimeProvider { title, page })
+        let client = use_context().unwrap_or_default();
+        use_state(|| AnimeProvider { title, page, client })
     };
     html! {
         <>
