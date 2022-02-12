@@ -18,14 +18,14 @@ pub struct QuoteProp {
 #[function_component(QuoteComponent)]
 pub fn quote(props: &QuoteProp) -> Html {
     let animechan_quote = &props.quote;
-    let quote = animechan_quote.get_quote();
-    let anime = animechan_quote.get_anime();
-    let character = animechan_quote.get_character();
+    let quote = animechan_quote.quote();
+    let anime = animechan_quote.anime();
+    let character = animechan_quote.character();
     let theme = use_context::<Theme>().unwrap_or_default();
 
     let header = if props.header {
         let anime_route = Route::Anime {
-            title: props.quote.get_anime().to_string(),
+            title: props.quote.anime().to_string(),
         };
         html! {
             <div class={classes!("card-header")}>
@@ -40,7 +40,7 @@ pub fn quote(props: &QuoteProp) -> Html {
 
     let footer = if props.footer {
         let character_route = Route::Character {
-            character: props.quote.get_character().to_string(),
+            character: props.quote.character().to_string(),
         };
         html! {
             <footer class={classes!("blockquote-footer")}>
