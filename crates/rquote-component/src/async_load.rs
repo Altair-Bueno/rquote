@@ -64,10 +64,10 @@ where
 }
 
 #[derive(Properties, PartialEq, Clone)]
-pub struct AsyncFetchProp<ELEMENT, PROVIDER>
-where
-    ELEMENT: Debug + PartialEq,
-    PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
+pub struct AsyncProp<ELEMENT, PROVIDER>
+    where
+        ELEMENT: Debug + PartialEq,
+        PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
     pub provider: PROVIDER,
     #[prop_or_default]
@@ -75,7 +75,7 @@ where
 }
 
 #[function_component(AsyncComponent)]
-pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncFetchProp<ELEMENT, PROVIDER>) -> Html
+pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncProp<ELEMENT, PROVIDER>) -> Html
     where
         ELEMENT: Debug + PartialEq + 'static,
         PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT> + 'static,
