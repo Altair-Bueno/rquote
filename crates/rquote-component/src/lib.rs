@@ -8,6 +8,7 @@ pub mod not_found;
 pub mod pager;
 pub mod search_bar;
 pub mod switch;
+pub mod button;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Theme {
@@ -44,6 +45,12 @@ impl Theme {
         match self {
             Theme::Dark => "link-light",
             Theme::Light => "link-dark",
+        }
+    }
+    pub fn get_button_class(&self) -> &'static str {
+        match self {
+            Theme::Dark => "btn-light",
+            Theme::Light => "btn-dark"
         }
     }
 }

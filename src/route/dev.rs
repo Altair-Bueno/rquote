@@ -1,13 +1,13 @@
 use yew::prelude::*;
 
-use rquote_component::pager::*;
+use rquote_component::button::*;
 
 #[function_component(Dev)]
 pub fn dev() -> Html {
-    let page = 10;
-    let prev: Callback<MouseEvent> = { |_| () }.into();
-    let next = prev.clone();
+    let prev: Callback<MouseEvent> = { |_| web_sys::console::log_1(&"Something".into()) }.into();
     html! {
-        <PagerComponent {page} {prev} {next}/>
+        <ButtonComponent onclick = {prev}>
+        {"Hello world"}
+        </ButtonComponent>
     }
 }
