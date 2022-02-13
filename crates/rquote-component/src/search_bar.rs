@@ -11,6 +11,8 @@ pub struct SearchBarProps {
     pub input: Callback<String>,
     #[prop_or("Search".to_string())]
     pub placeholder: String,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 // https://github.com/yewstack/yew/blob/master/examples/password_strength/src/text_input.rs
@@ -32,10 +34,14 @@ pub fn search(props: &SearchBarProps) -> Html {
             x.prevent_default()
         }
     };
+    let mut class = props.class.clone();
+    class.push("form-control");
+    class.push(theme.get_background_class());
+    class.push(theme.get_text_class());
     html! {
         <form class={classes!("d-flex")}>
             <input
-                class={classes!("form-control","m-3",theme.get_background_class(),theme.get_text_class())}
+                {class}
                 type="search"
                 aria-label="Search"
                 placeholder={placeholder}
