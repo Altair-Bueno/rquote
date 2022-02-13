@@ -32,7 +32,7 @@ impl ViewAsync<Vec<AnimechanQuote>> for HomeProvider {
             .iter()
             .map(|x| {
                 html! {
-                    <QuoteComponent quote = {x.clone()}/>
+                    <QuoteComponent quote = {x.clone()} class = {classes!("m-3")}/>
                 }
             })
             .collect()

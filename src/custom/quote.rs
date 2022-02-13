@@ -13,6 +13,8 @@ pub struct QuoteProp {
     pub header: bool,
     #[prop_or(true)]
     pub footer: bool,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 #[function_component(QuoteComponent)]
@@ -52,11 +54,16 @@ pub fn quote(props: &QuoteProp) -> Html {
     } else {
         Html::default()
     };
+    let mut class = props.class.clone();
+    class.push("card");
+    class.push("rounded-3");
+    class.push("shadow-sm");
+    class.push(theme.get_background_class());
     html! {
-        <div class={classes!("card", "rounded-3", "shadow-sm", "m-1",theme.get_background_class())}>
+        <div {class}>
             {header}
             <div class={classes!("card-body")}>
-                <blockquote class={classes!("blockquote", "mb-0")}>
+                <blockquote class={classes!("blockquote")}>
                     <p class={classes!("card-text",theme.get_text_class())}>{quote}</p>
                     {footer}
                 </blockquote>

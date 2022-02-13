@@ -25,7 +25,7 @@ impl ViewAsync<AnimechanQuote> for LuckyProvider {
     fn successful_view(&self, element: Rc<AnimechanQuote>) -> Html {
         let quote = element.as_ref().clone();
         html! {
-            <QuoteComponent {quote}/>
+            <QuoteComponent {quote} class = {classes!("m-3")}/>
         }
     }
 }

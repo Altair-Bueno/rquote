@@ -92,8 +92,8 @@ fn successful(props: &SuccessfulProp) -> Html {
     });
     html! {
         <>
-            <SearchBarComponent {input}/>
-            <ListComponent>
+            <SearchBarComponent {input} class = {classes!("m-3")}/>
+            <ListComponent class = {classes!("mx-3")}>
                 {for list}
             </ListComponent>
         </>

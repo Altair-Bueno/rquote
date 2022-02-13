@@ -5,6 +5,8 @@ use crate::Theme;
 #[derive(Properties, Clone, PartialEq)]
 pub struct ListProp {
     pub children: Children,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 #[function_component(ListComponent)]
@@ -17,8 +19,10 @@ pub fn list(props: &ListProp) -> Html {
             </li>
         }
     });
+    let mut class = props.class.clone();
+    class.push("list-group");
     html! {
-        <ul class = {classes!("list-group","m-3")}>
+        <ul {class}>
             {for child}
         </ul>
     }
