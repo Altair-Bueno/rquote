@@ -85,12 +85,13 @@ pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncProp<ELEMENT, PROVIDER>) 
     {
         let state = state.clone();
         let provider = provider.clone();
-        use_effect_with_deps(move |_| {
-            let state = state.clone();
+        use_effect_with_deps(move |provider: &PROVIDER| {
+            state.set(Message::Loading);
             let provider = provider.clone();
+            let state = state.clone();
             wasm_bindgen_futures::spawn_local(async move { state.set(provider.fetch_data().await); });
             || ()
-        }, ());
+        }, provider);
     };
     match state.deref() {
         Message::Loading => provider.loading_view(),
