@@ -7,6 +7,7 @@ use std::rc::Rc;
 use async_trait::async_trait;
 use yew::prelude::*;
 
+use crate::button::*;
 use crate::error::*;
 use crate::loading::*;
 
@@ -27,15 +28,22 @@ where
         &self,
         error: Rc<dyn Error>,
     ) -> Html {
-        let onclick = |_| todo!();
-        let _ = html! {
-            <button {onclick} class={classes!("btn","btn-light","text-dark")}>
-                {"Reload"}
-            </button>
-        };
+        let onclick: Callback<MouseEvent> = {
+            |_| if let Some(window) = web_sys::window() {
+                let _ = window.location().reload();
+            }
+        }.into();
         html! {
             <ErrorComponent severity={Severity::Danger} {error}>
-                //{reload_button}
+            <div class="container">
+                <div class="row">
+                    <div class="col text-end">
+                        <ButtonComponent {onclick}>
+                        {"Reload"}
+                        </ButtonComponent>
+                    </div>
+                </div>
+            </div>
             </ErrorComponent>
         }
     }
@@ -85,12 +93,13 @@ pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncProp<ELEMENT, PROVIDER>) 
     {
         let state = state.clone();
         let provider = provider.clone();
-        use_effect_with_deps(move |_| {
-            let state = state.clone();
+        use_effect_with_deps(move |provider: &PROVIDER| {
+            state.set(Message::Loading);
             let provider = provider.clone();
+            let state = state.clone();
             wasm_bindgen_futures::spawn_local(async move { state.set(provider.fetch_data().await); });
             || ()
-        }, ());
+        }, provider);
     };
     match state.deref() {
         Message::Loading => provider.loading_view(),

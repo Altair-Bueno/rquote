@@ -9,6 +9,7 @@ use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
 use rquote_component::list::*;
 use rquote_component::search_bar::*;
+use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
 
@@ -55,6 +56,7 @@ struct SuccessfulProp {
 
 #[function_component(SuccessfulComponent)]
 fn successful(props: &SuccessfulProp) -> Html {
+    let theme: Theme = use_context().unwrap_or_default();
     let search_string = use_state(|| String::new());
     let input: Callback<String> = {
         let search_string = search_string.clone();
@@ -81,9 +83,9 @@ fn successful(props: &SuccessfulProp) -> Html {
     }
 
     let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
-        let route = Route::Anime { title: x.clone() };
+        let route = Route::Anime { title: urlencoding::encode(&x).to_string() };
         html! {
-                <Link<Route> to={route} classes={classes!("link-dark")}>
+                <Link<Route> to={route} classes={classes!(theme.get_link_class())}>
                     {x}
                 </Link<Route>>
         }
