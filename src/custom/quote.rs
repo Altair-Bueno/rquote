@@ -25,7 +25,7 @@ pub fn quote(props: &QuoteProp) -> Html {
 
     let header = if props.header {
         let anime_route = Route::Anime {
-            title: props.quote.anime().to_string(),
+            title: urlencoding::encode(props.quote.anime()).to_string(),
         };
         html! {
             <div class={classes!("card-header")}>
@@ -40,7 +40,7 @@ pub fn quote(props: &QuoteProp) -> Html {
 
     let footer = if props.footer {
         let character_route = Route::Character {
-            character: props.quote.character().to_string(),
+            character: urlencoding::encode(props.quote.character()).to_string()
         };
         html! {
             <footer class={classes!("blockquote-footer")}>

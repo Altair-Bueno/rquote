@@ -81,7 +81,7 @@ fn successful(props: &SuccessfulProp) -> Html {
     }
 
     let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
-        let route = Route::Anime { title: x.clone() };
+        let route = Route::Anime { title: urlencoding::encode(&x).to_string() };
         html! {
                 <Link<Route> to={route} classes={classes!("link-dark")}>
                     {x}
