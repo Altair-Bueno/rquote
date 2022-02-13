@@ -5,7 +5,7 @@ use yew::prelude::*;
 
 use rquote_component::async_load::*;
 use rquote_component::async_load::ViewAsync;
-use rquote_component::pager::*;
+use rquote_component::button::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
@@ -53,34 +53,40 @@ impl ViewAsync<Vec<AnimechanQuote>> for CharacterProvider {
 pub fn character(props: &CharacterProp) -> Html {
     let theme = use_context::<Theme>()
         .unwrap_or_default();
+    let client = use_context::<ClientWrapper>()
+        .unwrap_or_default();
     let title = props.character.as_str();
     let page = use_state(|| 0u32);
-    let prev = {
-        if *page == 0 {
-            None
-        } else {
-            let page = page.clone();
-            Some(Callback::from(move |_: MouseEvent| page.set(*page - 1)))
-        }
-    };
-    let next = {
+    let onclick: Callback<MouseEvent> = {
         let page = page.clone();
-        Some(Callback::from(move |_: MouseEvent| page.set(*page + 1)))
-    };
-    let provider = CharacterProvider {
-        page: *page,
-        character: props.character.to_string(),
-        client: use_context().unwrap_or_default(),
-    };
+        move |_: MouseEvent| page.set(*page + 1)
+    }.into();
+    let async_component_list = (0..=*page)
+        .map(|page| CharacterProvider {
+            client: client.clone(),
+            character: title.to_string(),
+            page,
+        })
+        .map(|provider| html! {
+            <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider>
+                {provider}/>
+        });
     html! {
         <>
             <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
                 {title}
                 <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
             </h1>
-            <AsyncComponent<Vec<AnimechanQuote>,CharacterProvider>
-                {provider}/>
-            //<PagerComponent page = {*page} {prev} {next}/>
+            {for async_component_list}
+            <div class="container">
+                <div class="row">
+                    <div class="col text-center">
+                        <ButtonComponent {onclick} class ={classes!("text-center","my-2")}>
+                            {"Load more"}
+                        </ButtonComponent>
+                    </div>
+                </div>
+            </div>
         </>
     }
 }
