@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::Theme;
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct ListProp {
     pub children: Children,
@@ -7,9 +9,10 @@ pub struct ListProp {
 
 #[function_component(ListComponent)]
 pub fn list(props: &ListProp) -> Html {
+    let theme: Theme = use_context().unwrap_or_default();
     let child = props.children.iter().map(|x| {
         html! {
-            <li class = {classes!("list-group-item",)}>
+            <li class = {classes!("list-group-item",theme.get_background_class())}>
                 {x}
             </li>
         }

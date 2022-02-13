@@ -4,6 +4,8 @@ use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
 use yew::prelude::*;
 
+use crate::Theme;
+
 #[derive(Properties, PartialEq, Clone)]
 pub struct SearchBarProps {
     pub input: Callback<String>,
@@ -21,6 +23,7 @@ fn get_value_from_input_event(e: InputEvent) -> String {
 
 #[function_component(SearchBarComponent)]
 pub fn search(props: &SearchBarProps) -> Html {
+    let theme: Theme = use_context().unwrap_or_default();
     let placeholder = props.placeholder.clone();
     let callback = props.input.clone();
     let oninput = move |x: InputEvent| callback.emit(get_value_from_input_event(x));
@@ -30,9 +33,9 @@ pub fn search(props: &SearchBarProps) -> Html {
         }
     };
     html! {
-        <form class="d-flex">
+        <form class={classes!("d-flex")}>
             <input
-                class={classes!("form-control","m-3")}
+                class={classes!("form-control","m-3",theme.get_background_class(),theme.get_text_class())}
                 type="search"
                 aria-label="Search"
                 placeholder={placeholder}
