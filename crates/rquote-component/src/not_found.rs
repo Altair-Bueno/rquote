@@ -17,7 +17,31 @@ where
     pub info: String,
 }
 
-
+/// A not fount component that has `position: absolute`
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use yew_router::prelude::*;
+/// use rquote_component::not_found::*;
+///
+/// #[derive(Routable, Clone, PartialEq)]
+/// enum Router {
+///     #[at("/")]
+///     Home,
+///     #[at("/foo")]
+///     Foo,
+/// }
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let to = Router::Home;
+///     let title = "Oops, page not found".to_string();
+///     let message = "The requested resource was not found".to_string();
+///     let info = "Click to go home".to_string();
+///     html!{
+///         <NotFoundComponent<Router> {to} {title} {message} {info}/>
+///     }
+/// }
+/// ```
 #[function_component(NotFoundComponent)]
 pub fn not_found<T>(props: &NotFoundProp<T>) -> Html
     where

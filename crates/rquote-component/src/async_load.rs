@@ -11,12 +11,16 @@ use crate::button::*;
 use crate::error::*;
 use crate::loading::*;
 
+/// Interface for defining [AsyncComponent](crate::async_load::AsyncComponent)
+/// providers. A provider defines three different views depending on the current
+/// state of an asynchronous job
 #[async_trait(? Send)]
 pub trait ViewAsync<ELEMENT>
 where
     ELEMENT: Debug + PartialEq,
     Self: PartialEq + Clone,
 {
+    /// Async job to watch
     async fn fetch_data(&self) -> Message<ELEMENT>;
     fn successful_view(
         &self,
@@ -52,6 +56,7 @@ where
     }
 }
 
+/// Available states for the AsyncLoad component
 #[derive(Debug)]
 pub enum Message<ELEMENT>
 where
@@ -77,11 +82,45 @@ pub struct AsyncProp<ELEMENT, PROVIDER>
         ELEMENT: Debug + PartialEq,
         PROVIDER: PartialEq + Clone + ViewAsync<ELEMENT>,
 {
+    /// The provider to use
     pub provider: PROVIDER,
     #[prop_or_default]
     phantom: PhantomData<ELEMENT>,
 }
 
+/// Provides a component skeleton for asynchronous jobs
+///
+/// ```rust
+/// use std::rc::Rc;
+/// use rquote_component::async_load::*;
+/// use yew::prelude::*;
+/// use async_trait::async_trait;
+///
+/// #[derive(Clone,Debug,PartialEq)]
+/// struct Example;
+///
+/// #[async_trait(? Send)]
+/// impl ViewAsync<String> for Example {
+///     async fn fetch_data(&self) -> Message<String> {
+///         // Some expensive async task
+///         Message::Successful(Rc::new("Hello world".to_string()))
+///     }
+///     fn successful_view(&self, element: Rc<String>) -> Html {
+///         let title = element.as_ref();
+///         html!{
+///             <h1>{title}</h1>
+///         }
+///     }
+/// }
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let provider = Example;
+///     html!{
+///         <AsyncComponent<String,Example> {provider} />
+///     }
+/// }
+/// ```
 #[function_component(AsyncComponent)]
 pub fn async_component<ELEMENT, PROVIDER>(props: &AsyncProp<ELEMENT, PROVIDER>) -> Html
     where

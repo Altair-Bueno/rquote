@@ -9,6 +9,23 @@ pub struct ListProp {
     pub class: Classes,
 }
 
+/// Creates a Bootstrap unordered list
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use rquote_component::list::*;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let class = classes!("bg-dark");
+///     html!{
+///         <ListComponent {class}>
+///             {"First child"}
+///             {"Second child"}
+///         </ListComponent>
+///     }
+/// }
+/// ```
 #[function_component(ListComponent)]
 pub fn list(props: &ListProp) -> Html {
     let theme: Theme = use_context().unwrap_or_default();

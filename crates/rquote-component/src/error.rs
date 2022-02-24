@@ -75,7 +75,25 @@ impl PartialEq for ErrorProp {
             && std::ptr::eq(self.error.as_ref(), other.error.as_ref())
     }
 }
-
+/// Displays a error banner
+///
+/// ```rust
+/// use std::rc::Rc;
+/// use yew::prelude::*;
+/// use rquote_component::error::*;
+/// use std::error::Error;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let severity = Severity::Danger;
+///     let error: Rc<dyn Error> = Rc::new("foo".parse::<u32>().unwrap_err());
+///     html!{
+///         <ErrorComponent {error} {severity}>
+///             {"More information"}
+///         </ErrorComponent>
+///     }
+/// }
+/// ```
 #[function_component(ErrorComponent)]
 pub fn error(props: &ErrorProp) -> Html {
     let severity = &props.severity;
