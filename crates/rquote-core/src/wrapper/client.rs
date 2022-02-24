@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use reqwest::Client;
 
-/// Reqwest Wrapper that includes a PartialEq implementation
+/// Reqwest Wrapper that includes a `PartialEq` implementation
 #[derive(Clone, Debug, Default)]
 pub struct ClientWrapper(Client);
 
