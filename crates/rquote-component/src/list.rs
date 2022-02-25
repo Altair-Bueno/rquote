@@ -24,14 +24,30 @@ pub struct ListProp<LISTELEMENT>
 /// use yew::prelude::*;
 /// use rquote_component::list::*;
 ///
+/// #[derive(PartialEq)]
+/// struct Foo(String);
+///
+/// impl ListElement for Foo {
+///     fn key(&self) -> String {
+///         let Foo(x) = self;
+///         x.to_string()
+///     }
+///
+/// fn view(&self) -> Html {
+///         html!{
+///             {self.0.to_string()}
+///         }
+///     }
+/// }
+///
 /// #[function_component(App)]
 /// fn app()->Html {
 ///     let class = classes!("bg-dark");
+///     let children = vec![
+///         Foo("Hello world".to_string())
+///     ];
 ///     html!{
-///         <ListComponent {class}>
-///             {"First child"}
-///             {"Second child"}
-///         </ListComponent>
+///         <ListComponent {class} {children}/>
 ///     }
 /// }
 /// ```
