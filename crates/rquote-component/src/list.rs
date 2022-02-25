@@ -12,13 +12,11 @@ pub struct ListProp {
 #[function_component(ListComponent)]
 pub fn list(props: &ListProp) -> Html {
     let theme: Theme = use_context().unwrap_or_default();
-    let child = props.children.iter().map(|x| {
-        html! {
-            <li class = {classes!("list-group-item",theme.get_background_class())}>
+    let child = props.children.iter().enumerate().map(|(id, x)| html! {
+            <li class = {classes!("list-group-item",theme.get_background_class())} id = {id.to_string()}>
                 {x}
             </li>
-        }
-    });
+        });
     let mut class = props.class.clone();
     class.push("list-group");
     html! {
