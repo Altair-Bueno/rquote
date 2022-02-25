@@ -2,19 +2,31 @@ use yew::prelude::*;
 
 use crate::Theme;
 
+pub trait ListElement {
+    fn key(&self) -> String;
+    fn view(&self) -> Html;
+}
+
 #[derive(Properties, Clone, PartialEq)]
-pub struct ListProp {
-    pub children: Children,
+pub struct ListProp<LISTELEMENT>
+    where
+        LISTELEMENT: ListElement + std::cmp::PartialEq
+{
+    #[prop_or_default]
+    pub children: Vec<LISTELEMENT>,
     #[prop_or_default]
     pub class: Classes,
 }
 
 #[function_component(ListComponent)]
-pub fn list(props: &ListProp) -> Html {
+pub fn list<LISTELEMENT>(props: &ListProp<LISTELEMENT>) -> Html
+    where
+        LISTELEMENT: ListElement + std::cmp::PartialEq
+{
     let theme: Theme = use_context().unwrap_or_default();
-    let child = props.children.iter().enumerate().map(|(id, x)| html! {
-            <li class = {classes!("list-group-item",theme.get_background_class())} id = {id.to_string()}>
-                {x}
+    let child = props.children.iter().map(|x| html! {
+            <li class = {classes!("list-group-item",theme.get_background_class())} id = {x.key()}>
+                {x.view()}
             </li>
         });
     let mut class = props.class.clone();
