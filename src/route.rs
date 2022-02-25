@@ -24,23 +24,33 @@ mod not_found;
 mod dev;
 mod lucky;
 
+
+/// Different available routes for Rquote
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
+    /// Homepage
     #[at("/")]
     Home,
+    /// Anime list
     #[at("/anime")]
     AnimeList,
     #[at("/anime/:title")]
+    /// All quotes for an anime
     Anime { title: String },
+    /// All quotes for a character
     #[at("/character/:character")]
     Character { character: String },
+    /// About section
     #[at("/about")]
     About,
+    /// I'm feeling lucky
     #[at("/lucky")]
     Lucky,
+    /// Test page
     #[cfg(debug_assertions)]
     #[cfg_attr(debug_assertions, at("/dev"))]
     Development,
+    /// Not found page
     #[not_found]
     #[at("/404")]
     NotFound,

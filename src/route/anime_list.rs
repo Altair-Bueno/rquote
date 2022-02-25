@@ -1,3 +1,4 @@
+use std::hash::Hash;
 use std::rc::Rc;
 
 use async_trait::async_trait;
@@ -84,18 +85,41 @@ fn successful(props: &SuccessfulProp) -> Html {
 
     let list = vector.into_iter().filter(|x| !x.is_empty()).map(|x| {
         let route = Route::Anime { title: urlencoding::encode(&x).to_string() };
-        html! {
-                <Link<Route> to={route} classes={classes!(theme.get_link_class())}>
-                    {x}
-                </Link<Route>>
+        let title = x.to_string();
+        let theme = theme.clone();
+        AnimeTitleWrapper {
+            title,
+            route,
+            theme,
         }
-    });
+    }).collect::<Vec<_>>();
     html! {
         <>
             <SearchBarComponent {input} class = {classes!("m-3")}/>
-            <ListComponent class = {classes!("mx-3")}>
-                {for list}
-            </ListComponent>
+            <ListComponent<AnimeTitleWrapper> class = {classes!("mx-3")} children = {list}/>
         </>
+    }
+}
+
+#[derive(PartialEq)]
+struct AnimeTitleWrapper {
+    title: String,
+    route: Route,
+    theme: Theme,
+}
+
+impl ListElement for AnimeTitleWrapper {
+    fn key(&self) -> String {
+        self.title.to_string()
+    }
+
+    fn view(&self) -> Html {
+        let route = self.route.clone();
+        let title = self.title.clone();
+        html! {
+            <Link<Route> to={route} classes={classes!(self.theme.get_link_class())}>
+                    {title}
+            </Link<Route>>
+        }
     }
 }

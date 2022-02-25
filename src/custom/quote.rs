@@ -17,6 +17,26 @@ pub struct QuoteProp {
     pub class: Classes,
 }
 
+/// A quote component shows a quote with a Bootstrap card
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use rquote::custom::*;
+/// use rquote_core::AnimechanQuote;
+/// use reqwest::Client;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let quote = AnimechanQuote::get_random_quote(&Client::default());
+///     let header = true;
+///     let footer = true;
+///     let class = classes!("bg-primary");
+///     let provider = Example;
+///     html!{
+///         <QuoteComponent {quote} {header} {footer} {class} />
+///     }
+/// }
+/// ```
 #[function_component(QuoteComponent)]
 pub fn quote(props: &QuoteProp) -> Html {
     let animechan_quote = &props.quote;

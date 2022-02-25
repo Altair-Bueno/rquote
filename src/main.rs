@@ -22,6 +22,8 @@ struct Main {
 }
 
 impl Main {
+    /// Queries the browser for the user's preferred color scheme. Default
+    /// otherwise
     fn get_current_theme() -> Theme {
         let prefers_dark = if let Some(window) = web_sys::window() {
             if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
@@ -36,6 +38,7 @@ impl Main {
             Theme::Light
         }
     }
+    /// Changes the theme for all body tags on the DOM
     fn change_body_theme(theme: &Theme) {
         if let Some(window) = web_sys::window() {
             if let Some(document) = window.document() {
@@ -48,6 +51,7 @@ impl Main {
             }
         }
     }
+    /// Adds an EventListener to a `web_sys::Window::match_media("(prefers-color-scheme: dark)")`
     fn set_theme_listener(callback: Callback<Theme>) {
         if let Some(window) = web_sys::window() {
             if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
