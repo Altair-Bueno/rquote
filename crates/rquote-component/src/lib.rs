@@ -1,3 +1,12 @@
+//! # `rquote-component`
+//!
+//! This library provides generic components created with Yew's framework and
+//! styled with Bootstrap
+//! # Available [ContextProvider](yew::prelude::ContextProvider) options
+//!
+//! - [Theme](crate::Theme): Change component theme
+//!
+
 pub mod async_load;
 pub mod error;
 pub mod footer;
@@ -10,9 +19,12 @@ pub mod search_bar;
 pub mod switch;
 pub mod button;
 
+/// Provides different flavours for theming rquote's components
 #[derive(Clone, Debug, PartialEq)]
 pub enum Theme {
+    /// Light flavour
     Light,
+    /// Dark flavour
     Dark,
 }
 

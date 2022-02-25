@@ -23,6 +23,22 @@ fn get_value_from_input_event(e: InputEvent) -> String {
     target.value()
 }
 
+/// A Bootstrap searchbar
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use rquote_component::search_bar::*;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let class = classes!("bg-dark");
+///     let placeholder = "Search something".to_string();
+///     let input = Callback::from(|x:String|web_sys::console::log_1(&x.into()));
+///     html!{
+///         <SearchBarComponent {class} {placeholder} {input}/>
+///     }
+/// }
+/// ```
 #[function_component(SearchBarComponent)]
 pub fn search(props: &SearchBarProps) -> Html {
     let theme: Theme = use_context().unwrap_or_default();

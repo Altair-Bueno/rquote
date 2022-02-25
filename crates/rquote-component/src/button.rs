@@ -12,6 +12,23 @@ pub struct ButtonProp {
     pub class: Classes,
 }
 
+/// A Bootstrap button
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use rquote_component::button::*;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let onclick = Callback::from(|_| web_sys::console::log_1(&"Hello world".into()));
+///     let class = classes!("bg-primary");
+///     html!{
+///         <ButtonComponent {onclick} {class}>
+///             {"This is a button"}
+///         </ButtonComponent>
+///     }
+/// }
+/// ```
 #[function_component(ButtonComponent)]
 pub fn button(props: &ButtonProp) -> Html {
     let onclick = props.onclick.clone();

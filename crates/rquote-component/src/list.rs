@@ -18,6 +18,23 @@ pub struct ListProp<LISTELEMENT>
     pub class: Classes,
 }
 
+/// Creates a Bootstrap unordered list
+///
+/// ```rust
+/// use yew::prelude::*;
+/// use rquote_component::list::*;
+///
+/// #[function_component(App)]
+/// fn app()->Html {
+///     let class = classes!("bg-dark");
+///     html!{
+///         <ListComponent {class}>
+///             {"First child"}
+///             {"Second child"}
+///         </ListComponent>
+///     }
+/// }
+/// ```
 #[function_component(ListComponent)]
 pub fn list<LISTELEMENT>(props: &ListProp<LISTELEMENT>) -> Html
     where
