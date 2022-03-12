@@ -1,41 +1,50 @@
+use std::error::Error;
 use std::rc::Rc;
 
-use async_trait::async_trait;
+use reqwest::Client;
 use yew::prelude::*;
+use yew_hooks::{use_async, UseAsyncHandle};
 
-use rquote_component::async_load::{*, ViewAsync};
+use rquote_component::button::*;
+use rquote_component::error::*;
+use rquote_component::loading::LoadingComponent;
 use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
-#[derive(Debug, PartialEq, Clone)]
-struct LuckyProvider {
-    client: ClientWrapper,
-}
-
-#[async_trait(? Send)]
-impl ViewAsync<AnimechanQuote> for LuckyProvider {
-    async fn fetch_data(&self) -> Message<AnimechanQuote> {
-        match AnimechanQuote::get_random_quote(self.client.as_ref()).await {
-            Ok(x) => Message::Successful(Rc::new(x)),
-            Err(x) => Message::Failed(Rc::new(x)),
-        }
-    }
-    fn successful_view(&self, element: Rc<AnimechanQuote>) -> Html {
-        let quote = element.as_ref().clone();
-        html! {
-            <QuoteComponent {quote} class = {classes!("m-3")}/>
+async fn fetch_quote(client: &Client) -> Result<AnimechanQuote, Rc<dyn Error>> {
+    let response = AnimechanQuote::get_random_quote(client).await;
+    match response {
+        Ok(quote) => Ok(quote),
+        Err(error) => {
+            let into_trait: Rc<dyn Error> = Rc::new(error);
+            Err(into_trait)
         }
     }
 }
 
 #[function_component(Lucky)]
 pub fn lucky() -> Html {
-    let provider = LuckyProvider {
-        client: use_context().unwrap_or_default(),
-    };
-    html! {
-        <AsyncComponent<AnimechanQuote,LuckyProvider> {provider}/>
+    let client: ClientWrapper = use_context().unwrap_or_default();
+    let state = use_async(async move { fetch_quote(client.as_ref()).await });
+    {
+        let state = state.clone();
+        use_effect_with_deps(move |_| {
+            state.run();
+            || ()
+        }, ());
     }
+
+    if state.loading {
+        html! {<LoadingComponent/>}
+    } else if let Some(quote) = &state.data {
+        let quote = quote.clone();
+        let class = classes!("m-3");
+        html! {<QuoteComponent {quote} {class}/>}
+    } else if let Some(error) = &state.error {
+        let severity = Severity::Danger;
+        let error = error.clone();
+        html! {<ErrorComponent {severity} {error}/>}
+    } else { Default::default() }
 }
