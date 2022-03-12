@@ -1,50 +1,48 @@
+use std::error::Error;
 use std::rc::Rc;
 
-use async_trait::async_trait;
+use reqwest::Client;
 use yew::prelude::*;
+use yew_hooks::use_async;
 
-use rquote_component::async_load::*;
-use rquote_component::async_load::ViewAsync;
+use rquote_component::error::*;
+use rquote_component::loading::*;
 use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
-#[derive(Debug, PartialEq, Clone)]
-struct HomeProvider {
-    client: ClientWrapper,
-}
-
-#[async_trait(? Send)]
-impl ViewAsync<Vec<AnimechanQuote>> for HomeProvider {
-    async fn fetch_data(&self) -> Message<Vec<AnimechanQuote>> {
-        let response = AnimechanQuote::get_10_random_quotes(self.client.as_ref()).await;
-        match response {
-            Ok(x) => Message::Successful(Rc::new(x)),
-            Err(err) => Message::Failed(Rc::new(err)),
+async fn fetch_data(client: &Client) -> Result<Vec<AnimechanQuote>, Rc<dyn Error>> {
+    let response = AnimechanQuote::get_10_random_quotes(client).await;
+    match response {
+        Ok(quote) => Ok(quote),
+        Err(error) => {
+            let into_trait: Rc<dyn Error> = Rc::new(error);
+            Err(into_trait)
         }
-    }
-    fn successful_view(
-        &self,
-        element: Rc<Vec<AnimechanQuote>>,
-    ) -> Html {
-        element
-            .iter()
-            .map(|x| {
-                html! {
-                    <QuoteComponent quote = {x.clone()} class = {classes!("m-3")}/>
-                }
-            })
-            .collect()
     }
 }
 
 #[function_component(Home)]
 pub fn home() -> Html {
-    let provider = HomeProvider {
-        client: use_context().unwrap_or_default()
-    };
-    html! {
-        <AsyncComponent<Vec<AnimechanQuote>,HomeProvider> {provider}/>
+    let client: ClientWrapper = use_context().unwrap_or_default();
+    let state = use_async(async move { fetch_data(client.as_ref()).await });
+    {
+        let state = state.clone();
+        use_effect_with_deps(move |_| {
+            state.run();
+            || ()
+        }, ());
     }
+    if state.loading {
+        html! {<LoadingComponent/>}
+    } else if let Some(quote_list) = &state.data {
+        quote_list.iter().map(|quote| html! {
+            <QuoteComponent quote = {quote.clone()} class = {classes!("m-3")}/>
+        }).collect()
+    } else if let Some(error) = &state.error {
+        let severity = Severity::Danger;
+        let error = error.clone();
+        html! {<ErrorComponent {severity} {error}/>}
+    } else { Default::default() }
 }
