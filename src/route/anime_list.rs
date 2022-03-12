@@ -1,14 +1,16 @@
+use std::error::Error;
 use std::hash::Hash;
 use std::rc::Rc;
 
-use async_trait::async_trait;
 use fuzzy_matcher::FuzzyMatcher;
+use reqwest::Client;
 use yew::prelude::*;
+use yew_hooks::use_async;
 use yew_router::prelude::*;
 
-use rquote_component::async_load::*;
-use rquote_component::async_load::ViewAsync;
+use rquote_component::error::*;
 use rquote_component::list::*;
+use rquote_component::loading::LoadingComponent;
 use rquote_component::search_bar::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
@@ -16,43 +18,45 @@ use rquote_core::wrapper::ClientWrapper;
 
 use crate::route::Route;
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct AnimeListProvider {
-    client: ClientWrapper,
-}
-
-#[async_trait(? Send)]
-impl ViewAsync<Vec<String>> for AnimeListProvider {
-    async fn fetch_data(&self) -> Message<Vec<String>> {
-        let response = AnimechanQuote::get_anime_list(self.client.as_ref()).await;
-        match response {
-            Ok(x) => Message::Successful(Rc::new(x)),
-            Err(err) => Message::Failed(Rc::new(err)),
-        }
-    }
-    fn successful_view(
-        &self,
-        element: Rc<Vec<String>>,
-    ) -> Html {
-        html! {
-            <SuccessfulComponent list = {element.clone()}/>
+async fn fetch_data(client: &Client) -> Result<Vec<String>, Rc<dyn Error>> {
+    let response = AnimechanQuote::get_anime_list(client).await;
+    match response {
+        Ok(quote) => Ok(quote),
+        Err(error) => {
+            let into_trait: Rc<dyn Error> = Rc::new(error);
+            Err(into_trait)
         }
     }
 }
 
 #[function_component(AnimeList)]
 pub fn anime_list() -> Html {
-    let provider = AnimeListProvider {
-        client: use_context().unwrap_or_default(),
-    };
-    html! {
-        <AsyncComponent<Vec<String>,AnimeListProvider> {provider}/>
+    let client: ClientWrapper = use_context().unwrap_or_default();
+    let state = use_async(async move { fetch_data(client.as_ref()).await });
+    {
+        let state = state.clone();
+        use_effect_with_deps(move |_| {
+            state.run();
+            || ()
+        }, ());
     }
+    if state.loading {
+        html! {<LoadingComponent/>}
+    } else if let Some(list) = &state.data {
+        let list = list.clone();
+        html! {
+            <SuccessfulComponent {list}/>
+        }
+    } else if let Some(error) = &state.error {
+        let severity = Severity::Danger;
+        let error = error.clone();
+        html! {<ErrorComponent {severity} {error}/>}
+    } else { Default::default() }
 }
 
 #[derive(Properties, PartialEq, Clone)]
 struct SuccessfulProp {
-    pub list: Rc<Vec<String>>,
+    pub list: Vec<String>,
 }
 
 #[function_component(SuccessfulComponent)]
@@ -63,12 +67,12 @@ fn successful(props: &SuccessfulProp) -> Html {
         let search_string = search_string.clone();
         move |x: String| search_string.set(x)
     }
-    .into();
+        .into();
 
     let mut vector;
 
     if search_string.is_empty() {
-        vector = props.list.as_ref().clone();
+        vector = props.list.clone();
         vector.sort();
     } else {
         let matcher = fuzzy_matcher::skim::SkimMatcherV2::default();
