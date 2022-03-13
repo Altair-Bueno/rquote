@@ -36,9 +36,7 @@ pub fn anime_list() -> Html {
         UseAsyncOptions::enable_auto()
     );
 
-    if state.loading {
-        html! {<LoadingComponent/>}
-    } else if let Some(list) = &state.data {
+    if let Some(list) = &state.data {
         let list = list.clone();
         html! {
             <SuccessfulComponent {list}/>
@@ -47,7 +45,7 @@ pub fn anime_list() -> Html {
         let severity = Severity::Danger;
         let error = error.clone();
         html! {<ErrorComponent {severity} {error}/>}
-    } else { Default::default() }
+    } else { html! {<LoadingComponent/>} }
 }
 
 #[derive(Properties, PartialEq, Clone)]

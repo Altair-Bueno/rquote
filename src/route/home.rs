@@ -31,9 +31,7 @@ pub fn home() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if state.loading {
-        html! {<LoadingComponent/>}
-    } else if let Some(quote_list) = &state.data {
+    if let Some(quote_list) = &state.data {
         quote_list.iter().map(|quote| html! {
             <QuoteComponent quote = {quote.clone()} class = {classes!("m-3")}/>
         }).collect()
@@ -41,5 +39,5 @@ pub fn home() -> Html {
         let severity = Severity::Danger;
         let error = error.clone();
         html! {<ErrorComponent {severity} {error}/>}
-    } else { Default::default() }
+    } else { html! {<LoadingComponent/>} }
 }

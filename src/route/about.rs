@@ -66,9 +66,7 @@ pub fn about() -> Html {
         });
     }
 
-    if state.loading {
-        html!{<LoadingComponent/>}
-    } else if let Some(_) = &state.data {
+    if let Some(_) = &state.data {
         html! {
             <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
                 <div ref={node_ref.deref().clone()}/>
@@ -79,5 +77,5 @@ pub fn about() -> Html {
         let error = error.clone();
         let severity = Severity::Danger;
         html!{<ErrorComponent {severity} {error}/>}
-    } else {Default::default()}
+    } else { html! {<LoadingComponent/>} }
 }

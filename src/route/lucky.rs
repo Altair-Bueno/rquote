@@ -31,9 +31,7 @@ pub fn lucky() -> Html {
         UseAsyncOptions::enable_auto(),
     );
 
-    if state.loading {
-        html! {<LoadingComponent/>}
-    } else if let Some(quote) = &state.data {
+    if let Some(quote) = &state.data {
         let quote = quote.clone();
         let class = classes!("m-3");
         html! {<QuoteComponent {quote} {class}/>}
@@ -41,5 +39,5 @@ pub fn lucky() -> Html {
         let severity = Severity::Danger;
         let error = error.clone();
         html! {<ErrorComponent {severity} {error}/>}
-    } else { Default::default() }
+    } else { html! {<LoadingComponent/>} }
 }
