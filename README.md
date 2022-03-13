@@ -1,3 +1,10 @@
+<h3 align="center">
+    <img src="resources/logo.png"
+         alt="Logo" 
+         width="70" 
+         height="70">
+</h3>
+
 # Rquote
 
 Rquote is a web application built using Rust and WebAssembly. It fetches Anime
@@ -41,3 +48,6 @@ trunk build --release
 
 - [Source repository](https://github.com/Altair-Bueno/rquote)
 
+## Credits
+
+<a href="https://www.flaticon.com/free-icons/quote" title="quote icons">Quote icons created by Freepik - Flaticon</a>

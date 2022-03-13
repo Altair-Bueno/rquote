@@ -31,6 +31,8 @@ pub struct NavBarProp<Router>
     pub home: Router,
     pub title: String,
     #[prop_or_default]
+    pub image:Option<String>,
+    #[prop_or_default]
     pub link: Vec<NavBarLink<Router>>,
     #[prop_or_default]
     pub active: Option<usize>,
@@ -95,6 +97,13 @@ pub fn navbar<Router>(props: &NavBarProp<Router>) -> Html
         <nav class={classes!("navbar", "sticky-top", "navbar-expand-lg",theme.get_navbar_class(),theme.get_background_class())}>
             <div class={classes!("container-fluid")}>
                 <Link<Router> classes ={classes!("navbar-brand", "h1", "mb-0")} to={props.home.clone()}>
+                    {
+                        if let Some(img) = &props.image {
+                        html!{
+                                <img src = {img.clone()} class={classes!("d-inline-block","align-text-top","pe-1")} height={"24"}/>
+                            }
+                        } else {Default::default()}
+                    }
                     { &props.title }
                 </Link<Router>>
                 <button class={classes!("navbar-toggler")} type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">

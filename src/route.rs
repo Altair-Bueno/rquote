@@ -65,6 +65,7 @@ pub fn switch(route: &Route) -> Html {
     let navbar_props = NavBarProp {
         home: Route::Home,
         title: "Rquote".to_string(),
+        image: Some("resources/logo.png".to_string()),
         link: links,
         active: None,
     };
