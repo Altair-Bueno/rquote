@@ -11,7 +11,7 @@ data = {
     "title": "Rquote",
     "url": 'https://rquote.vercel.app',
     "description": 'Web client for animechan API',
-    'logo': '',
+    'logo': 'resources/logo.png',
     'author': 'Altair-Bueno',
     'theme': {
         'dark': '202528',
