@@ -3,17 +3,6 @@
 version = 3
 
 [[package]]
-name = "async-trait"
-version = "0.1.52"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "061a7acccaa286c011ddc30970520b98fa40e00c9d644633fb26b5fc63a265e3"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -724,7 +713,6 @@ checksum = "afab94fb28594581f62d981211a9a4d53cc8130bbcbbb89a0440d9b8e81a7746"
 name = "rquote"
 version = "0.1.0"
 dependencies = [
- "async-trait",
  "fuzzy-matcher",
  "pulldown-cmark",
  "reqwest",
@@ -734,6 +722,7 @@ dependencies = [
  "wasm-bindgen",
  "web-sys",
  "yew",
+ "yew-hooks",
  "yew-router",
 ]
 
@@ -741,7 +730,6 @@ dependencies = [
 name = "rquote-component"
 version = "0.1.0"
 dependencies = [
- "async-trait",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
@@ -1245,6 +1233,22 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "yew-macro",
+]
+
+[[package]]
+name = "yew-hooks"
+version = "0.1.46"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4cb9dfffbdeea8f05d61a8cc9feb0362274081ae49494c222e7fcfd716d083c"
+dependencies = [
+ "gloo",
+ "js-sys",
+ "log",
+ "serde",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+ "yew",
 ]
 
 [[package]]

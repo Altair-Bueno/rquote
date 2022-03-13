@@ -1,11 +1,13 @@
+use std::error::Error;
 use std::rc::Rc;
 
-use async_trait::async_trait;
+use reqwest::Client;
 use yew::prelude::*;
+use yew_hooks::use_async;
 
-use rquote_component::async_load::*;
-use rquote_component::async_load::ViewAsync;
-use rquote_component::button::*;
+use rquote_component::error::*;
+use rquote_component::loading::*;
+use rquote_component::pager::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
@@ -17,75 +19,69 @@ pub struct AnimeProp {
     pub title: String,
 }
 
-#[derive(Debug, PartialEq, Clone)]
-struct AnimeProvider {
-    title: String,
-    page: u32,
-    client: ClientWrapper,
-}
-
-#[async_trait(? Send)]
-impl ViewAsync<Vec<AnimechanQuote>> for AnimeProvider {
-    async fn fetch_data(&self) -> Message<Vec<AnimechanQuote>> {
-        let response = AnimechanQuote::get_quote_title(self.client.as_ref(), &self.title, Some(self.page)).await;
-        match response {
-            Ok(x) => Message::Successful(Rc::new(x)),
-            Err(err) => Message::Failed(Rc::new(err)),
+async fn fetch_data(client:&Client,title:&str,page:Option<u32>) ->Result<Vec<AnimechanQuote>,Rc<dyn Error>> {
+    let response = AnimechanQuote::get_quote_title(client,title,page).await;
+    match response {
+        Ok(quote) => Ok(quote),
+        Err(error) => {
+            let into_trait: Rc<dyn Error> = Rc::new(error);
+            Err(into_trait)
         }
-    }
-
-    fn successful_view(
-        &self,
-        element: Rc<Vec<AnimechanQuote>>,
-    ) -> Html {
-        element
-            .iter()
-            .map(|x| {
-                html! {
-                    <QuoteComponent quote = {x.clone()} header = {false} class = {classes!("m-3")}/>
-                }
-            })
-            .collect()
     }
 }
 
 #[function_component(Anime)]
 pub fn view(props: &AnimeProp) -> Html {
     let theme = use_context::<Theme>().unwrap_or_default();
-    let client = use_context::<ClientWrapper>()
-        .unwrap_or_default();
+    let client = use_context::<ClientWrapper>().unwrap_or_default();
     let title = props.title.as_str();
     let page = use_state(|| 0u32);
-    let onclick: Callback<MouseEvent> = {
+
+    let next = {
         let page = page.clone();
-        move |_: MouseEvent| page.set(*page + 1)
-    }.into();
-    let async_component_list = (0..=*page)
-        .map(|page| AnimeProvider {
-            client: client.clone(),
-            title: title.to_string(),
-            page,
-        })
-        .map(|provider| html! {
-            <AsyncComponent<Vec<AnimechanQuote>,AnimeProvider>
-                {provider}/>
-        });
-    html! {
+        Some(Callback::from(move |_:MouseEvent|page.set(*page + 1)))
+    };
+    let prev = if *page == 0 { None }
+        else {
+            let page = page.clone();
+            Some(Callback::from(move |_:MouseEvent|page.set(*page -1)))
+        };
+
+    let fetcher = {
+        let page = page.clone();
+        let title = props.title.clone();
+        use_async(async move {fetch_data(client.as_ref(),title.as_str(),Some(*page)).await})
+    };
+
+    {
+        let page = page.clone();
+        let fetcher = fetcher.clone();
+        use_effect_with_deps(move |_|{
+            fetcher.run();
+            ||()
+        },page)
+    }
+
+    let content =if fetcher.loading {
+        html! {<LoadingComponent/>}
+    } else if let Some(data) = &fetcher.data {
+        data.iter().map(|x| html!{
+            <QuoteComponent quote = {x.clone()} footer = {false} class = {classes!("m-3")}/>
+        }).collect()
+    } else if let Some(error) = &fetcher.error {
+        let severity = Severity::Danger;
+        let error = error.clone();
+        html! {<ErrorComponent {severity} {error}/>}
+    } else { Default::default() };
+
+    html!{
         <>
             <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
-                {title}
-                <small class = {classes!("text-muted","ms-3")}>{"Anime"}</small>
+                    {title}
+                    <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
             </h1>
-            {for async_component_list}
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center">
-                        <ButtonComponent {onclick} class ={classes!("text-center","my-2")}>
-                            {"Load more"}
-                        </ButtonComponent>
-                    </div>
-                </div>
-            </div>
+            {content}
+            <PagerComponent page = {*page} {next} {prev}/>
         </>
     }
 }
