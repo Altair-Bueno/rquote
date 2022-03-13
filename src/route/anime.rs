@@ -66,7 +66,7 @@ pub fn view(props: &AnimeProp) -> Html {
         html! {<LoadingComponent/>}
     } else if let Some(data) = &fetcher.data {
         data.iter().map(|x| html!{
-            <QuoteComponent quote = {x.clone()} footer = {false} class = {classes!("m-3")}/>
+            <QuoteComponent quote = {x.clone()} header = {false} class = {classes!("m-3")}/>
         }).collect()
     } else if let Some(error) = &fetcher.error {
         let severity = Severity::Danger;
