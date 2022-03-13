@@ -7,7 +7,6 @@
 //! - [Theme](crate::Theme): Change component theme
 //!
 
-pub mod async_load;
 pub mod error;
 pub mod footer;
 pub mod list;
