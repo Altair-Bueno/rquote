@@ -10,7 +10,6 @@ opt-level = "z"
 debug = false
 lto = "fat"
 codegen-units = 1
-strip = true
 
 [workspace]
 members = [
