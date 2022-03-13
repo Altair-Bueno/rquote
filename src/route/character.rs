@@ -1,9 +1,11 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::rc::Rc;
 
 use reqwest::Client;
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::{use_async, use_search_param};
+use yew_router::prelude::*;
 
 use rquote_component::error::*;
 use rquote_component::loading::*;
@@ -13,6 +15,7 @@ use rquote_core::AnimechanQuote;
 use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
+use crate::Route;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct CharacterProp {
@@ -35,7 +38,8 @@ pub fn character(props: &CharacterProp) -> Html {
     let theme = use_context::<Theme>().unwrap_or_default();
     let client = use_context::<ClientWrapper>().unwrap_or_default();
     let title = props.character.as_str();
-    let page = use_state(|| 0);
+    let init = use_search_param("page".to_string()).unwrap_or_default().parse::<u32>().unwrap_or_default();
+    let page = use_state(|| init);
 
     let next = {
         let page = page.clone();
@@ -55,7 +59,13 @@ pub fn character(props: &CharacterProp) -> Html {
     {
         let page = page.clone();
         let fetcher = fetcher.clone();
-        use_effect_with_deps(move |_| {
+        let character = title.to_string();
+        let history = use_history().unwrap();
+        use_effect_with_deps(move |page| {
+            history.push_with_query(
+                Route::Character { character },
+                HashMap::from([("page", **page)]),
+            ).unwrap();
             fetcher.run();
             || ()
         }, page)
