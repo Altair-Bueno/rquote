@@ -1,11 +1,10 @@
 use std::error::Error;
-use std::hash::Hash;
 use std::rc::Rc;
 
 use fuzzy_matcher::FuzzyMatcher;
 use reqwest::Client;
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::*;
 
 use rquote_component::error::*;
@@ -32,14 +31,11 @@ async fn fetch_data(client: &Client) -> Result<Vec<String>, Rc<dyn Error>> {
 #[function_component(AnimeList)]
 pub fn anime_list() -> Html {
     let client: ClientWrapper = use_context().unwrap_or_default();
-    let state = use_async(async move { fetch_data(client.as_ref()).await });
-    {
-        let state = state.clone();
-        use_effect_with_deps(move |_| {
-            state.run();
-            || ()
-        }, ());
-    }
+    let state = use_async_with_options(
+        async move { fetch_data(client.as_ref()).await },
+        UseAsyncOptions::enable_auto()
+    );
+
     if state.loading {
         html! {<LoadingComponent/>}
     } else if let Some(list) = &state.data {

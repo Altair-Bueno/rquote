@@ -5,7 +5,7 @@ use std::rc::Rc;
 use reqwest::Client;
 use web_sys::Element;
 use yew::prelude::*;
-use yew_hooks::{use_async, use_effect_once};
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use rquote_component::error::*;
 use rquote_component::loading::LoadingComponent;
@@ -40,14 +40,10 @@ pub fn about() -> Html {
     let client = use_context::<ClientWrapper>().unwrap_or_default();
     let theme = use_context::<Theme>().unwrap_or_default();
 
-    let state = use_async(async move {fetch_data(client.as_ref()).await});
-    {
-        let state = state.clone();
-        use_effect_once(move||{
-            state.run();
-            ||()
-        })
-    }
+    let state = use_async_with_options(
+        async move {fetch_data(client.as_ref()).await},
+        UseAsyncOptions::enable_auto()
+    );
     {
         let node_ref = node_ref.clone();
         let theme = theme.clone();
@@ -56,13 +52,14 @@ pub fn about() -> Html {
             if let Some(element) = node_ref.cast::<Element>() {
                 if let Some(data) = &state.data {
                     element.set_inner_html(data);
-                }
-                let element_list = element.get_elements_by_tag_name("a");
-                for i in 0..element_list.length() {
-                    element_list
-                        .get_with_index(i)
-                        .unwrap()
-                        .set_class_name(theme.get_link_class());
+                    // Add the corresponding theme class to each <a> tag
+                    let element_list = element.get_elements_by_tag_name("a");
+                    for i in 0..element_list.length() {
+                        element_list
+                            .get_with_index(i)
+                            .unwrap()
+                            .set_class_name(theme.get_link_class());
+                    }
                 }
             };
             ||()
@@ -71,7 +68,7 @@ pub fn about() -> Html {
 
     if state.loading {
         html!{<LoadingComponent/>}
-    } else if let Some(data) = &state.data {
+    } else if let Some(_) = &state.data {
         html! {
             <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
                 <div ref={node_ref.deref().clone()}/>

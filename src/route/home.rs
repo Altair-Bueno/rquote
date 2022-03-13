@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use reqwest::Client;
 use yew::prelude::*;
-use yew_hooks::use_async;
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use rquote_component::error::*;
 use rquote_component::loading::*;
@@ -26,14 +26,11 @@ async fn fetch_data(client: &Client) -> Result<Vec<AnimechanQuote>, Rc<dyn Error
 #[function_component(Home)]
 pub fn home() -> Html {
     let client: ClientWrapper = use_context().unwrap_or_default();
-    let state = use_async(async move { fetch_data(client.as_ref()).await });
-    {
-        let state = state.clone();
-        use_effect_with_deps(move |_| {
-            state.run();
-            || ()
-        }, ());
-    }
+    let state = use_async_with_options(
+        async move { fetch_data(client.as_ref()).await },
+        UseAsyncOptions::enable_auto(),
+    );
+
     if state.loading {
         html! {<LoadingComponent/>}
     } else if let Some(quote_list) = &state.data {

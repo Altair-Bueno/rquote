@@ -3,9 +3,8 @@ use std::rc::Rc;
 
 use reqwest::Client;
 use yew::prelude::*;
-use yew_hooks::{use_async, UseAsyncHandle};
+use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
-use rquote_component::button::*;
 use rquote_component::error::*;
 use rquote_component::loading::LoadingComponent;
 use rquote_core::AnimechanQuote;
@@ -27,14 +26,10 @@ async fn fetch_quote(client: &Client) -> Result<AnimechanQuote, Rc<dyn Error>> {
 #[function_component(Lucky)]
 pub fn lucky() -> Html {
     let client: ClientWrapper = use_context().unwrap_or_default();
-    let state = use_async(async move { fetch_quote(client.as_ref()).await });
-    {
-        let state = state.clone();
-        use_effect_with_deps(move |_| {
-            state.run();
-            || ()
-        }, ());
-    }
+    let state = use_async_with_options(
+        async move { fetch_quote(client.as_ref()).await },
+        UseAsyncOptions::enable_auto(),
+    );
 
     if state.loading {
         html! {<LoadingComponent/>}
