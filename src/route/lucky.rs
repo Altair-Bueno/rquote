@@ -33,8 +33,12 @@ pub fn lucky() -> Html {
 
     if let Some(quote) = &state.data {
         let quote = quote.clone();
-        let class = classes!("m-3");
-        html! {<QuoteComponent {quote} {class}/>}
+        let class = classes!("m-2");
+        html! {
+            <div class = {classes!("container")}>
+                <QuoteComponent {quote} {class}/>
+            </div>
+        }
     } else if let Some(error) = &state.error {
         let severity = Severity::Danger;
         let error = error.clone();

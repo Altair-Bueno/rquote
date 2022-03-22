@@ -32,9 +32,16 @@ pub fn home() -> Html {
     );
 
     if let Some(quote_list) = &state.data {
-        quote_list.iter().map(|quote| html! {
-            <QuoteComponent quote = {quote.clone()} class = {classes!("m-3")}/>
-        }).collect()
+        let list:Vec<_> = quote_list.iter().map(|quote| html! {
+            <div class = "m-2">
+                <QuoteComponent quote = {quote.clone()} />
+            </div>
+        }).collect();
+        html!{
+            <div class = "container">
+                {list}
+            </div>
+        }
     } else if let Some(error) = &state.error {
         let severity = Severity::Danger;
         let error = error.clone();
