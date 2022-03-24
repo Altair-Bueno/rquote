@@ -68,9 +68,11 @@ pub fn about() -> Html {
 
     if let Some(_) = &state.data {
         html! {
-            <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg", "p-3", "m-3","rounded")}>
-                <div ref={node_ref.deref().clone()}/>
-                <small>{SMALL_NOTE}</small>
+            <div class = {classes!(theme.get_background_class(),theme.get_text_class(),"shadow-lg","rounded","container")}>
+                <div class = {classes!("col","p-2","m-2")}>
+                    <div ref={node_ref.deref().clone()}/>
+                    <small>{SMALL_NOTE}</small>
+                </div>
             </div>
         }
     } else if let Some(error) = &state.error {

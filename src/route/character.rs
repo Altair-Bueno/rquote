@@ -73,10 +73,17 @@ pub fn character(props: &CharacterProp) -> Html {
 
     let content = if fetcher.loading {
         html! {<LoadingComponent/>}
-    } else if let Some(data) = &fetcher.data {
-        data.iter().map(|x| html! {
-            <QuoteComponent quote = {x.clone()} footer = {false} class = {classes!("m-3")}/>
-        }).collect()
+    } else if let Some(quote_list) = &fetcher.data {
+        let list:Vec<_> = quote_list.iter().map(|quote| html! {
+            <div class = "m-2">
+                <QuoteComponent quote = {quote.clone()} footer = {false}/>
+            </div>
+        }).collect();
+        html!{
+            <div class = "container">
+                {list}
+            </div>
+        }
     } else if let Some(error) = &fetcher.error {
         let severity = Severity::Danger;
         let error = error.clone();
