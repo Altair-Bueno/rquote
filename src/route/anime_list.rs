@@ -92,10 +92,10 @@ fn successful(props: &SuccessfulProp) -> Html {
         }
     }).collect::<Vec<_>>();
     html! {
-        <>
+        <div class = {classes!("container")}>
             <SearchBarComponent {input} class = {classes!("m-3")}/>
             <ListComponent<AnimeTitleWrapper> class = {classes!("mx-3")} children = {list}/>
-        </>
+        </div>
     }
 }
 
