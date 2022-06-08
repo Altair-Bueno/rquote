@@ -59,8 +59,10 @@ pub fn search(props: &SearchBarProps) -> Html {
             <input
                 {class}
                 type="search"
+                role="searchbox"
                 aria-label="Search"
                 placeholder={placeholder}
+                label="Search"
                 {oninput}
                 {onkeydown}/>
         </form>

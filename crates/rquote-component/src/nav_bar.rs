@@ -100,7 +100,10 @@ pub fn navbar<Router>(props: &NavBarProp<Router>) -> Html
                     {
                         if let Some(img) = &props.image {
                         html!{
-                                <img src = {img.clone()} class={classes!("d-inline-block","align-text-top","pe-1")} height={"24"}/>
+                                <img src = {img.clone()}
+                                     class={classes!("d-inline-block","align-text-top","pe-1")}
+                                     height={"24"}
+                                     alt=""/>
                             }
                         } else {Default::default()}
                     }
