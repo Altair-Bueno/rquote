@@ -73,19 +73,25 @@ pub fn switch(route: &Route) -> Html {
         Route::Home => html! {
             <>
                 <NavBarComponent<Route> ..navbar_props/>
-                <Home/>
+                <main>
+                    <Home/>
+                </main>
             </>
         },
         Route::AnimeList => html! {
             <>
                 <NavBarComponent<Route> active = {0} ..navbar_props/>
-                <AnimeList/>
+                <main>
+                    <AnimeList/>
+                </main>
             </>
         },
         Route::NotFound => html! {
             <>
                 <NavBarComponent<Route> ..navbar_props/>
-                <NotFound/>
+                <main>
+                    <NotFound/>
+                </main>
             </>
         },
         Route::Anime { title } => {
@@ -93,7 +99,9 @@ pub fn switch(route: &Route) -> Html {
             html! {
                 <>
                     <NavBarComponent<Route>  ..navbar_props/>
-                    <Anime title={title}/>
+                    <main>
+                        <Anime title={title}/>
+                    </main>
                 </>
             }
         },
@@ -102,27 +110,35 @@ pub fn switch(route: &Route) -> Html {
             html! {
                 <>
                     <NavBarComponent<Route> ..navbar_props/>
-                    <Character character={character}/>
+                    <main>
+                        <Character character={character}/>
+                    </main>
                 </>
             }
         },
         Route::Lucky => html! {
             <>
                 <NavBarComponent<Route> active = {1}..navbar_props/>
-                <Lucky/>
+                <main>
+                    <Lucky/>
+                </main>
             </>
         },
         Route::About => html! {
             <>
                 <NavBarComponent<Route> active = {2} ..navbar_props/>
-                <About/>
+                <main>
+                    <About/>
+                </main>
             </>
         },
         #[cfg(debug_assertions)]
         Route::Development => html! {
             <>
                 <NavBarComponent<Route> ..navbar_props/>
-                <Dev/>
+                <main>
+                    <Dev/>
+                </main>
             </>
         },
     };

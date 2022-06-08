@@ -52,6 +52,12 @@ impl Theme {
             Theme::Light => "text-dark",
         }
     }
+    pub fn get_secondary_text_class(&self) -> &'static str {
+        match self {
+            Theme::Light => "text-muted",
+            Theme::Dark => "text-light",
+        }
+    }
     pub fn get_link_class(&self) -> &'static str {
         match self {
             Theme::Dark => "link-light",

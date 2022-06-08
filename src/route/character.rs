@@ -94,7 +94,7 @@ pub fn character(props: &CharacterProp) -> Html {
         <>
             <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
                     {title}
-                    <small class = {classes!("text-muted","ms-3")}>{"Character"}</small>
+                    <small class = {classes!(theme.get_secondary_text_class())}>{" - Character"}</small>
             </h1>
             {content}
             <PagerComponent page = {*page} {next} {prev}/>
