@@ -2,6 +2,14 @@ use reqwest::Client;
 use reqwest::Result;
 use serde::{Deserialize, Serialize};
 
+use crate::animechan::cached::{
+    get_anime_list,
+    get_quote_character,
+    get_quote_title
+};
+
+mod cached;
+
 const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/random";
 const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/quotes";
 const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/anime";
@@ -41,40 +49,15 @@ impl AnimechanQuote {
         client: &Client,
         title: &str,
         page: Option<u32>,
-    ) -> Result<Vec<AnimechanQuote>> {
-        let page = page
-            .map(|x| x.to_string())
-            .unwrap_or_else(|| String::from("0"));
-        let parameter = [("title", title), ("page", &page)];
-        client
-            .get(ANIMECHAN_TITLE_QUOTE)
-            .query(&parameter)
-            .send()
-            .await?
-            .json()
-            .await
-    }
+    ) -> Result<Vec<AnimechanQuote>> { get_quote_title(client,title,page).await }
+
     pub async fn get_quote_character(
         client: &Client,
         character: &str,
         page: Option<u32>,
-    ) -> Result<Vec<AnimechanQuote>> {
-        let page = page
-            .map(|x| x.to_string())
-            .unwrap_or_else(|| String::from("0"));
-        let parameter = [("name", character), ("page", &page)];
-        client
-            .get(ANIMECHAN_CHARACTER_QUOTE)
-            .query(&parameter)
-            .send()
-            .await?
-            .json()
-            .await
-    }
+    ) -> Result<Vec<AnimechanQuote>> { get_quote_character(client,character,page).await }
 
-    pub async fn get_anime_list(client: &Client) -> Result<Vec<String>> {
-        client.get(ANIMECHAN_ANIME_LIST).send().await?.json().await
-    }
+    pub async fn get_anime_list(client: &Client) -> Result<Vec<String>> { get_anime_list(client).await }
 
     pub fn anime(&self) -> &str {
         self.anime.as_str()
