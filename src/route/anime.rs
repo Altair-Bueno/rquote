@@ -74,16 +74,11 @@ pub fn view(props: &AnimeProp) -> Html {
     let content = if fetcher.loading {
         html! {<LoadingComponent/>}
     } else if let Some(quote_list) = &fetcher.data {
-        let list:Vec<_> = quote_list.iter().map(|quote| html! {
+        quote_list.iter().map(|quote| html! {
             <div class = "m-2">
                 <QuoteComponent quote = {quote.clone()} header = {false}/>
             </div>
-        }).collect();
-        html!{
-            <div class = "container">
-                {list}
-            </div>
-        }
+        }).collect()
     } else if let Some(error) = &fetcher.error {
         let severity = Severity::Danger;
         let error = error.clone();
@@ -91,13 +86,13 @@ pub fn view(props: &AnimeProp) -> Html {
     } else { Default::default() };
 
     html! {
-        <>
+        <div class={classes!("container")}>
             <h1 class = {classes!("ms-3","my-3",theme.get_text_class())}>
                     {title}
                     <small class = {classes!(theme.get_secondary_text_class())}>{" - Anime"}</small>
             </h1>
             {content}
             <PagerComponent page = {*page} {next} {prev}/>
-        </>
+        </div>
     }
 }
