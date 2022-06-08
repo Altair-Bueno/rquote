@@ -76,7 +76,7 @@ pub fn view(props: &AnimeProp) -> Html {
     } else if let Some(quote_list) = &fetcher.data {
         let list:Vec<_> = quote_list.iter().map(|quote| html! {
             <div class = "m-2">
-                <QuoteComponent quote = {quote.clone()} footer = {false}/>
+                <QuoteComponent quote = {quote.clone()} header = {false}/>
             </div>
         }).collect();
         html!{
