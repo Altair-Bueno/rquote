@@ -62,7 +62,7 @@ pub fn view(props: &AnimeProp) -> Html {
         let title = title.to_string();
         let history = use_history().unwrap();
         use_effect_with_deps(move |page| {
-            history.push_with_query(
+            history.replace_with_query(
                 Route::Anime { title },
                 HashMap::from([("page", **page)]),
             ).unwrap();
