@@ -14,16 +14,14 @@ const CACHE_MAX_ITEMS : usize = 20;
     result=true,
     type = "SizedCache<String, Vec<AnimechanQuote>>",
     create = "{ SizedCache::with_size(CACHE_MAX_ITEMS) }",
-    convert = r#"{ format!("{}-{:?}", title, page) }"#
+    convert = r#"{ format!("{}-{}", title, page) }"#
 )]
 pub async fn get_quote_title(
     client: &Client,
     title: &str,
-    page: Option<u32>,
+    page: u32,
 ) -> Result<Vec<AnimechanQuote>> {
-    let page = page
-        .map(|x| x.to_string())
-        .unwrap_or_else(|| String::from("0"));
+    let page = page.to_string();
     let parameter = [("title", title), ("page", &page)];
     client
         .get(ANIMECHAN_TITLE_QUOTE)
@@ -38,16 +36,14 @@ pub async fn get_quote_title(
     result=true,
     type = "SizedCache<String, Vec<AnimechanQuote>>",
     create = "{ SizedCache::with_size(CACHE_MAX_ITEMS) }",
-    convert = r#"{ format!("{}-{:?}", character, page) }"#
+    convert = r#"{ format!("{}-{}", character, page) }"#
 )]
 pub async fn get_quote_character(
     client: &Client,
     character: &str,
-    page: Option<u32>,
+    page: u32,
 ) -> Result<Vec<AnimechanQuote>> {
-    let page = page
-        .map(|x| x.to_string())
-        .unwrap_or_else(|| String::from("0"));
+    let page = page.to_string();
     let parameter = [("name", character), ("page", &page)];
     client
         .get(ANIMECHAN_CHARACTER_QUOTE)
