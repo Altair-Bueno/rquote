@@ -48,13 +48,13 @@ impl AnimechanQuote {
     pub async fn get_quote_title(
         client: &Client,
         title: &str,
-        page: Option<u32>,
+        page: u32,
     ) -> Result<Vec<AnimechanQuote>> { get_quote_title(client,title,page).await }
 
     pub async fn get_quote_character(
         client: &Client,
         character: &str,
-        page: Option<u32>,
+        page: u32,
     ) -> Result<Vec<AnimechanQuote>> { get_quote_character(client,character,page).await }
 
     pub async fn get_anime_list(client: &Client) -> Result<Vec<String>> { get_anime_list(client).await }
@@ -103,14 +103,14 @@ mod test {
     #[wasm_bindgen_test]
     pub async fn quote_title() {
         let client = Client::new();
-        let response = AnimechanQuote::get_quote_title(&client, "Hyouka", None).await;
+        let response = AnimechanQuote::get_quote_title(&client, "Hyouka", 0).await;
         assert!(matches!(response, Ok(_)))
     }
 
     #[wasm_bindgen_test]
     pub async fn quote_character() {
         let client = Client::new();
-        let response = AnimechanQuote::get_quote_character(&client, "Saitama", None).await;
+        let response = AnimechanQuote::get_quote_character(&client, "Saitama", 0).await;
         assert!(matches!(response, Ok(_)))
     }
 }

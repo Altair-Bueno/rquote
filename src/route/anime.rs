@@ -22,7 +22,7 @@ pub struct AnimeProp {
     pub title: String,
 }
 
-async fn fetch_data(client: &Client, title: &str, page: Option<u32>) -> Result<Vec<AnimechanQuote>, Rc<dyn Error>> {
+async fn fetch_data(client: &Client, title: &str, page: u32) -> Result<Vec<AnimechanQuote>, Rc<dyn Error>> {
     let response = AnimechanQuote::get_quote_title(client, title, page).await;
     match response {
         Ok(quote) => Ok(quote),
@@ -53,7 +53,7 @@ pub fn view(props: &AnimeProp) -> Html {
     let fetcher = {
         let page = page.clone();
         let title = props.title.clone();
-        use_async(async move { fetch_data(client.as_ref(), title.as_str(), Some(*page)).await })
+        use_async(async move { fetch_data(client.as_ref(), title.as_str(), *page).await })
     };
 
     {
@@ -62,7 +62,7 @@ pub fn view(props: &AnimeProp) -> Html {
         let title = title.to_string();
         let history = use_history().unwrap();
         use_effect_with_deps(move |page| {
-            history.push_with_query(
+            history.replace_with_query(
                 Route::Anime { title },
                 HashMap::from([("page", **page)]),
             ).unwrap();
