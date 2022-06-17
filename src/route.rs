@@ -62,85 +62,39 @@ pub fn switch(route: &Route) -> Html {
         NavBarLink::new("I'm feeling lucky".to_string(), Route::Lucky),
         NavBarLink::new("About".to_string(), Route::About),
     ];
+    let (active, inner) = match route {
+        // Development pages
+        #[cfg(debug_assertions)]
+        Route::Development => (None, html! {<Dev/>}),
+        // Main pages
+        Route::Home => (None, html! {<Home/>}),
+        Route::AnimeList => (Some(0), html! {<AnimeList/>}),
+        Route::Lucky => (Some(1), html! {<Lucky/>}),
+        Route::About => (Some(2), html! {<About/>}),
+
+        Route::Anime { title } => {
+            let title = urlencoding::decode(title).unwrap().into_owned();
+            (None, html! {<Anime title={title}/>})
+        }
+        Route::Character { character } => {
+            let character = urlencoding::decode(character).unwrap().into_owned();
+            (None, html! {<Character character={character}/>})
+        }
+        Route::NotFound => (None, html! { <NotFound /> }),
+    };
     let navbar_props = NavBarProp {
         home: Route::Home,
         title: "Rquote".to_string(),
         image: Some("resources/logo.png".to_string()),
         link: links,
-        active: None,
+        active,
     };
-    let page = match route {
-        Route::Home => html! {
-            <>
-                <NavBarComponent<Route> ..navbar_props/>
-                <main>
-                    <Home/>
-                </main>
-            </>
-        },
-        Route::AnimeList => html! {
-            <>
-                <NavBarComponent<Route> active = {0} ..navbar_props/>
-                <main>
-                    <AnimeList/>
-                </main>
-            </>
-        },
-        Route::NotFound => html! {
-            <>
-                <NavBarComponent<Route> ..navbar_props/>
-                <main>
-                    <NotFound/>
-                </main>
-            </>
-        },
-        Route::Anime { title } => {
-            let title = urlencoding::decode(title).unwrap().into_owned();
-            html! {
-                <>
-                    <NavBarComponent<Route>  ..navbar_props/>
-                    <main>
-                        <Anime title={title}/>
-                    </main>
-                </>
-            }
-        },
-        Route::Character { character } => {
-            let character = urlencoding::decode(character).unwrap().into_owned();
-            html! {
-                <>
-                    <NavBarComponent<Route> ..navbar_props/>
-                    <main>
-                        <Character character={character}/>
-                    </main>
-                </>
-            }
-        },
-        Route::Lucky => html! {
-            <>
-                <NavBarComponent<Route> active = {1}..navbar_props/>
-                <main>
-                    <Lucky/>
-                </main>
-            </>
-        },
-        Route::About => html! {
-            <>
-                <NavBarComponent<Route> active = {2} ..navbar_props/>
-                <main>
-                    <About/>
-                </main>
-            </>
-        },
-        #[cfg(debug_assertions)]
-        Route::Development => html! {
-            <>
-                <NavBarComponent<Route> ..navbar_props/>
-                <main>
-                    <Dev/>
-                </main>
-            </>
-        },
-    };
-    page
+    html! {
+        <>
+            <NavBarComponent<Route> ..navbar_props/>
+            <main>
+                {inner}
+            </main>
+        </>
+    }
 }
