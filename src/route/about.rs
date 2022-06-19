@@ -12,12 +12,14 @@ use rquote_component::loading::LoadingComponent;
 use rquote_component::Theme;
 use rquote_core::wrapper::ClientWrapper;
 
-const README: &str = "https://raw.githubusercontent.com/Altair-Bueno/rquote/master/README.md";
+const README: &str = "https://api.github.com/repos/Altair-Bueno/rquote/contents/README.md";
+const ACCEPT_RAW_HEADER : &str = "application/vnd.github.VERSION.raw";
 const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 
 async fn fetch_data(client:&Client) -> Result<String,Rc<dyn Error>> {
     async fn closure(client: &Client) -> Result<String, reqwest::Error> {
         let text = client.get(README)
+            .header("Accept", ACCEPT_RAW_HEADER)
             .send().await?
             .error_for_status()?
             .text().await?;
