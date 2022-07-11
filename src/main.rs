@@ -25,46 +25,43 @@ impl Main {
     /// Queries the browser for the user's preferred color scheme. Default
     /// otherwise
     fn get_current_theme() -> Theme {
-        let prefers_dark = if let Some(window) = web_sys::window() {
-            if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
-                if let Some(media_query) = option {
-                    media_query.matches()
-                } else { Default::default() }
-            } else { Default::default() }
-        } else { Default::default() };
-        if prefers_dark {
-            Theme::Dark
-        } else {
-            Theme::Light
+        fn inner() -> Option<Theme> {
+            let window = web_sys::window()?;
+            let media_query = window.match_media("(prefers-color-scheme: dark)").ok()??;
+            let theme = if media_query.matches() { Theme::Dark } else { Theme::Light };
+
+            Some(theme)
         }
+        inner().unwrap_or_default()
     }
     /// Changes the theme for all body tags on the DOM
     fn change_body_theme(theme: &Theme) {
-        if let Some(window) = web_sys::window() {
-            if let Some(document) = window.document() {
-                if let Some(body) = document.body() {
-                    let _ = body.remove_attribute("class");
-                    let _ = body
-                        .class_list()
-                        .add_2(theme.get_background_class(), "bg-opacity-75");
-                }
-            }
+        fn inner(theme:&Theme) -> Option<()> {
+            let body = web_sys::window()?.document()?.body()?;
+            let _ = body.remove_attribute("class");
+            let _ = body
+                .class_list()
+                .add_2(theme.get_background_class(), "bg-opacity-75");
+            
+                Some(())
         }
+
+        inner(theme);
     }
     /// Adds an EventListener to a `web_sys::Window::match_media("(prefers-color-scheme: dark)")`
     fn set_theme_listener(callback: Callback<Theme>) {
-        if let Some(window) = web_sys::window() {
-            if let Ok(option) = window.match_media("(prefers-color-scheme: dark)") {
-                if let Some(media_query) = option {
-                    let closure = wasm_bindgen::prelude::Closure::wrap(Box::new(move |media_query: MediaQueryList| {
-                        let theme = if media_query.matches() { Theme::Dark } else { Theme::Light };
-                        callback.emit(theme);
-                    }) as Box<dyn Fn(_)>);
-                    let _ = media_query.add_listener_with_opt_callback(Some(closure.as_ref().unchecked_ref()));
-                    closure.forget();
-                }
-            }
-        };
+        fn inner(callback: Callback<Theme>) -> Option<()>{
+            let window = web_sys::window()?;
+            let media_query = window.match_media("(prefers-color-scheme: dark)").ok()??;
+            let closure = wasm_bindgen::prelude::Closure::wrap(Box::new(move | media_query:MediaQueryList| {
+                let theme = if media_query.matches() { Theme::Dark } else { Theme::Light };
+                callback.emit(theme);
+            }) as Box<dyn Fn(_)>);
+            let _ = media_query.add_listener_with_opt_callback(Some(closure.as_ref().unchecked_ref()));
+            closure.forget();
+            Some(())
+        }
+        inner(callback);
     }
 }
 
