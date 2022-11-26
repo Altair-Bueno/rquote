@@ -1,19 +1,17 @@
 use std::error::Error;
 use std::rc::Rc;
 
-use reqwest::Client;
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 
 use rquote_component::error::*;
 use rquote_component::loading::*;
 use rquote_core::AnimechanQuote;
-use rquote_core::wrapper::ClientWrapper;
 
 use crate::custom::quote::*;
 
-async fn fetch_data(client: &Client) -> Result<Vec<AnimechanQuote>, Rc<dyn Error>> {
-    let response = AnimechanQuote::get_10_random_quotes(client).await;
+async fn fetch_data() -> Result<Vec<AnimechanQuote>, Rc<dyn Error>> {
+    let response = AnimechanQuote::get_10_random_quotes().await;
     match response {
         Ok(quote) => Ok(quote),
         Err(error) => {
@@ -25,19 +23,23 @@ async fn fetch_data(client: &Client) -> Result<Vec<AnimechanQuote>, Rc<dyn Error
 
 #[function_component(Home)]
 pub fn home() -> Html {
-    let client: ClientWrapper = use_context().unwrap_or_default();
     let state = use_async_with_options(
-        async move { fetch_data(client.as_ref()).await },
+        async move { fetch_data().await },
         UseAsyncOptions::enable_auto(),
     );
 
     if let Some(quote_list) = &state.data {
-        let list:Vec<_> = quote_list.iter().map(|quote| html! {
-            <div class = "m-2">
-                <QuoteComponent quote = {quote.clone()} />
-            </div>
-        }).collect();
-        html!{
+        let list: Vec<_> = quote_list
+            .iter()
+            .map(|quote| {
+                html! {
+                    <div class = "m-2">
+                        <QuoteComponent quote = {quote.clone()} />
+                    </div>
+                }
+            })
+            .collect();
+        html! {
             <div class = "container">
                 {list}
             </div>
@@ -46,5 +48,7 @@ pub fn home() -> Html {
         let severity = Severity::Danger;
         let error = error.clone();
         html! {<ErrorComponent {severity} {error}/>}
-    } else { html! {<LoadingComponent/>} }
+    } else {
+        html! {<LoadingComponent/>}
+    }
 }

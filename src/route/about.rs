@@ -2,7 +2,7 @@ use std::error::Error;
 use std::ops::Deref;
 use std::rc::Rc;
 
-use reqwest::Client;
+use gloo_net::http::Request;
 use web_sys::Element;
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
@@ -10,26 +10,26 @@ use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use rquote_component::error::*;
 use rquote_component::loading::LoadingComponent;
 use rquote_component::Theme;
-use rquote_core::wrapper::ClientWrapper;
 
 const README: &str = "https://api.github.com/repos/Altair-Bueno/rquote/contents/README.md";
-const ACCEPT_RAW_HEADER : &str = "application/vnd.github.VERSION.raw";
+const ACCEPT_RAW_HEADER: &str = "application/vnd.github.VERSION.raw";
 const SMALL_NOTE: &str = "Readme rendered using Rust + WASM ❤️";
 
-async fn fetch_data(client:&Client) -> Result<String,Rc<dyn Error>> {
-    async fn closure(client: &Client) -> Result<String, reqwest::Error> {
-        let text = client.get(README)
+async fn fetch_data() -> Result<String, Rc<dyn Error>> {
+    async fn closure() -> Result<String, gloo_net::Error> {
+        let text = Request::get(README)
             .header("Accept", ACCEPT_RAW_HEADER)
-            .send().await?
-            .error_for_status()?
-            .text().await?;
+            .send()
+            .await?
+            .text()
+            .await?;
         let parser = pulldown_cmark::Parser::new(text.as_str());
         let mut out = String::new();
         pulldown_cmark::html::push_html(&mut out, parser);
         Ok(out)
     }
-    match closure(client).await {
-        Ok(data)=> Ok(data),
+    match closure().await {
+        Ok(data) => Ok(data),
         Err(error) => {
             let into_trait: Rc<dyn Error> = Rc::new(error);
             Err(into_trait)
@@ -39,18 +39,17 @@ async fn fetch_data(client:&Client) -> Result<String,Rc<dyn Error>> {
 #[function_component(About)]
 pub fn about() -> Html {
     let node_ref = use_state(|| NodeRef::default());
-    let client = use_context::<ClientWrapper>().unwrap_or_default();
     let theme = use_context::<Theme>().unwrap_or_default();
 
     let state = use_async_with_options(
-        async move {fetch_data(client.as_ref()).await},
-        UseAsyncOptions::enable_auto()
+        async move { fetch_data().await },
+        UseAsyncOptions::enable_auto(),
     );
     {
         let node_ref = node_ref.clone();
         let theme = theme.clone();
         let state = state.clone();
-        use_effect(move ||{
+        use_effect(move || {
             if let Some(element) = node_ref.cast::<Element>() {
                 if let Some(data) = &state.data {
                     element.set_inner_html(data);
@@ -64,7 +63,7 @@ pub fn about() -> Html {
                     }
                 }
             };
-            ||()
+            || ()
         });
     }
 
@@ -80,6 +79,8 @@ pub fn about() -> Html {
     } else if let Some(error) = &state.error {
         let error = error.clone();
         let severity = Severity::Danger;
-        html!{<ErrorComponent {severity} {error}/>}
-    } else { html! {<LoadingComponent/>} }
+        html! {<ErrorComponent {severity} {error}/>}
+    } else {
+        html! {<LoadingComponent/>}
+    }
 }

@@ -6,4 +6,3 @@
 pub use animechan::AnimechanQuote;
 
 mod animechan;
-pub mod wrapper;
