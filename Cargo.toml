@@ -12,30 +12,31 @@ lto = "fat"
 codegen-units = 1
 
 [workspace]
-members = [
-    "crates/rquote-component",
-    "crates/rquote-core",
-]
+members = ["crates/*"]
 
-[dependencies]
-yew = "0.19"
-yew-router = "0.16"
+[workspace.dependencies]
+yew = "0.20"
+yew-router = "0.17"
+yew-hooks = "0.2"
 urlencoding = "2.1"
 pulldown-cmark = "0.9"
 fuzzy-matcher = "0.3"
-reqwest = "0.11"
 wasm-bindgen = "0.2"
-yew-hooks = "0.1"
+wasm-bindgen-futures = "0.4"
 
-[dependencies.rquote-component]
-version = "*"
-path = "crates/rquote-component"
+rquote-component = { path="crates/rquote-component" }
+rquote-core = { path="crates/rquote-core" }
 
-[dependencies.rquote-core]
-version = "*"
-path = "crates/rquote-core"
+wasm-bindgen-test = "0.3.29"
 
-[dependencies.web-sys]
+[workspace.dependencies.serde]
+version="1"
+features=["derive"]
+
+[workspace.dependencies.gloo-net]
+version = "0.2"
+
+[workspace.dependencies.web-sys]
 version = "0.3"
 features = [
     "Window",
@@ -46,4 +47,29 @@ features = [
     "HtmlElement",
     "DomTokenList",
     "EventListener",
+    "Event",
+    "HtmlInputElement",
+    "InputEvent",
+    "EventTarget",
+    "Location",
 ]
+
+[workspace.dependencies.cached]
+default-features=false
+features=["proc_macro"]
+version = "0.40.0"
+
+[dependencies]
+yew = { workspace=true }
+yew-router = { workspace=true }
+urlencoding = { workspace=true }
+pulldown-cmark = { workspace=true }
+fuzzy-matcher = { workspace=true }
+wasm-bindgen = { workspace=true }
+yew-hooks = { workspace=true }
+rquote-component = { workspace=true }
+rquote-core = { workspace=true }
+web-sys= { workspace=true }
+gloo-net= { workspace=true }
+
+

@@ -2,7 +2,6 @@ use std::error::Error;
 use std::rc::Rc;
 
 use fuzzy_matcher::FuzzyMatcher;
-use reqwest::Client;
 use yew::prelude::*;
 use yew_hooks::{use_async_with_options, UseAsyncOptions};
 use yew_router::prelude::*;
@@ -13,12 +12,11 @@ use rquote_component::loading::LoadingComponent;
 use rquote_component::search_bar::*;
 use rquote_component::Theme;
 use rquote_core::AnimechanQuote;
-use rquote_core::wrapper::ClientWrapper;
 
 use crate::route::Route;
 
-async fn fetch_data(client: &Client) -> Result<Vec<String>, Rc<dyn Error>> {
-    let response = AnimechanQuote::get_anime_list(client).await;
+async fn fetch_data() -> Result<Vec<String>, Rc<dyn Error>> {
+    let response = AnimechanQuote::get_anime_list().await;
     match response {
         Ok(quote) => Ok(quote),
         Err(error) => {
@@ -30,9 +28,8 @@ async fn fetch_data(client: &Client) -> Result<Vec<String>, Rc<dyn Error>> {
 
 #[function_component(AnimeList)]
 pub fn anime_list() -> Html {
-    let client: ClientWrapper = use_context().unwrap_or_default();
     let state = use_async_with_options(
-        async move { fetch_data(client.as_ref()).await },
+        async move { fetch_data().await },
         UseAsyncOptions::enable_auto()
     );
 

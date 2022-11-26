@@ -24,7 +24,6 @@ mod not_found;
 mod dev;
 mod lucky;
 
-
 /// Different available routes for Rquote
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -56,7 +55,7 @@ pub enum Route {
     NotFound,
 }
 
-pub fn switch(route: &Route) -> Html {
+pub fn switch(route: Route) -> Html {
     let links = vec![
         NavBarLink::new("Anime list".to_string(), Route::AnimeList),
         NavBarLink::new("I'm feeling lucky".to_string(), Route::Lucky),
@@ -73,11 +72,13 @@ pub fn switch(route: &Route) -> Html {
         Route::About => (Some(2), html! {<About/>}),
 
         Route::Anime { title } => {
-            let title = urlencoding::decode(title).unwrap().into_owned();
+            let title = urlencoding::decode(title.as_str()).unwrap().into_owned();
             (None, html! {<Anime title={title}/>})
         }
         Route::Character { character } => {
-            let character = urlencoding::decode(character).unwrap().into_owned();
+            let character = urlencoding::decode(character.as_str())
+                .unwrap()
+                .into_owned();
             (None, html! {<Character character={character}/>})
         }
         Route::NotFound => (None, html! { <NotFound /> }),
