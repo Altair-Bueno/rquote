@@ -6,15 +6,15 @@ use crate::animechan::cached::{get_anime_list, get_quote_character, get_quote_ti
 
 mod cached;
 
-const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/random";
-const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.vercel.app/api/quotes";
-const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.vercel.app/api/quotes/anime";
-const ANIMECHAN_CHARACTER_QUOTE: &str = "https://animechan.vercel.app/api/quotes/character";
-const ANIMECHAN_ANIME_LIST: &str = "https://animechan.vercel.app/api/available/anime";
+const ANIMECHAN_RANDOM_QUOTE: &str = "https://animechan.xyz/api/random";
+const ANIMECHAN_10_RANDOM_QUOTE: &str = "https://animechan.xyz/api/quotes";
+const ANIMECHAN_TITLE_QUOTE: &str = "https://animechan.xyz/api/quotes/anime";
+const ANIMECHAN_CHARACTER_QUOTE: &str = "https://animechan.xyz/api/quotes/character";
+const ANIMECHAN_ANIME_LIST: &str = "https://animechan.xyz/api/available/anime";
 
 /// Type that can be Serialized and Deserialized as a valid Animechan quote. You
 /// can find more information about Animechan's API
-/// [here](https://animechan.vercel.app/)
+/// [here](https://animechan.xyz/)
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct AnimechanQuote {
     anime: String,
